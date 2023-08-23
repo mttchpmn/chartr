@@ -28,8 +28,12 @@ class MapIcons {
   static const IconData arrow_up = IconData(0xf062, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData location_arrow = IconData(0xf124, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData compass = IconData(0xf14e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData car = IconData(0xf1b9, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData ship = IconData(0xf21a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData map_marker_alt = IconData(0xf3c5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData drafting_compass = IconData(0xf568, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData layer_group = IconData(0xf5fd, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData mountain = IconData(0xf6fc, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData satellite = IconData(0xf7bf, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData record_vinyl = IconData(0xf8d9, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

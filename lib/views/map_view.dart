@@ -1,8 +1,11 @@
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/map_layer_dialog.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:chartr/services/location_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class FullScreenMapWidget extends StatefulWidget {
@@ -12,8 +15,23 @@ class FullScreenMapWidget extends StatefulWidget {
 
 class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController mapController = MapController();
+  final LocationService locationService = LocationService();
   bool _showNorthUp = true;
   String _mapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  Position? _initialPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _setInitialPosition();
+  }
+
+  Future<void> _setInitialPosition() async {
+    var position = await locationService.getPosition();
+    setState(() {
+      _initialPosition = position;
+    });
+  }
 
   void _toggleNorthUp() {
     var currentCenter = mapController.center;
@@ -24,10 +42,24 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
+  void _scrollToCurrentPosition() {
+    if (_initialPosition == null) {
+      print("Not scrolling as don't have position");
+      return;
+    }
+
+    var currentZoom = mapController.zoom;
+    var currentBearing = mapController.rotation;
+    mapController.moveAndRotate(
+        LatLng(_initialPosition!.latitude, _initialPosition!.longitude),
+        currentZoom,
+        currentBearing);
+  }
+
   String _getMapTileProvider(MapType mapType) {
     var defaultProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-    var linzApiKey = '';
+    var linzApiKey = dotenv.env['LINZ_API_KEY'];
 
     var topo50Provider =
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png';
@@ -69,7 +101,10 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         FlutterMap(
           mapController: mapController,
           options: MapOptions(
-            center: LatLng(-36.862091, 174.851387),
+            center: _initialPosition == null
+                ? LatLng(-36.862091, 174.851387)
+                : LatLng(
+                    _initialPosition!.latitude, _initialPosition!.longitude),
             // San Francisco coordinates
             interactiveFlags: _showNorthUp
                 ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
@@ -88,6 +123,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           onToggleNorthUp: () {
             _toggleNorthUp();
           },
+          onScrollToLocation: _scrollToCurrentPosition,
           northButtonIcon:
               _showNorthUp ? Icon(MapIcons.arrow_up) : Icon(MapIcons.compass),
           onSelectMapType: (mapType) {
@@ -101,6 +137,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
 class ButtonStack extends StatelessWidget {
   final VoidCallback onToggleNorthUp;
+  final VoidCallback onScrollToLocation;
   final Function(MapType) onSelectMapType;
   Icon northButtonIcon;
 
@@ -109,6 +146,7 @@ class ButtonStack extends StatelessWidget {
     required this.onToggleNorthUp,
     required this.northButtonIcon,
     required this.onSelectMapType,
+    required this.onScrollToLocation,
   });
 
   void _showMapLayerDialog(BuildContext context) {
@@ -155,7 +193,7 @@ class ButtonStack extends StatelessWidget {
         right: 15,
         child: FloatingActionButton(
           onPressed: () {
-            // Your action here
+            onScrollToLocation();
           },
           child: Icon(MapIcons.location_arrow),
           mini: true,

@@ -1,3 +1,4 @@
+import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +12,26 @@ class MapLayerDialog extends StatelessWidget {
     return SimpleDialog(
       title: Text('Select Map Type'),
       children: [
-        IconButton(icon: Icon(Icons.home), onPressed: () => onIconPressed(MapType.openStreetMap)),
-        IconButton(icon: Icon(Icons.work), onPressed: () => onIconPressed(MapType.topo50)),
-        IconButton(icon: Icon(Icons.school), onPressed: () => onIconPressed(MapType.topo250)),
-        IconButton(icon: Icon(Icons.pets), onPressed: () => onIconPressed(MapType.marine)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                  icon: Icon(MapIcons.car),
+                  onPressed: () => onIconPressed(MapType.openStreetMap)),
+              IconButton(
+                  icon: Icon(MapIcons.mountain),
+                  onPressed: () => onIconPressed(MapType.topo50)),
+              IconButton(
+                  icon: Icon(MapIcons.satellite),
+                  onPressed: () => onIconPressed(MapType.topo250)),
+              IconButton(
+                  icon: Icon(MapIcons.ship),
+                  onPressed: () => onIconPressed(MapType.marine)),
+            ],
+          ),
+        )
       ],
     );
   }
