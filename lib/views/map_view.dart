@@ -17,6 +17,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController mapController = MapController();
   final LocationService locationService = LocationService();
   bool _showNorthUp = true;
+  MapType _mapType = MapType.openStreetMap;
   String _mapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   Position? _initialPosition;
 
@@ -36,10 +37,12 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   void _toggleNorthUp() {
     var currentCenter = mapController.center;
     var currentZoom = mapController.zoom;
-    mapController.moveAndRotate(currentCenter, currentZoom, 0);
     setState(() {
       _showNorthUp = !_showNorthUp;
     });
+    _showNorthUp
+        ? mapController.moveAndRotate(currentCenter, currentZoom, 0)
+        : mapController.moveAndRotate(currentCenter, currentZoom, 5);
   }
 
   void _scrollToCurrentPosition() {
@@ -67,6 +70,8 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=50798/EPSG:3857/{z}/{x}/{y}.png';
     var northIslandMarineProvider =
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/set=4758/EPSG:3857/{z}/{x}/{y}.png';
+    var satelliteProvider =
+        'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=109401/EPSG:3857/{z}/{x}/{y}.png';
 
     switch (mapType) {
       case MapType.openStreetMap:
@@ -77,6 +82,8 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         return topo250Provider;
       case MapType.marine:
         return northIslandMarineProvider;
+      case MapType.satellite:
+        return satelliteProvider;
     }
   }
 
@@ -84,6 +91,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var provider = _getMapTileProvider(mapType);
 
     setState(() {
+      _mapType = mapType;
       _mapProvider = provider;
     });
     var currentCenter = mapController.center;
@@ -94,6 +102,21 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     debugPrint("Set map to $provider");
   }
 
+  void _handleTopoZoom(position) {
+    if (_mapType != MapType.topo50 && _mapType != MapType.topo250) {
+      return;
+    }
+
+    var mapType = position.zoom < 12 ? MapType.topo250 : MapType.topo50;
+    debugPrint(position.zoom.toString());
+    debugPrint(_mapType.toString());
+
+    setState(() {
+      _mapType = mapType;
+      _mapProvider = _getMapTileProvider(mapType);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +124,9 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         FlutterMap(
           mapController: mapController,
           options: MapOptions(
+            onPositionChanged: (position, hasGesture) {
+              _handleTopoZoom(position);
+            },
             center: _initialPosition == null
                 ? LatLng(-36.862091, 174.851387)
                 : LatLng(
@@ -116,6 +142,19 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             TileLayer(
               urlTemplate: _mapProvider,
               userAgentPackageName: 'com.chartr',
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(-36.862091, 174.851387),
+                  width: 80,
+                  height: 80,
+                  builder: (context) => Icon(
+                    MapIcons.location_arrow,
+                    color: Colors.deepOrange,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

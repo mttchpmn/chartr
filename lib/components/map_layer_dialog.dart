@@ -25,7 +25,7 @@ class MapLayerDialog extends StatelessWidget {
                   onPressed: () => onIconPressed(MapType.topo50)),
               IconButton(
                   icon: Icon(MapIcons.satellite),
-                  onPressed: () => onIconPressed(MapType.topo250)),
+                  onPressed: () => onIconPressed(MapType.satellite)),
               IconButton(
                   icon: Icon(MapIcons.ship),
                   onPressed: () => onIconPressed(MapType.marine)),
