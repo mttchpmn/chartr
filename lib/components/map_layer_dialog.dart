@@ -14,21 +14,36 @@ class MapLayerDialog extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Column(
             children: [
-              IconButton(
-                  icon: Icon(MapIcons.car),
-                  onPressed: () => onIconPressed(MapType.openStreetMap)),
-              IconButton(
-                  icon: Icon(MapIcons.mountain),
-                  onPressed: () => onIconPressed(MapType.topo50)),
-              IconButton(
-                  icon: Icon(MapIcons.satellite),
-                  onPressed: () => onIconPressed(MapType.satellite)),
-              IconButton(
-                  icon: Icon(MapIcons.ship),
-                  onPressed: () => onIconPressed(MapType.marine)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                      icon: Icon(MapIcons.car),
+                      onPressed: () => onIconPressed(MapType.openStreetMap)),
+                  IconButton(
+                      icon: Icon(MapIcons.mountain),
+                      onPressed: () => onIconPressed(MapType.topo50)),
+                  IconButton(
+                      icon: Icon(MapIcons.satellite),
+                      onPressed: () => onIconPressed(MapType.satellite)),
+                  IconButton(
+                      icon: Icon(MapIcons.ship),
+                      onPressed: () => onIconPressed(MapType.marine)),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.directions_bike),
+                      onPressed: () => onIconPressed(MapType.cycle)),
+                  IconButton(
+                      icon: Icon(Icons.hiking),
+                      onPressed: () => onIconPressed(MapType.outdoors)),
+                ],
+              ),
             ],
           ),
         )

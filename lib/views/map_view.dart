@@ -19,7 +19,8 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   bool _showNorthUp = true;
   MapType _mapType = MapType.openStreetMap;
   String _mapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-  Position? _initialPosition;
+  Position? _deviceLocation;
+  final Color _iconColor = const Color(0xFF41548C);
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   Future<void> _setInitialPosition() async {
     var position = await locationService.getPosition();
     setState(() {
-      _initialPosition = position;
+      _deviceLocation = position;
     });
   }
 
@@ -46,7 +47,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _scrollToCurrentPosition() {
-    if (_initialPosition == null) {
+    if (_deviceLocation == null) {
       print("Not scrolling as don't have position");
       return;
     }
@@ -54,7 +55,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var currentZoom = mapController.zoom;
     var currentBearing = mapController.rotation;
     mapController.moveAndRotate(
-        LatLng(_initialPosition!.latitude, _initialPosition!.longitude),
+        LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
         currentZoom,
         currentBearing);
   }
@@ -63,6 +64,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var defaultProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     var linzApiKey = dotenv.env['LINZ_API_KEY'];
+    var thunderForestApiKey = dotenv.env['THUNDERFOREST_API_KEY'];
 
     var topo50Provider =
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png';
@@ -72,6 +74,9 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/set=4758/EPSG:3857/{z}/{x}/{y}.png';
     var satelliteProvider =
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=109401/EPSG:3857/{z}/{x}/{y}.png';
+
+    var outdoorsProvider = "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
+    var cycleProvider = "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
 
     switch (mapType) {
       case MapType.openStreetMap:
@@ -84,6 +89,10 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         return northIslandMarineProvider;
       case MapType.satellite:
         return satelliteProvider;
+      case MapType.outdoors:
+        return outdoorsProvider;
+      case MapType.cycle:
+        return cycleProvider;
     }
   }
 
@@ -127,10 +136,10 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             onPositionChanged: (position, hasGesture) {
               _handleTopoZoom(position);
             },
-            center: _initialPosition == null
+            center: _deviceLocation == null
                 ? LatLng(-36.862091, 174.851387)
                 : LatLng(
-                    _initialPosition!.latitude, _initialPosition!.longitude),
+                    _deviceLocation!.latitude, _deviceLocation!.longitude),
             // San Francisco coordinates
             interactiveFlags: _showNorthUp
                 ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
@@ -146,12 +155,13 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             MarkerLayer(
               markers: [
                 Marker(
-                  point: LatLng(-36.862091, 174.851387),
+                  // point: LatLng(-36.862091, 174.851387),
+                  point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
                   width: 80,
                   height: 80,
                   builder: (context) => Icon(
                     MapIcons.location_arrow,
-                    color: Colors.deepOrange,
+                    color: _iconColor,
                   ),
                 ),
               ],
@@ -164,7 +174,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           },
           onScrollToLocation: _scrollToCurrentPosition,
           northButtonIcon:
-              _showNorthUp ? Icon(MapIcons.arrow_up) : Icon(MapIcons.compass),
+              _showNorthUp ? Icon(MapIcons.arrow_up, color: _iconColor) : Icon(MapIcons.compass, color: _iconColor),
           onSelectMapType: (mapType) {
             _changeMapType(mapType);
           },
@@ -179,6 +189,8 @@ class ButtonStack extends StatelessWidget {
   final VoidCallback onScrollToLocation;
   final Function(MapType) onSelectMapType;
   Icon northButtonIcon;
+
+  final Color _iconColor = const Color(0xFF41548C);
 
   ButtonStack({
     super.key,
@@ -212,7 +224,7 @@ class ButtonStack extends StatelessWidget {
           onPressed: () {
             _showMapLayerDialog(context);
           },
-          child: Icon(MapIcons.layer_group),
+          child: Icon(MapIcons.layer_group, color: _iconColor),
           mini: true,
         ),
       ),
@@ -234,7 +246,7 @@ class ButtonStack extends StatelessWidget {
           onPressed: () {
             onScrollToLocation();
           },
-          child: Icon(MapIcons.location_arrow),
+          child: Icon(MapIcons.location_arrow, color: _iconColor),
           mini: true,
         ),
       ),
@@ -245,7 +257,7 @@ class ButtonStack extends StatelessWidget {
           onPressed: () {
             // Your action here for the bottom button
           },
-          child: Icon(MapIcons.map_marker_alt),
+          child: Icon(MapIcons.map_marker_alt, color: _iconColor),
           mini: true,
         ),
       ),
@@ -256,7 +268,7 @@ class ButtonStack extends StatelessWidget {
           onPressed: () {
             // Your action here for the bottom button
           },
-          child: Icon(MapIcons.drafting_compass),
+          child: Icon(MapIcons.drafting_compass, color: _iconColor),
           mini: true,
         ),
       ),
@@ -271,7 +283,7 @@ class ButtonStack extends StatelessWidget {
             onPressed: () {
               // Your action here for the bottom button
             },
-            child: Icon(MapIcons.record_vinyl),
+            child: Icon(MapIcons.record_vinyl, color: _iconColor),
             mini: true,
           ),
         ),
