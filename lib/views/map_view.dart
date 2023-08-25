@@ -1,7 +1,9 @@
+import 'package:chartr/components/map_button_stack.dart';
 import 'package:chartr/components/map_icons.dart';
-import 'package:chartr/components/map_layer_dialog.dart';
+import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/services/location_service.dart';
+import 'package:chartr/services/map_provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,23 +11,33 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class FullScreenMapWidget extends StatefulWidget {
+  const FullScreenMapWidget({super.key});
+
   @override
-  _FullScreenMapWidgetState createState() => _FullScreenMapWidgetState();
+  FullScreenMapWidgetState createState() => FullScreenMapWidgetState();
 }
 
-class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
+class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController mapController = MapController();
+  final MapProviderService mapProviderService = MapProviderService();
   final LocationService locationService = LocationService();
+
+  late MapProvider _mapProvider;
+
   bool _showNorthUp = true;
-  MapType _mapType = MapType.openStreetMap;
-  String _mapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  MapType _mapType = MapType.cycle;
   Position? _deviceLocation;
   final Color _iconColor = const Color(0xFF41548C);
 
   @override
   void initState() {
     super.initState();
+    _initMapProvider();
     _setInitialPosition();
+  }
+
+  void _initMapProvider() {
+    _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
   Future<void> _setInitialPosition() async {
@@ -60,6 +72,7 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         currentBearing);
   }
 
+  // REMOVE
   String _getMapTileProvider(MapType mapType) {
     var defaultProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -75,56 +88,62 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var satelliteProvider =
         'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=109401/EPSG:3857/{z}/{x}/{y}.png';
 
-    var outdoorsProvider = "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
-    var cycleProvider = "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
+    var outdoorsProvider =
+        "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
+    var cycleProvider =
+        "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
 
     switch (mapType) {
-      case MapType.openStreetMap:
+      case MapType.street:
         return defaultProvider;
-      case MapType.topo50:
+      case MapType.topographic:
         return topo50Provider;
-      case MapType.topo250:
-        return topo250Provider;
-      case MapType.marine:
+      case MapType.nautical:
         return northIslandMarineProvider;
       case MapType.satellite:
         return satelliteProvider;
-      case MapType.outdoors:
+      case MapType.outdoor:
         return outdoorsProvider;
       case MapType.cycle:
         return cycleProvider;
     }
   }
 
-  void _changeMapType(MapType mapType) {
-    var provider = _getMapTileProvider(mapType);
+  void _setMapProvider(MapType mapType) {
+    var mapProvider = mapProviderService.getMapProvider(_mapType);
 
     setState(() {
       _mapType = mapType;
-      _mapProvider = provider;
+      _mapProvider = mapProvider;
     });
+
+    _refreshMap();
+
+    debugPrint("Set map to ${_mapProvider.mapType.toString()}");
+  }
+
+  void _refreshMap() {
     var currentCenter = mapController.center;
     var currentZoom = mapController.zoom;
     var currentBearing = mapController.rotation;
     mapController.moveAndRotate(currentCenter, currentZoom, currentBearing);
-
-    debugPrint("Set map to $provider");
   }
 
-  void _handleTopoZoom(position) {
-    if (_mapType != MapType.topo50 && _mapType != MapType.topo250) {
-      return;
-    }
-
-    var mapType = position.zoom < 12 ? MapType.topo250 : MapType.topo50;
-    debugPrint(position.zoom.toString());
-    debugPrint(_mapType.toString());
-
-    setState(() {
-      _mapType = mapType;
-      _mapProvider = _getMapTileProvider(mapType);
-    });
-  }
+  // REMOVE
+  // void _handleTopoZoom(position) {
+  //   if (_mapType != MapType.topo50 && _mapType != MapType.topo250) {
+  //     return;
+  //   }
+  //
+  //   var mapType = position.zoom < 12 ? MapType.topo250 : MapType.topo50;
+  //   debugPrint(position.zoom.toString());
+  //   debugPrint(_mapType.toString());
+  //
+  //   setState(() {
+  //     _mapType = mapType;
+  //     _mapProvider = _getMapTileProvider(mapType);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,162 +151,77 @@ class _FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
-          options: MapOptions(
-            onPositionChanged: (position, hasGesture) {
-              _handleTopoZoom(position);
-            },
-            center: _deviceLocation == null
-                ? LatLng(-36.862091, 174.851387)
-                : LatLng(
-                    _deviceLocation!.latitude, _deviceLocation!.longitude),
-            // San Francisco coordinates
-            interactiveFlags: _showNorthUp
-                ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
-                : InteractiveFlag.all,
-            zoom: 12,
-          ),
           nonRotatedChildren: [],
-          children: [
-            TileLayer(
-              urlTemplate: _mapProvider,
-              userAgentPackageName: 'com.chartr',
-            ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  // point: LatLng(-36.862091, 174.851387),
-                  point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
-                  width: 80,
-                  height: 80,
-                  builder: (context) => Icon(
-                    MapIcons.location_arrow,
-                    color: _iconColor,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          options: _buildMapOptions(),
+          children: _buildMapChildren(),
         ),
-        ButtonStack(
-          onToggleNorthUp: () {
-            _toggleNorthUp();
-          },
-          onScrollToLocation: _scrollToCurrentPosition,
-          northButtonIcon:
-              _showNorthUp ? Icon(MapIcons.arrow_up, color: _iconColor) : Icon(MapIcons.compass, color: _iconColor),
-          onSelectMapType: (mapType) {
-            _changeMapType(mapType);
-          },
-        ),
+        _buildMapButtonStack(),
       ]),
     );
   }
-}
 
-class ButtonStack extends StatelessWidget {
-  final VoidCallback onToggleNorthUp;
-  final VoidCallback onScrollToLocation;
-  final Function(MapType) onSelectMapType;
-  Icon northButtonIcon;
+  List<Widget> _buildMapChildren() {
+    List<Widget> result = [];
 
-  final Color _iconColor = const Color(0xFF41548C);
+    var tileLayers = _mapProvider.getTileLayers();
+    var markerLayer = MarkerLayer(
+      markers: [
+        Marker(
+          point: LatLng(-36.862091, 174.851387),
+          // point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
+          width: 80,
+          height: 80,
+          builder: (context) => Icon(
+            MapIcons.location_arrow,
+            color: _iconColor,
+          ),
+        ),
+      ],
+    );
 
-  ButtonStack({
-    super.key,
-    required this.onToggleNorthUp,
-    required this.northButtonIcon,
-    required this.onSelectMapType,
-    required this.onScrollToLocation,
-  });
+    // result.add(TileLayer(
+    // ));
 
-  void _showMapLayerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return MapLayerDialog(
-          onIconPressed: (mapType) {
-            onSelectMapType(mapType);
-            Navigator.of(context).pop(); // Close the dialog
-          },
-        );
+    var tileLayer = TileLayer(
+      urlTemplate:
+          "https://tiles-cdn.koordinates.com/services;key=ea77759bac544955a28e87f9a05c821c/tiles/v4/layer=52343/EPSG:3857/{z}/{x}/{y}.png",
+      userAgentPackageName: MapProvider.packageName,
+    );
+
+    result.addAll(tileLayers);
+    result.add(markerLayer);
+
+    return result;
+  }
+
+  MapButtonStack _buildMapButtonStack() {
+    return MapButtonStack(
+      onToggleNorthUp: () {
+        _toggleNorthUp();
+      },
+      onScrollToLocation: _scrollToCurrentPosition,
+      northButtonIcon: _showNorthUp
+          ? Icon(MapIcons.arrow_up, color: _iconColor)
+          : Icon(MapIcons.compass, color: _iconColor),
+      onSelectMapType: (mapType) {
+        _setMapProvider(mapType);
       },
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned(
-        top: 50, // Adjust the position as needed
-        right: 15,
-        child: FloatingActionButton(
-          onPressed: () {
-            _showMapLayerDialog(context);
-          },
-          child: Icon(MapIcons.layer_group, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        top: 100, // Adjust the position as needed
-        right: 15,
-        child: FloatingActionButton(
-          onPressed: () {
-            onToggleNorthUp();
-          },
-          child: northButtonIcon,
-          mini: true,
-        ),
-      ),
-      Positioned(
-        top: 150, // Adjust the position as needed
-        right: 15,
-        child: FloatingActionButton(
-          onPressed: () {
-            onScrollToLocation();
-          },
-          child: Icon(MapIcons.location_arrow, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        left: 15,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Your action here for the bottom button
-          },
-          child: Icon(MapIcons.map_marker_alt, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        left: 65,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Your action here for the bottom button
-          },
-          child: Icon(MapIcons.drafting_compass, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        left:
-            MediaQuery.of(context).size.width / 2 - 20, // Centering the button
-        child: Container(
-          width: 40,
-          height: 40,
-          child: FloatingActionButton(
-            onPressed: () {
-              // Your action here for the bottom button
-            },
-            child: Icon(MapIcons.record_vinyl, color: _iconColor),
-            mini: true,
-          ),
-        ),
-      )
-    ]);
+  MapOptions _buildMapOptions() {
+    return MapOptions(
+      onPositionChanged: (position, hasGesture) {
+        // _handleTopoZoom(position);
+      },
+      center: _deviceLocation == null
+          ? LatLng(-36.862091, 174.851387)
+          : LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
+      // San Francisco coordinates
+      interactiveFlags: _showNorthUp
+          ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
+          : InteractiveFlag.all,
+      zoom: 12,
+    );
   }
 }

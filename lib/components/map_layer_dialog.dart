@@ -21,16 +21,16 @@ class MapLayerDialog extends StatelessWidget {
                 children: [
                   IconButton(
                       icon: Icon(MapIcons.car),
-                      onPressed: () => onIconPressed(MapType.openStreetMap)),
+                      onPressed: () => onIconPressed(MapType.street)),
                   IconButton(
                       icon: Icon(MapIcons.mountain),
-                      onPressed: () => onIconPressed(MapType.topo50)),
+                      onPressed: () => onIconPressed(MapType.topographic)),
                   IconButton(
                       icon: Icon(MapIcons.satellite),
                       onPressed: () => onIconPressed(MapType.satellite)),
                   IconButton(
                       icon: Icon(MapIcons.ship),
-                      onPressed: () => onIconPressed(MapType.marine)),
+                      onPressed: () => onIconPressed(MapType.nautical)),
                 ],
               ),
               Row(
@@ -41,7 +41,7 @@ class MapLayerDialog extends StatelessWidget {
                       onPressed: () => onIconPressed(MapType.cycle)),
                   IconButton(
                       icon: Icon(Icons.hiking),
-                      onPressed: () => onIconPressed(MapType.outdoors)),
+                      onPressed: () => onIconPressed(MapType.outdoor)),
                 ],
               ),
             ],

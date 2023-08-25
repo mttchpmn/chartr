@@ -1,9 +1,8 @@
 enum MapType {
-  openStreetMap,
-  outdoors,
+  street,
+  outdoor,
   cycle,
-  topo50,
-  topo250,
-  marine,
+  topographic,
+  nautical,
   satellite
 }
