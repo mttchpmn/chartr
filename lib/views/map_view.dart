@@ -110,7 +110,10 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _setMapProvider(MapType mapType) {
-    var mapProvider = mapProviderService.getMapProvider(_mapType);
+    debugPrint("Request to set map to ${mapType.toString()}");
+    var mapProvider = mapProviderService.getMapProvider(mapType);
+
+    print("New map provider: ${mapProvider.mapType.toString()}");
 
     setState(() {
       _mapType = mapType;
@@ -127,6 +130,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var currentZoom = mapController.zoom;
     var currentBearing = mapController.rotation;
     mapController.moveAndRotate(currentCenter, currentZoom, currentBearing);
+    debugPrint("Refreshed map");
   }
 
   // REMOVE
@@ -204,6 +208,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           ? Icon(MapIcons.arrow_up, color: _iconColor)
           : Icon(MapIcons.compass, color: _iconColor),
       onSelectMapType: (mapType) {
+        print("User tapped ${mapType.toString()}");
         _setMapProvider(mapType);
       },
     );
