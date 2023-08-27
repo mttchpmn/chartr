@@ -45,3 +45,6 @@ app.*.map.json
 
 # Env files
 .env
+
+# built app
+chartr-app.apk
