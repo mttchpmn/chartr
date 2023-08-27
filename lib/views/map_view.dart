@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:chartr/components/map_button_stack.dart';
 import 'package:chartr/components/map_icons.dart';
+import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:chartr/services/ais_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +24,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
   final LocationService locationService = LocationService();
+  late StreamSubscription<AisPositionReport> streamSubscription;
 
   late MapProvider _mapProvider;
 
@@ -27,12 +32,35 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapType _mapType = MapType.street;
   Position? _deviceLocation;
   final Color _iconColor = const Color(0xFF41548C);
+  List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
     _initMapProvider();
     _setInitialPosition();
+
+    final aisService = AisService();
+
+    streamSubscription = aisService.stream.listen((event) {
+      var marker = Marker(point: LatLng(event.latitude, event.longitude), builder: (c) => 
+          // Column(children: [Icon(Icons.sailing), Text(event.shipName)],)
+        Icon(Icons.sailing)
+      );
+
+      setState(() {
+        _markers.add(marker);
+      });
+
+
+    });
+
+  }
+
+  @override
+  void dispose() {
+    streamSubscription.cancel();
+    super.dispose();
   }
 
   void _initMapProvider() {
@@ -113,30 +141,21 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   List<Widget> _buildMapChildren() {
     List<Widget> result = [];
 
-    var tileLayers = _mapProvider.getTileLayers();
-    var markerLayer = MarkerLayer(
-      markers: [
-        Marker(
-          point: LatLng(-36.862091, 174.851387),
-          // point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
-          width: 80,
-          height: 80,
-          builder: (context) => Icon(
-            MapIcons.location_arrow,
-            color: _iconColor,
-          ),
+    var marker2 = [
+      Marker(
+        point: LatLng(-36.862091, 174.851387),
+        // point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
+        width: 80,
+        height: 80,
+        builder: (context) => Icon(
+          MapIcons.location_arrow,
+          color: _iconColor,
         ),
-      ],
-    );
+      ),
+    ];
 
-    // result.add(TileLayer(
-    // ));
-
-    var tileLayer = TileLayer(
-      urlTemplate:
-          "https://tiles-cdn.koordinates.com/services;key=ea77759bac544955a28e87f9a05c821c/tiles/v4/layer=52343/EPSG:3857/{z}/{x}/{y}.png",
-      userAgentPackageName: MapProvider.packageName,
-    );
+    var tileLayers = _mapProvider.getTileLayers();
+    var markerLayer = MarkerLayer(markers: _markers);
 
     result.addAll(tileLayers);
     result.add(markerLayer);
@@ -163,7 +182,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapOptions _buildMapOptions() {
     return MapOptions(
       onPositionChanged: (position, hasGesture) {
-        debugPrint("Map zoom: ${mapController.zoom}");
+        // debugPrint("Map zoom: ${mapController.zoom}");
         // _handleTopoZoom(position);
       },
       center: _deviceLocation == null
