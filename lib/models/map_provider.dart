@@ -1,4 +1,5 @@
 import 'package:chartr/models/map_type.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 abstract class MapProvider {
@@ -15,94 +16,51 @@ abstract class MapProvider {
   List<TileLayer> getTileLayers();
 }
 
-class TopoMapProvider implements MapProvider {
-  final String _topo250Url;
-  final String _topo50Url;
-  String _activeProvider;
+class LayerData {
+  final String layerUrl;
+  double maxZoom;
+  double minZoom;
+  final Color backgroundColor;
 
-  @override
-  String get baseProviderUrl => _topo250Url;
-
-  @override
-  MapType get mapType => MapType.topographic;
-
-  TopoMapProvider(this._topo50Url, this._topo250Url) :
-        _activeProvider = _topo250Url;
-
-
-  @override
-  String onZoomLevelChange(zoomLevel) {
-    _activeProvider = zoomLevel < 15 ? _topo250Url : _topo50Url;
-
-    return _activeProvider;
-  }
-
-  @override
-  List<TileLayer> getTileLayers() {
-    return [
-      TileLayer(
-        urlTemplate: _activeProvider,
-        userAgentPackageName: MapProvider.packageName,
-      )
-    ];
-  }
+  LayerData(
+      {required this.layerUrl,
+      this.maxZoom = 25,
+      this.minZoom = 5,
+      this.backgroundColor = const Color.fromRGBO(0, 0, 0, 0)});
 }
 
-class NauticalMapProvider implements MapProvider {
-  final String _baseProviderUrl;
+class LayeredMapProvider implements MapProvider {
+  LayeredMapProvider(
+      {required List<LayerData> layerData, required MapType mapType})
+      : _layerData = layerData,
+        _mapType = mapType;
 
   @override
-  String get baseProviderUrl => _baseProviderUrl;
+  String get baseProviderUrl => throw UnimplementedError();
 
-  @override
-  MapType get mapType => MapType.nautical;
-
-  NauticalMapProvider(this._baseProviderUrl);
+  final List<LayerData> _layerData;
+  final MapType _mapType;
 
   @override
   List<TileLayer> getTileLayers() {
-    return [
-      TileLayer(
-        urlTemplate: _baseProviderUrl,
-        userAgentPackageName: MapProvider.packageName,
-      )
-    ];
+    var tileLayers = _layerData
+        .map((e) => TileLayer(
+              urlTemplate: e.layerUrl,
+              userAgentPackageName: MapProvider.packageName,
+              maxZoom: e.maxZoom,
+              backgroundColor: e.backgroundColor,
+            ))
+        .toList();
+
+    return tileLayers;
   }
+
+  @override
+  MapType get mapType => _mapType;
 
   @override
   String onZoomLevelChange(double zoomLevel) {
     // TODO: implement onZoomLevelChange
     throw UnimplementedError();
   }
-
 }
-
-class CycleMapProvider implements MapProvider {
-  final String _baseProviderUrl;
-
-  @override
-  String get baseProviderUrl => _baseProviderUrl;
-
-  @override
-  MapType get mapType => MapType.cycle;
-
-  CycleMapProvider(this._baseProviderUrl);
-
-  @override
-  List<TileLayer> getTileLayers() {
-    return [
-      TileLayer(
-        urlTemplate: _baseProviderUrl,
-        userAgentPackageName: 'com.chartr',
-      )
-    ];
-  }
-
-  @override
-  String onZoomLevelChange(double zoomLevel) {
-    // TODO: implement onZoomLevelChange
-    throw UnimplementedError();
-  }
-
-}
-

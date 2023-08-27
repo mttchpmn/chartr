@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/MapIcons.ttf
 ///
-///
+/// 
 /// * Font Awesome 5, Copyright (C) 2016 by Dave Gandy
 ///         Author:    Dave Gandy
 ///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
@@ -25,14 +25,16 @@ class MapIcons {
   static const _kFontFam = 'MapIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData arrow_up = IconData(0xf062, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData location_arrow = IconData(0xf124, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData compass = IconData(0xf14e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData car = IconData(0xf1b9, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bicycle = IconData(0xf206, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData ship = IconData(0xf21a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData long_arrow_alt_up = IconData(0xf30c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData map_marker_alt = IconData(0xf3c5, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData drafting_compass = IconData(0xf568, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData layer_group = IconData(0xf5fd, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData hiking = IconData(0xf6ec, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData mountain = IconData(0xf6fc, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData satellite = IconData(0xf7bf, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData record_vinyl = IconData(0xf8d9, fontFamily: _kFontFam, fontPackage: _kFontPkg);

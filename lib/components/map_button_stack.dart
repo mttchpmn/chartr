@@ -69,44 +69,44 @@ class MapButtonStack extends StatelessWidget {
           mini: true,
         ),
       ),
-      Positioned(
-        bottom: 10,
-        left: 15,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Your action here for the bottom button
-          },
-          child: Icon(MapIcons.map_marker_alt, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        left: 65,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Your action here for the bottom button
-          },
-          child: Icon(MapIcons.drafting_compass, color: _iconColor),
-          mini: true,
-        ),
-      ),
-      Positioned(
-        bottom: 10,
-        left:
-        MediaQuery.of(context).size.width / 2 - 20, // Centering the button
-        child: Container(
-          width: 40,
-          height: 40,
-          child: FloatingActionButton(
-            onPressed: () {
-              // Your action here for the bottom button
-            },
-            child: Icon(MapIcons.record_vinyl, color: _iconColor),
-            mini: true,
-          ),
-        ),
-      )
+      // Positioned(
+      //   bottom: 10,
+      //   left: 15,
+      //   child: FloatingActionButton(
+      //     onPressed: () {
+      //       // Your action here for the bottom button
+      //     },
+      //     child: Icon(MapIcons.map_marker_alt, color: _iconColor),
+      //     mini: true,
+      //   ),
+      // ),
+      // Positioned(
+      //   bottom: 10,
+      //   left: 65,
+      //   child: FloatingActionButton(
+      //     onPressed: () {
+      //       // Your action here for the bottom button
+      //     },
+      //     child: Icon(MapIcons.drafting_compass, color: _iconColor),
+      //     mini: true,
+      //   ),
+      // ),
+      // Positioned(
+      //   bottom: 10,
+      //   left:
+      //   MediaQuery.of(context).size.width / 2 - 20, // Centering the button
+      //   child: Container(
+      //     width: 40,
+      //     height: 40,
+      //     child: FloatingActionButton(
+      //       onPressed: () {
+      //         // Your action here for the bottom button
+      //       },
+      //       child: Icon(MapIcons.record_vinyl, color: _iconColor),
+      //       mini: true,
+      //     ),
+      //   ),
+      // )
     ]);
   }
 }

@@ -5,7 +5,6 @@ import 'package:chartr/models/map_type.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -25,7 +24,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   late MapProvider _mapProvider;
 
   bool _showNorthUp = true;
-  MapType _mapType = MapType.cycle;
+  MapType _mapType = MapType.street;
   Position? _deviceLocation;
   final Color _iconColor = const Color(0xFF41548C);
 
@@ -72,43 +71,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         currentBearing);
   }
 
-  // REMOVE
-  String _getMapTileProvider(MapType mapType) {
-    var defaultProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-    var linzApiKey = dotenv.env['LINZ_API_KEY'];
-    var thunderForestApiKey = dotenv.env['THUNDERFOREST_API_KEY'];
-
-    var topo50Provider =
-        'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=50767/EPSG:3857/{z}/{x}/{y}.png';
-    var topo250Provider =
-        'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=50798/EPSG:3857/{z}/{x}/{y}.png';
-    var northIslandMarineProvider =
-        'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/set=4758/EPSG:3857/{z}/{x}/{y}.png';
-    var satelliteProvider =
-        'https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=109401/EPSG:3857/{z}/{x}/{y}.png';
-
-    var outdoorsProvider =
-        "https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
-    var cycleProvider =
-        "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey";
-
-    switch (mapType) {
-      case MapType.street:
-        return defaultProvider;
-      case MapType.topographic:
-        return topo50Provider;
-      case MapType.nautical:
-        return northIslandMarineProvider;
-      case MapType.satellite:
-        return satelliteProvider;
-      case MapType.outdoor:
-        return outdoorsProvider;
-      case MapType.cycle:
-        return cycleProvider;
-    }
-  }
-
   void _setMapProvider(MapType mapType) {
     debugPrint("Request to set map to ${mapType.toString()}");
     var mapProvider = mapProviderService.getMapProvider(mapType);
@@ -132,22 +94,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     mapController.moveAndRotate(currentCenter, currentZoom, currentBearing);
     debugPrint("Refreshed map");
   }
-
-  // REMOVE
-  // void _handleTopoZoom(position) {
-  //   if (_mapType != MapType.topo50 && _mapType != MapType.topo250) {
-  //     return;
-  //   }
-  //
-  //   var mapType = position.zoom < 12 ? MapType.topo250 : MapType.topo50;
-  //   debugPrint(position.zoom.toString());
-  //   debugPrint(_mapType.toString());
-  //
-  //   setState(() {
-  //     _mapType = mapType;
-  //     _mapProvider = _getMapTileProvider(mapType);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +151,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       },
       onScrollToLocation: _scrollToCurrentPosition,
       northButtonIcon: _showNorthUp
-          ? Icon(MapIcons.arrow_up, color: _iconColor)
+          ? Icon(MapIcons.long_arrow_alt_up, color: _iconColor)
           : Icon(MapIcons.compass, color: _iconColor),
       onSelectMapType: (mapType) {
         print("User tapped ${mapType.toString()}");
@@ -217,6 +163,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapOptions _buildMapOptions() {
     return MapOptions(
       onPositionChanged: (position, hasGesture) {
+        debugPrint("Map zoom: ${mapController.zoom}");
         // _handleTopoZoom(position);
       },
       center: _deviceLocation == null
