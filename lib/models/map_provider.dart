@@ -1,6 +1,7 @@
 import 'package:chartr/models/map_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 
 abstract class MapProvider {
   static String packageName = 'com.chartr';
@@ -47,6 +48,7 @@ class LayeredMapProvider implements MapProvider {
         .map((e) => TileLayer(
               urlTemplate: e.layerUrl,
               userAgentPackageName: MapProvider.packageName,
+              tileProvider: FMTC.instance('mapStore').getTileProvider(),
               maxZoom: e.maxZoom,
               backgroundColor: e.backgroundColor,
             ))

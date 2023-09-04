@@ -1,9 +1,13 @@
 import 'package:chartr/views/map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
+  await FlutterMapTileCaching.initialise();
+  await FMTC.instance('mapStore').manage.createAsync();
+
   runApp(const MyApp());
 }
 
