@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class MapButtonStack extends StatelessWidget {
   final VoidCallback onToggleNorthUp;
   final VoidCallback onScrollToLocation;
+  final VoidCallback onDrawToggle;
   final Function(MapType) onSelectMapType;
   Icon northButtonIcon;
 
@@ -17,6 +18,7 @@ class MapButtonStack extends StatelessWidget {
     required this.northButtonIcon,
     required this.onSelectMapType,
     required this.onScrollToLocation,
+    required this.onDrawToggle,
   });
 
   void _showMapLayerDialog(BuildContext context) {
@@ -66,6 +68,17 @@ class MapButtonStack extends StatelessWidget {
             onScrollToLocation();
           },
           child: Icon(MapIcons.location_arrow, color: _iconColor),
+          mini: true,
+        ),
+      ),
+      Positioned(
+        top: 200, // Adjust the position as needed
+        right: 15,
+        child: FloatingActionButton(
+          onPressed: () {
+            onDrawToggle();
+          },
+          child: Icon(Icons.draw, color: _iconColor),
           mini: true,
         ),
       ),
