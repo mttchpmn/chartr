@@ -41,10 +41,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   Position? _deviceLocation;
   final Color _iconColor = const Color(0xFF41548C);
   List<Marker> _markers = [];
-  ImageProvider _image = NetworkImage(
-      "https://i.kym-cdn.com/entries/icons/original/000/001/030/DButt.jpg");
-
   List<Offset> _points = [];
+
+  List<OverlayImage> _images = [];
 
   @override
   void initState() {
@@ -215,13 +214,14 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var markerLayer = MarkerLayer(markers: markers);
 
     var imageLayer = OverlayImageLayer(
-      overlayImages: [
-        OverlayImage(
-            bounds: LatLngBounds(mapController.bounds!.northWest,
-                mapController.bounds!.southEast),
-            // LatLng(-36.812236, 174.828535), LatLng(-36.839855, 174.864069)),
-            imageProvider: _image)
-      ],
+      overlayImages: _images,
+      // [
+      //   OverlayImage(
+      //       bounds: LatLngBounds(mapController.bounds!.northWest,
+      //           mapController.bounds!.southEast),
+      //       // LatLng(-36.812236, 174.828535), LatLng(-36.839855, 174.864069)),
+      //       imageProvider: _image)
+      // ],
     );
 
     result.addAll(tileLayers);
@@ -285,11 +285,14 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     // var flutterImage = Image.memory(Uint8List.fromList((await image.toByteData(format: ImageByteFormat.png))));
 
+    var overlay = OverlayImage(bounds: LatLngBounds(mapController.bounds!.northWest, mapController.bounds!.southEast), imageProvider: provider);
+
     setState(() {
-      _image = provider;
+      _images.add(overlay);
     });
 
     _onDrawClear();
+    _onDrawCancel();
 
     print("Updated the image");
   }
