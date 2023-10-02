@@ -1,24 +1,21 @@
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui';
 import 'dart:ui';
 
 import 'package:chartr/components/map_button_stack.dart';
 import 'package:chartr/components/map_icons.dart';
+import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
-import 'package:chartr/services/ais_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-
-import '../components/draw_button_stack.dart';
-import '../components/draw_painter.dart';
 
 class FullScreenMapWidget extends StatefulWidget {
   const FullScreenMapWidget({super.key});
@@ -33,16 +30,18 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final LocationService locationService = LocationService();
   late StreamSubscription<AisPositionReport> streamSubscription;
 
+  late StreamSubscription<Position> positionStream;
+
   late MapProvider _mapProvider;
 
   bool _showNorthUp = true;
   bool _isDrawing = false;
   MapType _mapType = MapType.street;
   Position? _deviceLocation;
-  final Color _iconColor = const Color(0xFF41548C);
-  List<Marker> _markers = [];
-  List<Offset> _points = [];
 
+  final Color _iconColor = const Color(0xFF41548C);
+
+  List<Marker> _markers = [];
   List<OverlayImage> _images = [];
 
   @override
@@ -50,6 +49,20 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     super.initState();
     _initMapProvider();
     _setInitialPosition();
+
+    const LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+    positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      if (position != null) {
+        setState(() {
+          _deviceLocation = position;
+        });
+      }
+    });
 
     // final aisService = AisService();
     //
@@ -116,10 +129,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _setMapProvider(MapType mapType) {
-    debugPrint("Request to set map to ${mapType.toString()}");
     var mapProvider = mapProviderService.getMapProvider(mapType);
-
-    print("New map provider: ${mapProvider.mapType.toString()}");
 
     setState(() {
       _mapType = mapType;
@@ -128,7 +138,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     _refreshMap();
 
-    debugPrint("Set map to ${_mapProvider.mapType.toString()}");
+    print("Set map to ${_mapProvider.mapType.toString()}");
   }
 
   void _refreshMap() {
@@ -150,23 +160,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           children: _buildMapChildren(),
         ),
         if (_isDrawing)
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onPanUpdate: (details) {
-              setState(() {
-                final renderBox = context.findRenderObject() as RenderBox;
-                final localPosition =
-                    renderBox.globalToLocal(details.globalPosition);
-                _points.add(localPosition);
-              });
-            },
-            onPanEnd: (_) {
-              // Drawing finished
-            },
-            child: CustomPaint(
-              size: MediaQuery.of(context).size,
-              painter: DrawPainter(_points),
-            ),
+          PaintLayer(
+            onExit: _onExitDrawMode,
+            onSaveImage: _onDrawSave,
           ),
         Visibility(
           visible: !_isDrawing,
@@ -180,14 +176,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
                 : Icon(MapIcons.compass, color: _iconColor),
           ),
         ),
-        Visibility(
-          visible: _isDrawing,
-          child: DrawButtonStack(
-              onDrawCancel: _onDrawCancel,
-              onDrawClear: _onDrawClear,
-              onDrawSave: _onDrawSave),
-        )
-        // _buildMapButtonStack(),
       ]),
     );
   }
@@ -215,13 +203,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     var imageLayer = OverlayImageLayer(
       overlayImages: _images,
-      // [
-      //   OverlayImage(
-      //       bounds: LatLngBounds(mapController.bounds!.northWest,
-      //           mapController.bounds!.southEast),
-      //       // LatLng(-36.812236, 174.828535), LatLng(-36.839855, 174.864069)),
-      //       imageProvider: _image)
-      // ],
     );
 
     result.addAll(tileLayers);
@@ -248,59 +229,22 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     );
   }
 
-  _onDrawClear() {
-    setState(() {
-      _points.clear();
-    });
-    print("Clear canvas");
-  }
-
-  _onDrawSave() async {
-    print("Save");
-    // var boundary = _globalKey.currentContext!
-    //     .findRenderObject() as RenderRepaintBoundary;
-    // var recorder = PictureRecorder();
-    // var canvas = Canvas(recorder);
-    // boundary.paint(canvas as PaintingContext, Offset.zero);
-    // var picture = recorder.endRecording();
-    // var image = await picture.toImage(
-    //   boundary.size.width.toInt(),
-    //   boundary.size.height.toInt(),
-    // );
-
-    final recorder = PictureRecorder();
-    final canvas = Canvas(recorder);
-    final painter = DrawPainter(_points);
-    final size = MediaQuery.of(context).size;
-
-    painter.paint(canvas, size); // Paint on the canvas
-
-    final picture = recorder.endRecording();
-    final image =
-        await picture.toImage(size.width.toInt(), size.height.toInt());
-
-    final byteData = await image.toByteData(format: ImageByteFormat.png);
-    final bytes = byteData!.buffer.asUint8List();
-    var provider = MemoryImage(bytes);
-
-    // var flutterImage = Image.memory(Uint8List.fromList((await image.toByteData(format: ImageByteFormat.png))));
-
-    var overlay = OverlayImage(bounds: LatLngBounds(mapController.bounds!.northWest, mapController.bounds!.southEast), imageProvider: provider);
+  _onDrawSave(MemoryImage image) async {
+    var overlay = OverlayImage(
+        bounds: LatLngBounds(
+            mapController.bounds!.northWest, mapController.bounds!.southEast),
+        imageProvider: image);
 
     setState(() {
       _images.add(overlay);
     });
 
-    _onDrawClear();
-    _onDrawCancel();
-
-    print("Updated the image");
+    _onExitDrawMode();
   }
 
-  _onDrawCancel() {
+  _onExitDrawMode() {
     setState(() {
       _isDrawing = false;
     });
-    print("NO DRAW");
   }
 }

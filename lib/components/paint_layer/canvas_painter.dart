@@ -2,30 +2,25 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class DrawPainter extends CustomPainter {
-  final List<Offset> points;
+class CanvasPainter extends CustomPainter {
+  final List<Offset?> points;
+  Color color;
 
-  DrawPainter(this.points);
+  CanvasPainter(this.points, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.blue
+      ..color = color
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < points.length - 1; i++) {
-      final p1 = points[i];
-      final p2 = points[i + 1];
-      canvas.drawLine(p1, p2, paint);
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      }
     }
   }
-
-  void clear() {
-    points.clear();
-  }
-
-  void getImage() {}
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {

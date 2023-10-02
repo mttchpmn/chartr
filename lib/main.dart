@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 
-import 'components/draw_painter.dart';
+import 'components/paint_layer/canvas_painter.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -61,7 +61,7 @@ class PaintCanvasState extends State<PaintCanvas> {
           },
           child: CustomPaint(
             size: Size.infinite,
-            painter: DrawPainter(points),
+            painter: CanvasPainter(points, Colors.black),
           ),
         ),
       ],),
