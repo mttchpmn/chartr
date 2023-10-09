@@ -27,7 +27,7 @@ class FullScreenMapWidget extends StatefulWidget {
 class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
-  final LocationService locationService = LocationService();
+  final LocationService locationService = LocationService(1);
   late StreamSubscription<AisPositionReport> streamSubscription;
 
   late StreamSubscription<Position> positionStream;
@@ -37,32 +37,48 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   bool _showNorthUp = true;
   bool _isDrawing = false;
   MapType _mapType = MapType.street;
-  Position? _deviceLocation;
+  LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
 
   final Color _iconColor = const Color(0xFF41548C);
 
   List<Marker> _markers = [];
   List<OverlayImage> _images = [];
 
+  double _currentSpeed = 0;
+  double _currentHeading = 0;
+  List<LatLng> _deviceLocations = [];
+
+  void _onLocationUpdate(LocationUpdate update) {
+    setState(() {
+      _deviceLocations = update.track;
+      _currentSpeed = update.speed;
+      _currentHeading = update.heading;
+      _deviceLocation = update.currentPosition;
+    });
+  }
+
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     _initMapProvider();
-    _setInitialPosition();
 
-    const LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
-    positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position? position) {
-      if (position != null) {
-        setState(() {
-          _deviceLocation = position;
-        });
-      }
-    });
+    await locationService.initializeAsync();
+    locationService.startTracking(_onLocationUpdate);
+
+    // const LocationSettings locationSettings = LocationSettings(
+    //   accuracy: LocationAccuracy.high,
+    //   distanceFilter: 1, // Metres to move before update is triggered
+    // );
+    // positionStream =
+    //     Geolocator.getPositionStream(locationSettings: locationSettings)
+    //         .listen((Position? position) {
+    //   if (position != null) {
+    //     setState(() {
+    //       _deviceLocation = position;
+    //       _deviceLocations.add(LatLng(position.latitude, position.longitude));
+    //     });
+    //   }
+    // });
 
     // final aisService = AisService();
     //
@@ -89,13 +105,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
-  Future<void> _setInitialPosition() async {
-    var position = await locationService.getPosition();
-    setState(() {
-      _deviceLocation = position;
-    });
-  }
-
   void _toggleNorthUp() {
     var currentCenter = mapController.center;
     var currentZoom = mapController.zoom;
@@ -108,11 +117,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _scrollToCurrentPosition() {
-    if (_deviceLocation == null) {
-      print("Not scrolling as don't have position");
-      return;
-    }
-
     var currentZoom = mapController.zoom;
     var currentBearing = mapController.rotation;
     mapController.moveAndRotate(
@@ -152,6 +156,10 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+            "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
+      ),
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
@@ -189,8 +197,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       width: 80,
       height: 80,
       builder: (context) => Icon(
-        MapIcons.location_arrow,
-        color: _iconColor,
+        Icons.circle,
+        color: Colors.deepOrange,
       ),
     );
 
@@ -201,11 +209,16 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var tileLayers = _mapProvider.getTileLayers();
     var markerLayer = MarkerLayer(markers: markers);
 
+    var polylineLayer = PolylineLayer(
+      polylines: [Polyline(points: _deviceLocations, color: Colors.deepOrange)],
+    );
+
     var imageLayer = OverlayImageLayer(
       overlayImages: _images,
     );
 
     result.addAll(tileLayers);
+    result.add(polylineLayer);
     result.add(markerLayer);
     result.add(imageLayer);
 
@@ -218,10 +231,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         // debugPrint("Map zoom: ${mapController.zoom}");
         // _handleTopoZoom(position);
       },
-      center: _deviceLocation == null
-          ? LatLng(-36.862091, 174.851387)
-          : LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
-      // San Francisco coordinates
+      center: _deviceLocation,
       interactiveFlags: _showNorthUp
           ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
           : InteractiveFlag.all,
