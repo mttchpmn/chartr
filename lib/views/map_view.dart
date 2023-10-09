@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:chartr/components/map_button_stack.dart';
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
+import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
@@ -57,14 +58,17 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
+  void _startTracking() async {
+    await locationService.initializeAsync();
+    locationService.startTracking(_onLocationUpdate);
+  }
+
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _initMapProvider();
 
-    await locationService.initializeAsync();
-    locationService.startTracking(_onLocationUpdate);
-
+    _startTracking();
     // const LocationSettings locationSettings = LocationSettings(
     //   accuracy: LocationAccuracy.high,
     //   distanceFilter: 1, // Metres to move before update is triggered
@@ -192,7 +196,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     List<Widget> result = [];
 
     var deviceLocation = Marker(
-        // point: LatLng(-36.862091, 174.851387),
         point: LatLng(_deviceLocation.latitude, _deviceLocation.longitude),
         width: 80,
         height: 80,
@@ -202,11 +205,20 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     markers.add(deviceLocation);
     markers.addAll(_markers);
 
+    var deviceLocations = [
+      LatLng(37.410337, -122.048840),
+      LatLng(37.493567, -121.999931)
+    ];
+
     var tileLayers = _mapProvider.getTileLayers();
     var markerLayer = MarkerLayer(markers: markers);
 
     var polylineLayer = PolylineLayer(
-      polylines: [Polyline(points: _deviceLocations, color: Colors.deepOrange)],
+      polylines: [
+        Polyline(points: deviceLocations, color: Colors.black, strokeWidth: 6),
+        Polyline(
+            points: deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
+      ],
     );
 
     var imageLayer = OverlayImageLayer(
@@ -252,33 +264,5 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
-  }
-}
-
-class PositionIcon extends StatelessWidget {
-  const PositionIcon({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: 30, // Adjust as needed
-          height: 30, // Adjust as needed
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black,
-          ),
-        ),
-        Icon(
-          Icons.circle,
-          color: Colors.deepOrange, // Change the icon color as needed
-          size: 20, // Adjust the icon size as needed
-        ),
-      ],
-    );
   }
 }
