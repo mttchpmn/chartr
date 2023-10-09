@@ -10,7 +10,9 @@ class MapButtonStack extends StatelessWidget {
   final Function(MapType) onSelectMapType;
   Icon northButtonIcon;
 
-  final Color _iconColor = const Color(0xFF41548C);
+  // final Color _iconColor = const Color(0xFF41548C);
+  final Color _foregroundColor = Colors.deepOrange;
+  final Color _backgroundColor = Colors.black;
 
   MapButtonStack({
     super.key,
@@ -42,10 +44,11 @@ class MapButtonStack extends StatelessWidget {
         top: 50, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
           onPressed: () {
             _showMapLayerDialog(context);
           },
-          child: Icon(MapIcons.layer_group, color: _iconColor),
+          child: Icon(MapIcons.layer_group, color: _foregroundColor),
           mini: true,
         ),
       ),
@@ -53,6 +56,7 @@ class MapButtonStack extends StatelessWidget {
         top: 100, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
           onPressed: () {
             onToggleNorthUp();
           },
@@ -64,10 +68,11 @@ class MapButtonStack extends StatelessWidget {
         top: 150, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
           onPressed: () {
             onScrollToLocation();
           },
-          child: Icon(MapIcons.location_arrow, color: _iconColor),
+          child: Icon(MapIcons.location_arrow, color: _foregroundColor),
           mini: true,
         ),
       ),
@@ -75,10 +80,11 @@ class MapButtonStack extends StatelessWidget {
         top: 200, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
           onPressed: () {
             onDrawToggle();
           },
-          child: Icon(Icons.draw, color: _iconColor),
+          child: Icon(Icons.draw, color: _foregroundColor),
           mini: true,
         ),
       ),

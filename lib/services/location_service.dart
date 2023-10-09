@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_android/geolocator_android.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class LocationUpdate {
   final LatLng currentPosition;
@@ -26,10 +27,20 @@ class LocationService {
   LocationService(this._distanceFilter);
 
   void startTracking(Function(LocationUpdate) onLocationUpdate) {
-    var locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.best,
-      distanceFilter: _distanceFilter
-    );
+    // var locationSettings = LocationSettings(
+    //   accuracy: LocationAccuracy.best,
+    //   distanceFilter: _distanceFilter
+    // );
+
+    var locationSettings = AndroidSettings(
+        distanceFilter: _distanceFilter,
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          // Keep app alive in background
+          notificationText:
+              "Chartr will continue to receive your location in the background for tracking purposes",
+          notificationTitle: "Background Location Usage",
+          enableWakeLock: true,
+        ));
     // var locationSettings = AndroidSettings(
     //     accuracy: LocationAccuracy.best,
     //     distanceFilter: _distanceFilter,

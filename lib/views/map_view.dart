@@ -40,7 +40,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapType _mapType = MapType.street;
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
 
-  final Color _iconColor = const Color(0xFF41548C);
+  final Color _iconColor = Colors.deepOrange;
 
   List<Marker> _markers = [];
   List<OverlayImage> _images = [];
@@ -216,9 +216,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     var polylineLayer = PolylineLayer(
       polylines: [
-        Polyline(points: deviceLocations, color: Colors.black, strokeWidth: 6),
+        Polyline(points: _deviceLocations, color: Colors.black, strokeWidth: 6),
         Polyline(
-            points: deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
+            points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
       ],
     );
 
