@@ -192,15 +192,11 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     List<Widget> result = [];
 
     var deviceLocation = Marker(
-      // point: LatLng(-36.862091, 174.851387),
-      point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
-      width: 80,
-      height: 80,
-      builder: (context) => Icon(
-        Icons.circle,
-        color: Colors.deepOrange,
-      ),
-    );
+        // point: LatLng(-36.862091, 174.851387),
+        point: LatLng(_deviceLocation.latitude, _deviceLocation.longitude),
+        width: 80,
+        height: 80,
+        builder: (context) => const PositionIcon());
 
     List<Marker> markers = [];
     markers.add(deviceLocation);
@@ -256,5 +252,33 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
+  }
+}
+
+class PositionIcon extends StatelessWidget {
+  const PositionIcon({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 30, // Adjust as needed
+          height: 30, // Adjust as needed
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black,
+          ),
+        ),
+        Icon(
+          Icons.circle,
+          color: Colors.deepOrange, // Change the icon color as needed
+          size: 20, // Adjust the icon size as needed
+        ),
+      ],
+    );
   }
 }
