@@ -160,10 +160,11 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
-      ),
+      // FIXME - Adding this throws off the paintlayer by the AppBar's height
+      // appBar: AppBar(
+      //   title: Text(
+      //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
+      // ),
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
