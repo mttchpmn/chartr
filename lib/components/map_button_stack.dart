@@ -24,17 +24,94 @@ class MapButtonStack extends StatelessWidget {
   });
 
   void _showMapLayerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return MapLayerDialog(
-          onIconPressed: (mapType) {
-            onSelectMapType(mapType);
-            Navigator.of(context).pop(); // Close the dialog
-          },
-        );
-      },
-    );
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => Container(
+              padding: EdgeInsets.all(16),
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              child: Column(
+                children: [
+                  Text('Select map layer'),
+                  GestureDetector(
+                    onTap: () {
+                      onSelectMapType(MapType.street);
+                      Navigator.of(context).pop();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Icon(MapIcons.car),
+                        ),
+                        Text("Street")
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  GestureDetector(
+                    onTap: () {
+                      onSelectMapType(MapType.topographic);
+                      Navigator.of(context).pop();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Icon(MapIcons.mountain),
+                        ),
+                        Text("Topographic")
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  GestureDetector(
+                    onTap: () {
+                      onSelectMapType(MapType.nautical);
+                      Navigator.of(context).pop();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Icon(MapIcons.ship),
+                        ),
+                         Text("Nautical")],
+                    ),
+                  ),
+                  Divider(),
+                  GestureDetector(
+                    onTap: () {
+                      onSelectMapType(MapType.satellite);
+                      Navigator.of(context).pop();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Icon(MapIcons.satellite),
+                        ),
+                        Text("Satellite")],
+                    ),
+                  )
+                ],
+              ),
+            ));
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return MapLayerDialog(
+    //       onIconPressed: (mapType) {
+    //         onSelectMapType(mapType);
+    //         Navigator.of(context).pop(); // Close the dialog
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   @override

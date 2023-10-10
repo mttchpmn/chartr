@@ -165,6 +165,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       //   title: Text(
       //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
       // ),
+      drawer: Drawer(child: Text("hi there"),),
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
