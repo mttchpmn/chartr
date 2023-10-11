@@ -1,5 +1,6 @@
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MapProviderService {
@@ -47,9 +48,55 @@ class MapProviderService {
             "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=109401/EPSG:3857/{z}/{x}/{y}.png",
         maxZoom: 16),
     LayerData(
-        layerUrl: // Hi-res Auckland
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Auckland (2022)
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=108358/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Auckland (2017)
             "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=95497/EPSG:3857/{z}/{x}/{y}.png",
-        maxZoom: 25)
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Auckland (2020)
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=107219/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Waikato
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=104600/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Northland
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=88131/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Otago
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=106403/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Southern Lakes
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=104460/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Canterbury
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=106758/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Southland
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=51934/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
+    LayerData(
+        backgroundColor: Colors.transparent,
+        layerUrl: // Hi-res Canterbury
+            "https://tiles-cdn.koordinates.com/services;key=$linzApiKey/tiles/v4/layer=53519/EPSG:3857/{z}/{x}/{y}.png",
+        maxZoom: 25),
   ], mapType: MapType.satellite);
 
   final List<MapProvider> _mapProviders = [
