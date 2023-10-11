@@ -12,7 +12,7 @@ class MapButtonStack extends StatelessWidget {
 
   // final Color _iconColor = const Color(0xFF41548C);
   final Color _foregroundColor = Colors.deepOrange;
-  final Color _backgroundColor = Colors.black;
+  final Color _backgroundColor = Colors.black87;
 
   MapButtonStack({
     super.key,
@@ -25,14 +25,18 @@ class MapButtonStack extends StatelessWidget {
 
   void _showMapLayerDialog(BuildContext context) {
     showModalBottomSheet(
+        backgroundColor: Colors.black87,
         context: context,
         builder: (context) => Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               width: MediaQuery.of(context).size.width,
               height: 200,
               child: Column(
                 children: [
-                  Text('Select map layer'),
+                  const Text(
+                    'Select map layer',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                   GestureDetector(
                     onTap: () {
                       onSelectMapType(MapType.street);
@@ -43,13 +47,19 @@ class MapButtonStack extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: Icon(MapIcons.car),
+                          child: Icon(
+                            Icons.drive_eta,
+                            color: _foregroundColor,
+                          ),
                         ),
-                        Text("Street")
+                        const Text(
+                          'Street',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   GestureDetector(
                     onTap: () {
                       onSelectMapType(MapType.topographic);
@@ -60,13 +70,19 @@ class MapButtonStack extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: Icon(MapIcons.mountain),
+                          child: Icon(
+                            Icons.hiking,
+                            color: _foregroundColor,
+                          ),
                         ),
-                        Text("Topographic")
+                        const Text(
+                          'Topographic',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   GestureDetector(
                     onTap: () {
                       onSelectMapType(MapType.nautical);
@@ -77,12 +93,19 @@ class MapButtonStack extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: Icon(MapIcons.ship),
+                          child: Icon(
+                            Icons.directions_boat,
+                            color: _foregroundColor,
+                          ),
                         ),
-                         Text("Nautical")],
+                        const Text(
+                          'Nautical',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   GestureDetector(
                     onTap: () {
                       onSelectMapType(MapType.satellite);
@@ -93,9 +116,16 @@ class MapButtonStack extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(right: 16.0),
-                          child: Icon(MapIcons.satellite),
+                          child: Icon(
+                            Icons.satellite,
+                            color: _foregroundColor,
+                          ),
                         ),
-                        Text("Satellite")],
+                        const Text(
+                          'Satellite',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
                   )
                 ],
