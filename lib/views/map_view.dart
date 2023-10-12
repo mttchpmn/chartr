@@ -8,6 +8,7 @@ import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:chartr/services/coordinate_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
 
@@ -40,6 +41,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapType _mapType = MapType.street;
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
   LatLng? _mapCenter;
+  GridRef? _mapCenterGrid;
 
   final Color _iconColor = Colors.deepOrange;
 
@@ -187,12 +189,22 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "E: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
+                "LAT: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 textAlign: TextAlign.left,
               ),
               Text(
-                "N: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                "LNG: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                "E: ${_mapCenterGrid?.eastings ?? ""}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                "N: ${_mapCenterGrid?.northings ?? ""}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 textAlign: TextAlign.left,
               ),
@@ -264,6 +276,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapOptions _buildMapOptions() {
     return MapOptions(
       onPositionChanged: (position, hasGesture) {
+        if (position.center != null) {
+          var grid = CoordinateService().latLngToGrid(position.center!);
+          setState(() {
+            _mapCenterGrid = grid;
+          });
+        }
         setState(() {
           _mapCenter = position.center;
         });
