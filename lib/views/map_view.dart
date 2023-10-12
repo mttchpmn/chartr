@@ -165,7 +165,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       //   title: Text(
       //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
       // ),
-      drawer: Drawer(
+      drawer: const Drawer(
         child: Text("hi there"),
       ),
       body: Stack(children: [
@@ -175,18 +175,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           options: _buildMapOptions(),
           children: _buildMapChildren(),
         ),
-        Positioned.fill(
+        const Positioned.fill(
           child: Center(
-            child: Transform.scale(
-              scale: 0.75, // Adjust the scale factor to make the icon smaller
-              child: Icon(
-                Icons.circle,
-                size: 15, // Adjust the size of the icon as needed
-                color:
-                    Colors.red.withOpacity(0.75), // Adjust the color and opacity
-              ),
-            ),
-          ),
+              child: Crosshair()),
         ),
         if (_isDrawing)
           PaintLayer(
@@ -223,8 +214,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     markers.addAll(_markers);
 
     var deviceLocations = [
-      LatLng(37.410337, -122.048840),
-      LatLng(37.493567, -121.999931)
+      const LatLng(37.410337, -122.048840),
+      const LatLng(37.493567, -121.999931)
     ];
 
     var tileLayers = _mapProvider.getTileLayers();
@@ -281,5 +272,40 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
+  }
+}
+
+class Crosshair extends StatelessWidget {
+  const Crosshair({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+            width: 100, // Width of the crosshair
+            height: 100, // Height of the crosshair
+            decoration: const BoxDecoration(
+    color: Colors.transparent, // Make the container transparent
+            ),
+            child: Stack(
+    children: [
+      Center(
+        child: Container(
+          width: 3, // Width of the vertical line
+          height: 40, // Height of the vertical line
+          color: Colors.black45, // Color of the vertical line
+        ),
+      ),
+      Center(
+        child: Container(
+          width: 40, // Width of the horizontal line
+          height: 3, // Height of the horizontal line
+          color: Colors.black45, // Color of the horizontal line
+        ),
+      ),
+    ],
+            ),
+          );
   }
 }
