@@ -165,13 +165,28 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       //   title: Text(
       //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
       // ),
-      drawer: Drawer(child: Text("hi there"),),
+      drawer: Drawer(
+        child: Text("hi there"),
+      ),
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
           nonRotatedChildren: [],
           options: _buildMapOptions(),
           children: _buildMapChildren(),
+        ),
+        Positioned.fill(
+          child: Center(
+            child: Transform.scale(
+              scale: 0.75, // Adjust the scale factor to make the icon smaller
+              child: Icon(
+                Icons.circle,
+                size: 15, // Adjust the size of the icon as needed
+                color:
+                    Colors.red.withOpacity(0.75), // Adjust the color and opacity
+              ),
+            ),
+          ),
         ),
         if (_isDrawing)
           PaintLayer(

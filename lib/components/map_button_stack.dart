@@ -35,7 +35,8 @@ class MapButtonStack extends StatelessWidget {
                 children: [
                   const Text(
                     'Select map layer',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -195,44 +196,104 @@ class MapButtonStack extends StatelessWidget {
           mini: true,
         ),
       ),
-      // Positioned(
-      //   bottom: 10,
-      //   left: 15,
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       // Your action here for the bottom button
-      //     },
-      //     child: Icon(MapIcons.map_marker_alt, color: _iconColor),
-      //     mini: true,
-      //   ),
-      // ),
-      // Positioned(
-      //   bottom: 10,
-      //   left: 65,
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       // Your action here for the bottom button
-      //     },
-      //     child: Icon(MapIcons.drafting_compass, color: _iconColor),
-      //     mini: true,
-      //   ),
-      // ),
-      // Positioned(
-      //   bottom: 10,
-      //   left:
-      //   MediaQuery.of(context).size.width / 2 - 20, // Centering the button
-      //   child: Container(
-      //     width: 40,
-      //     height: 40,
-      //     child: FloatingActionButton(
-      //       onPressed: () {
-      //         // Your action here for the bottom button
-      //       },
-      //       child: Icon(MapIcons.record_vinyl, color: _iconColor),
-      //       mini: true,
-      //     ),
-      //   ),
-      // )
+      Positioned(
+        bottom: 10,
+        left: 15,
+        child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
+          onPressed: () {
+            // Your action here for the bottom button
+          },
+          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
+          mini: true,
+        ),
+      ),
+      Positioned(
+        bottom: 10,
+        left: 65,
+        child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
+          onPressed: () {
+            // Your action here for the bottom button
+          },
+          child: Icon(Icons.route, color: _foregroundColor),
+          mini: true,
+        ),
+      ),
+      Positioned(
+        bottom: 10,
+        left:
+            MediaQuery.of(context).size.width / 2 - 20, // Centering the button
+        child: Container(
+          width: 40,
+          height: 40,
+          child: FloatingActionButton(
+            backgroundColor: _backgroundColor,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('Track recording started'),
+                ),
+              );
+            },
+            mini: true,
+            child: RecordIcon(
+                foregroundColor: _foregroundColor,
+                backgroundColor: _backgroundColor),
+          ),
+        ),
+      )
     ]);
+  }
+}
+
+class RecordIcon extends StatelessWidget {
+  const RecordIcon({
+    super.key,
+    required Color foregroundColor,
+    required Color backgroundColor,
+  })  : _foregroundColor = foregroundColor,
+        _backgroundColor = backgroundColor;
+
+  final Color _foregroundColor;
+  final Color _backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 25,
+          height: 25,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _foregroundColor,
+          ),
+        ),
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _backgroundColor,
+          ),
+        ),
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _foregroundColor,
+          ),
+        ),
+        // const Icon(
+        //   Icons.circle,
+        //   color: Colors.yellow,
+        //   size: 20,
+        // ),
+      ],
+    );
   }
 }
