@@ -39,6 +39,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   bool _isDrawing = false;
   MapType _mapType = MapType.street;
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
+  LatLng? _mapCenter;
 
   final Color _iconColor = Colors.deepOrange;
 
@@ -176,8 +177,27 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           children: _buildMapChildren(),
         ),
         const Positioned.fill(
-          child: Center(
-              child: Crosshair()),
+          child: Center(child: Crosshair()),
+        ),
+        Positioned(
+          bottom: 60, // Adjust the position as needed
+          left: 20,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "E: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                "N: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
         ),
         if (_isDrawing)
           PaintLayer(
@@ -244,6 +264,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapOptions _buildMapOptions() {
     return MapOptions(
       onPositionChanged: (position, hasGesture) {
+        setState(() {
+          _mapCenter = position.center;
+        });
         // debugPrint("Map zoom: ${mapController.zoom}");
         // _handleTopoZoom(position);
       },
@@ -283,29 +306,29 @@ class Crosshair extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-            width: 100, // Width of the crosshair
-            height: 100, // Height of the crosshair
-            decoration: const BoxDecoration(
-    color: Colors.transparent, // Make the container transparent
-            ),
-            child: Stack(
-    children: [
-      Center(
-        child: Container(
-          width: 3, // Width of the vertical line
-          height: 40, // Height of the vertical line
-          color: Colors.black45, // Color of the vertical line
-        ),
+      width: 100, // Width of the crosshair
+      height: 100, // Height of the crosshair
+      decoration: const BoxDecoration(
+        color: Colors.transparent, // Make the container transparent
       ),
-      Center(
-        child: Container(
-          width: 40, // Width of the horizontal line
-          height: 3, // Height of the horizontal line
-          color: Colors.black45, // Color of the horizontal line
-        ),
-      ),
-    ],
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              width: 3, // Width of the vertical line
+              height: 40, // Height of the vertical line
+              color: Colors.black45, // Color of the vertical line
             ),
-          );
+          ),
+          Center(
+            child: Container(
+              width: 40, // Width of the horizontal line
+              height: 3, // Height of the horizontal line
+              color: Colors.black45, // Color of the horizontal line
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
