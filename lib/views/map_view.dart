@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:chartr/components/coordinate_display.dart';
-import 'package:chartr/components/map_button_stack.dart';
+import 'package:chartr/components/map_ui_overlay.dart';
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/components/position_icon.dart';
@@ -170,9 +170,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       //   title: Text(
       //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
       // ),
-      drawer: const Drawer(
-        child: Text("hi there"),
-      ),
+      // drawer: const Drawer( // TODO - Implement nav drawer
+      //   child: Text("Chartr"),
+      // ),
       body: Stack(children: [
         FlutterMap(
           mapController: mapController,
@@ -180,32 +180,25 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           options: _buildMapOptions(),
           children: _buildMapChildren(),
         ),
-        const Positioned.fill(
-          child: Center(child: Crosshair()),
-        ),
-        Positioned(
-          bottom: 60, // Adjust the position as needed
-          left: 20,
-          child: CoordinateDisplay(
-            mapCenter: _mapCenter,
-            mapCenterGrid: _mapCenterGrid,
-          ),
-        ),
-        if (_isDrawing)
-          PaintLayer(
-            onExit: _onExitDrawMode,
-            onSaveImage: _onDrawSave,
-          ),
         Visibility(
           visible: !_isDrawing,
-          child: MapButtonStack(
+          child: MapUiOverlay(
             onToggleNorthUp: _toggleNorthUp,
             onScrollToLocation: _scrollToCurrentPosition,
             onSelectMapType: _setMapProvider,
             onDrawToggle: _onDrawToggle,
+            mapCenter: _mapCenter,
+            mapCenterGrid: _mapCenterGrid,
             northButtonIcon: _showNorthUp
                 ? Icon(MapIcons.long_arrow_alt_up, color: _iconColor)
                 : Icon(MapIcons.compass, color: _iconColor),
+          ),
+        ),
+        Visibility(
+          visible: _isDrawing,
+          child: PaintUiOverlay(
+            onExit: _onExitDrawMode,
+            onSaveImage: _onDrawSave,
           ),
         ),
       ]),
@@ -293,40 +286,5 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
-  }
-}
-
-class Crosshair extends StatelessWidget {
-  const Crosshair({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 100, // Width of the crosshair
-      height: 100, // Height of the crosshair
-      decoration: const BoxDecoration(
-        color: Colors.transparent, // Make the container transparent
-      ),
-      child: Stack(
-        children: [
-          Center(
-            child: Container(
-              width: 3, // Width of the vertical line
-              height: 40, // Height of the vertical line
-              color: Colors.black45, // Color of the vertical line
-            ),
-          ),
-          Center(
-            child: Container(
-              width: 40, // Width of the horizontal line
-              height: 3, // Height of the horizontal line
-              color: Colors.black45, // Color of the horizontal line
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

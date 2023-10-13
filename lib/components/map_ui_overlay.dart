@@ -1,9 +1,14 @@
+import 'package:chartr/components/coordinate_display.dart';
+import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/map_layer_dialog.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:chartr/services/coordinate_service.dart';
+import 'package:chartr/views/map_view.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
-class MapButtonStack extends StatelessWidget {
+class MapUiOverlay extends StatelessWidget {
   final VoidCallback onToggleNorthUp;
   final VoidCallback onScrollToLocation;
   final VoidCallback onDrawToggle;
@@ -14,13 +19,18 @@ class MapButtonStack extends StatelessWidget {
   final Color _foregroundColor = Colors.deepOrange;
   final Color _backgroundColor = Colors.black87;
 
-  MapButtonStack({
+  LatLng? mapCenter;
+  GridRef? mapCenterGrid;
+
+  MapUiOverlay({
     super.key,
     required this.onToggleNorthUp,
     required this.northButtonIcon,
     required this.onSelectMapType,
     required this.onScrollToLocation,
     required this.onDrawToggle,
+    required this.mapCenter,
+    required this.mapCenterGrid,
   });
 
   void _showMapLayerDialog(BuildContext context) {
@@ -148,6 +158,9 @@ class MapButtonStack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
+      Positioned.fill(
+        child: Center(child: Crosshair()),
+      ),
       Positioned(
         top: 50, // Adjust the position as needed
         right: 15,
@@ -242,6 +255,14 @@ class MapButtonStack extends StatelessWidget {
                 foregroundColor: _foregroundColor,
                 backgroundColor: _backgroundColor),
           ),
+        ),
+      ),
+      Positioned(
+        bottom: 60, // Adjust the position as needed
+        left: 20,
+        child: CoordinateDisplay(
+          mapCenter: mapCenter,
+          mapCenterGrid: mapCenterGrid,
         ),
       )
     ]);

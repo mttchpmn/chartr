@@ -4,17 +4,17 @@ import 'package:chartr/components/paint_layer/canvas_painter.dart';
 import 'package:chartr/components/paint_layer/draw_button_stack.dart';
 import 'package:flutter/material.dart';
 
-class PaintLayer extends StatefulWidget {
+class PaintUiOverlay extends StatefulWidget {
   final VoidCallback onExit;
   final Function(MemoryImage) onSaveImage;
 
-  const PaintLayer({super.key, required this.onExit, required this.onSaveImage});
+  const PaintUiOverlay({super.key, required this.onExit, required this.onSaveImage});
 
   @override
-  State<StatefulWidget> createState() => PaintLayerState();
+  State<StatefulWidget> createState() => PaintUiOverlayState();
 }
 
-class PaintLayerState extends State<PaintLayer> {
+class PaintUiOverlayState extends State<PaintUiOverlay> {
   late Color _paintColor;
   int _paintColorIndex = 0;
   List<Color> _availableColors = [
