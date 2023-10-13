@@ -18,6 +18,8 @@ class LocationUpdate {
 }
 
 class LocationService {
+  StreamSubscription<Position>? _positionStream;
+
   final List<LatLng> _track = [];
   double _currentSpeed = 0;
   double _currentHeading = 0;
@@ -36,8 +38,9 @@ class LocationService {
           enableWakeLock: true,
         ));
 
-    Geolocator.getPositionStream(locationSettings: locationSettings)
-        .listen((Position? position) {
+    _positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
       if (position != null) {
         _currentSpeed = position.speed / 1000 * 60 * 60; // ms to kmh
         _currentHeading = position.heading;
@@ -53,6 +56,10 @@ class LocationService {
         onLocationUpdate(update);
       }
     });
+  }
+
+  void stopTracking() {
+    _positionStream?.cancel();
   }
 
   Future<void> initializeAsync() async {

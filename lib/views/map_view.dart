@@ -76,7 +76,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     super.dispose();
   }
 
-  void _onToggleLocationTracking(bool hasTrackingEnabled) {}
+  void _onToggleLocationTracking(bool hasTrackingEnabled) {
+    debugPrint("Location tracking: [$hasTrackingEnabled]");
+    hasTrackingEnabled
+        ? locationService.startTracking(_onLocationUpdate)
+        : locationService.stopTracking();
+  }
 
   void _initMapProvider() {
     _mapProvider = mapProviderService.getMapProvider(_mapType);

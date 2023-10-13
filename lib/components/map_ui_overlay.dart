@@ -38,7 +38,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   bool _showNorthUp = true;
 
-  bool _trackLocation = false;
+  bool _trackLocation = true;
 
   Icon _getNorthButtonIcon() {
     return _showNorthUp
@@ -65,6 +65,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
     setState(() {
       _trackLocation = !_trackLocation;
     });
+    widget.onToggleLocationTracking(_trackLocation);
   }
 
   void _showMapLayerDialog(BuildContext context) {
