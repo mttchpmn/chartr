@@ -38,6 +38,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   bool _showNorthUp = true;
   bool _isDrawing = false;
 
+  bool _hasTrackingEnabled = true;
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
   LatLng? _mapCenterLatLng;
   GridRef? _mapCenterGrid;
@@ -58,7 +59,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
-  void _startTracking() async {
+  void _initTracking() async {
     await locationService.initializeAsync();
     locationService.startTracking(_onLocationUpdate);
   }
@@ -66,19 +67,18 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   @override
   void initState() {
     super.initState();
+
     _initMapProvider();
-
-    _startTracking();
+    _initTracking();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  void _onToggleLocationTracking() {
+    setState(() {
+      _hasTrackingEnabled = !_hasTrackingEnabled;
+    });
+    debugPrint("Location tracking: [$_hasTrackingEnabled]");
 
-  void _onToggleLocationTracking(bool hasTrackingEnabled) {
-    debugPrint("Location tracking: [$hasTrackingEnabled]");
-    hasTrackingEnabled
+    _hasTrackingEnabled
         ? locationService.startTracking(_onLocationUpdate)
         : locationService.stopTracking();
   }
@@ -142,6 +142,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             mapController: _mapController,
             mapCenterLatLng: _mapCenterLatLng,
             mapCenterGrid: _mapCenterGrid,
+            hasTrackingEnabled: _hasTrackingEnabled,
             deviceLocation: _deviceLocation,
           ),
         ),
@@ -166,13 +167,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         builder: (context) => const PositionIcon());
 
     List<Marker> markers = [];
-    markers.add(deviceLocation);
-    markers.addAll(_markers);
 
-    var deviceLocations = [
-      const LatLng(37.410337, -122.048840),
-      const LatLng(37.493567, -121.999931)
-    ];
+    if (_hasTrackingEnabled) {
+      markers.add(deviceLocation);
+    }
+
+    markers.addAll(_markers);
 
     var tileLayers = _mapProvider.getTileLayers();
     var markerLayer = MarkerLayer(markers: markers);

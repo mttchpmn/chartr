@@ -10,12 +10,14 @@ import 'package:latlong2/latlong.dart';
 class MapUiOverlay extends StatefulWidget {
   final VoidCallback onDrawToggle;
   final Function(MapType) onSelectMapType;
-  final Function(bool) onToggleLocationTracking;
+  final VoidCallback onToggleLocationTracking;
 
   LatLng deviceLocation;
   LatLng? mapCenterLatLng;
   GridRef? mapCenterGrid;
   MapController mapController;
+
+  bool hasTrackingEnabled;
 
   MapUiOverlay({
     super.key,
@@ -25,6 +27,7 @@ class MapUiOverlay extends StatefulWidget {
     required this.mapCenterLatLng,
     required this.mapCenterGrid,
     required this.mapController,
+    required this.hasTrackingEnabled,
     required this.onToggleLocationTracking,
   });
 
@@ -38,8 +41,6 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   bool _showNorthUp = true;
 
-  bool _trackLocation = true;
-
   Icon _getNorthButtonIcon() {
     return _showNorthUp
         ? Icon(Icons.navigation, color: _foregroundColor)
@@ -47,7 +48,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
   }
 
   Icon _getLocationTrackingIcon() {
-    return _trackLocation
+    return widget.hasTrackingEnabled
         ? Icon(Icons.location_on, color: _foregroundColor)
         : const Icon(Icons.location_off, color: Colors.grey);
   }
@@ -62,10 +63,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
   }
 
   void _toggleLocationTracking() {
-    setState(() {
-      _trackLocation = !_trackLocation;
-    });
-    widget.onToggleLocationTracking(_trackLocation);
+    widget.onToggleLocationTracking();
   }
 
   void _showMapLayerDialog(BuildContext context) {
@@ -237,10 +235,10 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           onPressed: () {
             _toggleLocationTracking();
 
-            var text = _trackLocation
-                ? "Location tracking enabled"
-                : "Location tracking disabled";
-            var color = _trackLocation ? Colors.green : Colors.red;
+            var text = widget.hasTrackingEnabled
+                ? "Location tracking disabled"
+                : "Location tracking enabled";
+            var color = widget.hasTrackingEnabled ? Colors.red : Colors.green;
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
