@@ -185,71 +185,79 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         Positioned(
           bottom: 60, // Adjust the position as needed
           left: 20,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Visibility(
-                visible: !_displayGrid,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _displayGrid =  !_displayGrid;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Changed to Grid Reference (NZTM)'),
-                      ),
-                    );
+          child: Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.black87),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 2, top: 2),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Visibility(
+                    visible: !_displayGrid,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _displayGrid =  !_displayGrid;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Changed to Grid Reference (NZTM)'),
+                          ),
+                        );
 
-                  },
-                  child: Column(
-                    children: [
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "LAT: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.deepOrange),
+                            textAlign: TextAlign.left,
+                          ),
                       Text(
-                        "LAT: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        "LNG: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.deepOrange),
                         textAlign: TextAlign.left,
                       ),
-                  Text(
-                    "LNG: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    textAlign: TextAlign.left,
-                  ),
-                    ],
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: _displayGrid,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _displayGrid = !_displayGrid;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Changed to Lat/Lng (WGS84)'),
+                        ],
                       ),
-                    );
+                    ),
+                  ),
+                  Visibility(
+                    visible: _displayGrid,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _displayGrid = !_displayGrid;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Changed to Lat/Lng (WGS84)'),
+                          ),
+                        );
 
-                  },
-                  child: Column(
-                    children: [
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "E: ${_mapCenterGrid?.eastings ?? ""}",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.deepOrange),
+                            textAlign: TextAlign.left,
+                          ),
                       Text(
-                        "E: ${_mapCenterGrid?.eastings ?? ""}",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        "N: ${_mapCenterGrid?.northings ?? ""}",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.deepOrange),
                         textAlign: TextAlign.left,
                       ),
-                  Text(
-                    "N: ${_mapCenterGrid?.northings ?? ""}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    textAlign: TextAlign.left,
+                        ],
+                      ),
+                    ),
                   ),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         if (_isDrawing)
