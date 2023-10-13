@@ -284,7 +284,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
             // Your action here for the bottom button
           },
           mini: true,
-          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
+          child: Icon(MapIcons.map_marker_alt, color: Colors.grey),
         ),
       ),
       Positioned(
@@ -296,7 +296,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
             // Your action here for the bottom button
           },
           mini: true,
-          child: Icon(Icons.route, color: _foregroundColor),
+          child: Icon(Icons.route, color: Colors.grey),
         ),
       ),
       Positioned(
