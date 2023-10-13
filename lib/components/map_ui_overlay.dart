@@ -1,37 +1,55 @@
 import 'package:chartr/components/coordinate_display.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/map_icons.dart';
-import 'package:chartr/components/map_layer_dialog.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/services/coordinate_service.dart';
-import 'package:chartr/views/map_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-class MapUiOverlay extends StatelessWidget {
-  final VoidCallback onToggleNorthUp;
-  final VoidCallback onScrollToLocation;
+class MapUiOverlay extends StatefulWidget {
   final VoidCallback onDrawToggle;
   final Function(MapType) onSelectMapType;
-  Icon northButtonIcon;
 
-  // final Color _iconColor = const Color(0xFF41548C);
-  final Color _foregroundColor = Colors.deepOrange;
-  final Color _backgroundColor = Colors.black87;
-
+  LatLng deviceLocation;
   LatLng? mapCenter;
   GridRef? mapCenterGrid;
+  MapController mapController;
 
   MapUiOverlay({
     super.key,
-    required this.onToggleNorthUp,
-    required this.northButtonIcon,
     required this.onSelectMapType,
-    required this.onScrollToLocation,
     required this.onDrawToggle,
+    required this.deviceLocation,
     required this.mapCenter,
     required this.mapCenterGrid,
+    required this.mapController,
   });
+
+  @override
+  State<MapUiOverlay> createState() => _MapUiOverlayState();
+}
+
+class _MapUiOverlayState extends State<MapUiOverlay> {
+  final Color _foregroundColor = Colors.deepOrange;
+  final Color _backgroundColor = Colors.black87;
+
+  bool _showNorthUp = true;
+
+  Icon _getNorthButtonIcon() {
+    return _showNorthUp
+        ? Icon(MapIcons.long_arrow_alt_up, color: _foregroundColor)
+        : Icon(MapIcons.compass, color: _foregroundColor);
+  }
+
+  void _scrollToCurrentPosition() {
+    var currentZoom = widget.mapController.zoom;
+    var currentBearing = widget.mapController.rotation;
+    widget.mapController.moveAndRotate(
+        LatLng(widget.deviceLocation.latitude, widget.deviceLocation.longitude),
+        currentZoom,
+        currentBearing);
+  }
 
   void _showMapLayerDialog(BuildContext context) {
     showModalBottomSheet(
@@ -50,7 +68,7 @@ class MapUiOverlay extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      onSelectMapType(MapType.street);
+                      widget.onSelectMapType(MapType.street);
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -73,7 +91,7 @@ class MapUiOverlay extends StatelessWidget {
                   const Divider(),
                   GestureDetector(
                     onTap: () {
-                      onSelectMapType(MapType.topographic);
+                      widget.onSelectMapType(MapType.topographic);
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -96,7 +114,7 @@ class MapUiOverlay extends StatelessWidget {
                   const Divider(),
                   GestureDetector(
                     onTap: () {
-                      onSelectMapType(MapType.nautical);
+                      widget.onSelectMapType(MapType.nautical);
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -119,7 +137,7 @@ class MapUiOverlay extends StatelessWidget {
                   const Divider(),
                   GestureDetector(
                     onTap: () {
-                      onSelectMapType(MapType.satellite);
+                      widget.onSelectMapType(MapType.satellite);
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -155,6 +173,17 @@ class MapUiOverlay extends StatelessWidget {
     // );
   }
 
+  void _toggleNorthUp() {
+    var currentCenter = widget.mapController.center;
+    var currentZoom = widget.mapController.zoom;
+    setState(() {
+      _showNorthUp = !_showNorthUp;
+    });
+    _showNorthUp
+        ? widget.mapController.moveAndRotate(currentCenter, currentZoom, 0)
+        : widget.mapController.moveAndRotate(currentCenter, currentZoom, 5);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -169,8 +198,8 @@ class MapUiOverlay extends StatelessWidget {
           onPressed: () {
             _showMapLayerDialog(context);
           },
-          child: Icon(MapIcons.layer_group, color: _foregroundColor),
           mini: true,
+          child: Icon(MapIcons.layer_group, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -178,11 +207,9 @@ class MapUiOverlay extends StatelessWidget {
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
-          onPressed: () {
-            onToggleNorthUp();
-          },
-          child: northButtonIcon,
+          onPressed: _toggleNorthUp,
           mini: true,
+          child: _getNorthButtonIcon(),
         ),
       ),
       Positioned(
@@ -190,11 +217,9 @@ class MapUiOverlay extends StatelessWidget {
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
-          onPressed: () {
-            onScrollToLocation();
-          },
-          child: Icon(MapIcons.location_arrow, color: _foregroundColor),
+          onPressed: _scrollToCurrentPosition,
           mini: true,
+          child: Icon(MapIcons.location_arrow, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -203,10 +228,10 @@ class MapUiOverlay extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
           onPressed: () {
-            onDrawToggle();
+            widget.onDrawToggle();
           },
-          child: Icon(Icons.draw, color: _foregroundColor),
           mini: true,
+          child: Icon(Icons.draw, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -217,8 +242,8 @@ class MapUiOverlay extends StatelessWidget {
           onPressed: () {
             // Your action here for the bottom button
           },
-          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
           mini: true,
+          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -229,8 +254,8 @@ class MapUiOverlay extends StatelessWidget {
           onPressed: () {
             // Your action here for the bottom button
           },
-          child: Icon(Icons.route, color: _foregroundColor),
           mini: true,
+          child: Icon(Icons.route, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -244,7 +269,7 @@ class MapUiOverlay extends StatelessWidget {
             backgroundColor: _backgroundColor,
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   backgroundColor: Colors.green,
                   content: Text('Track recording started'),
                 ),
@@ -261,8 +286,8 @@ class MapUiOverlay extends StatelessWidget {
         bottom: 60, // Adjust the position as needed
         left: 20,
         child: CoordinateDisplay(
-          mapCenter: mapCenter,
-          mapCenterGrid: mapCenterGrid,
+          mapCenter: widget.mapCenter,
+          mapCenterGrid: widget.mapCenterGrid,
         ),
       )
     ]);

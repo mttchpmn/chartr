@@ -28,24 +28,21 @@ class FullScreenMapWidget extends StatefulWidget {
 }
 
 class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
-  final MapController mapController = MapController();
+  final MapController _mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
   final LocationService locationService = LocationService(1);
   late StreamSubscription<AisPositionReport> streamSubscription;
-
   late StreamSubscription<Position> positionStream;
-
   late MapProvider _mapProvider;
 
   bool _showNorthUp = true;
   bool _isDrawing = false;
   MapType _mapType = MapType.street;
+
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
   LatLng? _mapCenter;
   GridRef? _mapCenterGrid;
-  bool _displayGrid = true;
 
-  final Color _iconColor = Colors.deepOrange;
 
   List<Marker> _markers = [];
   List<OverlayImage> _images = [];
@@ -114,26 +111,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
-  void _toggleNorthUp() {
-    var currentCenter = mapController.center;
-    var currentZoom = mapController.zoom;
-    setState(() {
-      _showNorthUp = !_showNorthUp;
-    });
-    _showNorthUp
-        ? mapController.moveAndRotate(currentCenter, currentZoom, 0)
-        : mapController.moveAndRotate(currentCenter, currentZoom, 5);
-  }
-
-  void _scrollToCurrentPosition() {
-    var currentZoom = mapController.zoom;
-    var currentBearing = mapController.rotation;
-    mapController.moveAndRotate(
-        LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
-        currentZoom,
-        currentBearing);
-  }
-
   void _onDrawToggle() {
     setState(() {
       _isDrawing = !_isDrawing;
@@ -155,10 +132,10 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _refreshMap() {
-    var currentCenter = mapController.center;
-    var currentZoom = mapController.zoom;
-    var currentBearing = mapController.rotation;
-    mapController.moveAndRotate(currentCenter, currentZoom, currentBearing);
+    var currentCenter = _mapController.center;
+    var currentZoom = _mapController.zoom;
+    var currentBearing = _mapController.rotation;
+    _mapController.moveAndRotate(currentCenter, currentZoom, currentBearing);
     debugPrint("Refreshed map");
   }
 
@@ -175,7 +152,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       // ),
       body: Stack(children: [
         FlutterMap(
-          mapController: mapController,
+          mapController: _mapController,
           nonRotatedChildren: [],
           options: _buildMapOptions(),
           children: _buildMapChildren(),
@@ -183,15 +160,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         Visibility(
           visible: !_isDrawing,
           child: MapUiOverlay(
-            onToggleNorthUp: _toggleNorthUp,
-            onScrollToLocation: _scrollToCurrentPosition,
             onSelectMapType: _setMapProvider,
             onDrawToggle: _onDrawToggle,
             mapCenter: _mapCenter,
             mapCenterGrid: _mapCenterGrid,
-            northButtonIcon: _showNorthUp
-                ? Icon(MapIcons.long_arrow_alt_up, color: _iconColor)
-                : Icon(MapIcons.compass, color: _iconColor),
+            mapController: _mapController,
+            deviceLocation: _deviceLocation,
           ),
         ),
         Visibility(
@@ -272,7 +246,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   _onDrawSave(MemoryImage image) async {
     var overlay = OverlayImage(
         bounds: LatLngBounds(
-            mapController.bounds!.northWest, mapController.bounds!.southEast),
+            _mapController.bounds!.northWest, _mapController.bounds!.southEast),
         imageProvider: image);
 
     setState(() {
