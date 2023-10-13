@@ -45,14 +45,14 @@ class CoordinateDisplayState extends State<CoordinateDisplay> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "LAT: ${widget.mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
+                      "LAT: ${widget.mapCenter?.latitude.toStringAsFixed(6) ?? ""}",
                       style: const TextStyle(fontWeight: FontWeight.bold,
                           fontSize: 16,
                           color: Colors.deepOrange),
                       textAlign: TextAlign.left,
                     ),
                     Text(
-                      "LNG: ${widget.mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                      "LNG: ${widget.mapCenter?.longitude.toStringAsFixed(6) ?? ""}",
                       style: const TextStyle(fontWeight: FontWeight.bold,
                           fontSize: 16,
                           color: Colors.deepOrange),
