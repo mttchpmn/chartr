@@ -31,13 +31,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController _mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
   final LocationService locationService = LocationService(1);
-  late StreamSubscription<AisPositionReport> streamSubscription;
-  late StreamSubscription<Position> positionStream;
+
   late MapProvider _mapProvider;
+  MapType _mapType = MapType.street;
 
   bool _showNorthUp = true;
   bool _isDrawing = false;
-  MapType _mapType = MapType.street;
 
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
   LatLng? _mapCenterLatLng;
@@ -74,7 +73,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
   @override
   void dispose() {
-    streamSubscription.cancel();
     super.dispose();
   }
 

@@ -27,31 +27,14 @@ class LocationService {
   LocationService(this._distanceFilter);
 
   void startTracking(Function(LocationUpdate) onLocationUpdate) {
-    // var locationSettings = LocationSettings(
-    //   accuracy: LocationAccuracy.best,
-    //   distanceFilter: _distanceFilter
-    // );
-
     var locationSettings = AndroidSettings(
         distanceFilter: _distanceFilter,
         foregroundNotificationConfig: const ForegroundNotificationConfig(
-          // Keep app alive in background
           notificationText:
               "Chartr will continue to receive your location in the background for tracking purposes",
           notificationTitle: "Background Location Usage",
           enableWakeLock: true,
         ));
-    // var locationSettings = AndroidSettings(
-    //     accuracy: LocationAccuracy.best,
-    //     distanceFilter: _distanceFilter,
-    //     intervalDuration: const Duration(seconds: 3),
-    //     foregroundNotificationConfig: const ForegroundNotificationConfig(
-    //       // Keep app alive in background
-    //       notificationText:
-    //           "Chartr will continue to receive your location in the background for tracking purposes",
-    //       notificationTitle: "Background Location Usage",
-    //       enableWakeLock: true,
-    //     ));
 
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
