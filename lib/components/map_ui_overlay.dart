@@ -10,9 +10,10 @@ import 'package:latlong2/latlong.dart';
 class MapUiOverlay extends StatefulWidget {
   final VoidCallback onDrawToggle;
   final Function(MapType) onSelectMapType;
+  final Function(bool) onToggleLocationTracking;
 
   LatLng deviceLocation;
-  LatLng? mapCenter;
+  LatLng? mapCenterLatLng;
   GridRef? mapCenterGrid;
   MapController mapController;
 
@@ -21,9 +22,10 @@ class MapUiOverlay extends StatefulWidget {
     required this.onSelectMapType,
     required this.onDrawToggle,
     required this.deviceLocation,
-    required this.mapCenter,
+    required this.mapCenterLatLng,
     required this.mapCenterGrid,
     required this.mapController,
+    required this.onToggleLocationTracking,
   });
 
   @override
@@ -237,9 +239,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
             var text = _trackLocation
                 ? "Location tracking enabled"
                 : "Location tracking disabled";
-            var color = _trackLocation
-            ? Colors.green
-            : Colors.red;
+            var color = _trackLocation ? Colors.green : Colors.red;
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -327,7 +327,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         bottom: 60, // Adjust the position as needed
         left: 20,
         child: CoordinateDisplay(
-          mapCenter: widget.mapCenter,
+          mapCenter: widget.mapCenterLatLng,
           mapCenterGrid: widget.mapCenterGrid,
         ),
       )

@@ -40,9 +40,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapType _mapType = MapType.street;
 
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
-  LatLng? _mapCenter;
+  LatLng? _mapCenterLatLng;
   GridRef? _mapCenterGrid;
-
 
   List<Marker> _markers = [];
   List<OverlayImage> _images = [];
@@ -71,34 +70,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _initMapProvider();
 
     _startTracking();
-    // const LocationSettings locationSettings = LocationSettings(
-    //   accuracy: LocationAccuracy.high,
-    //   distanceFilter: 1, // Metres to move before update is triggered
-    // );
-    // positionStream =
-    //     Geolocator.getPositionStream(locationSettings: locationSettings)
-    //         .listen((Position? position) {
-    //   if (position != null) {
-    //     setState(() {
-    //       _deviceLocation = position;
-    //       _deviceLocations.add(LatLng(position.latitude, position.longitude));
-    //     });
-    //   }
-    // });
-
-    // final aisService = AisService();
-    //
-    // streamSubscription = aisService.stream.listen((event) {
-    //   var marker = Marker(
-    //       point: LatLng(event.latitude, event.longitude),
-    //       builder: (c) =>
-    //           // Column(children: [Icon(Icons.sailing), Text(event.shipName)],)
-    //           Icon(Icons.sailing));
-    //
-    //   setState(() {
-    //     _markers.add(marker);
-    //   });
-    // });
   }
 
   @override
@@ -106,6 +77,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     streamSubscription.cancel();
     super.dispose();
   }
+
+  void _onToggleLocationTracking(bool hasTrackingEnabled) {}
 
   void _initMapProvider() {
     _mapProvider = mapProviderService.getMapProvider(_mapType);
@@ -160,11 +133,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         Visibility(
           visible: !_isDrawing,
           child: MapUiOverlay(
+            onToggleLocationTracking: _onToggleLocationTracking,
             onSelectMapType: _setMapProvider,
             onDrawToggle: _onDrawToggle,
-            mapCenter: _mapCenter,
-            mapCenterGrid: _mapCenterGrid,
             mapController: _mapController,
+            mapCenterLatLng: _mapCenterLatLng,
+            mapCenterGrid: _mapCenterGrid,
             deviceLocation: _deviceLocation,
           ),
         ),
@@ -230,7 +204,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           });
         }
         setState(() {
-          _mapCenter = position.center;
+          _mapCenterLatLng = position.center;
         });
         // debugPrint("Map zoom: ${mapController.zoom}");
         // _handleTopoZoom(position);
