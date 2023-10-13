@@ -42,6 +42,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
   LatLng? _mapCenter;
   GridRef? _mapCenterGrid;
+  bool _displayGrid = true;
 
   final Color _iconColor = Colors.deepOrange;
 
@@ -188,25 +189,65 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "LAT: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                textAlign: TextAlign.left,
+              Visibility(
+                visible: !_displayGrid,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _displayGrid =  !_displayGrid;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Changed to Grid Reference (NZTM)'),
+                      ),
+                    );
+
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        "LAT: ${_mapCenter?.latitude.toStringAsFixed(7) ?? ""}",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        textAlign: TextAlign.left,
+                      ),
+                  Text(
+                    "LNG: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    textAlign: TextAlign.left,
+                  ),
+                    ],
+                  ),
+                ),
               ),
-              Text(
-                "LNG: ${_mapCenter?.longitude.toStringAsFixed(7) ?? ""}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                "E: ${_mapCenterGrid?.eastings ?? ""}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                "N: ${_mapCenterGrid?.northings ?? ""}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                textAlign: TextAlign.left,
+              Visibility(
+                visible: _displayGrid,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _displayGrid = !_displayGrid;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Changed to Lat/Lng (WGS84)'),
+                      ),
+                    );
+
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        "E: ${_mapCenterGrid?.eastings ?? ""}",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        textAlign: TextAlign.left,
+                      ),
+                  Text(
+                    "N: ${_mapCenterGrid?.northings ?? ""}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    textAlign: TextAlign.left,
+                  ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
