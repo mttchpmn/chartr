@@ -36,10 +36,18 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   bool _showNorthUp = true;
 
+  bool _trackLocation = false;
+
   Icon _getNorthButtonIcon() {
     return _showNorthUp
-        ? Icon(MapIcons.long_arrow_alt_up, color: _foregroundColor)
-        : Icon(MapIcons.compass, color: _foregroundColor);
+        ? Icon(Icons.navigation, color: _foregroundColor)
+        : const Icon(Icons.navigation, color: Colors.grey);
+  }
+
+  Icon _getLocationTrackingIcon() {
+    return _trackLocation
+        ? Icon(Icons.location_on, color: _foregroundColor)
+        : const Icon(Icons.location_off, color: Colors.grey);
   }
 
   void _scrollToCurrentPosition() {
@@ -49,6 +57,12 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         LatLng(widget.deviceLocation.latitude, widget.deviceLocation.longitude),
         currentZoom,
         currentBearing);
+  }
+
+  void _toggleLocationTracking() {
+    setState(() {
+      _trackLocation = !_trackLocation;
+    });
   }
 
   void _showMapLayerDialog(BuildContext context) {
@@ -187,7 +201,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(
+      const Positioned.fill(
         child: Center(child: Crosshair()),
       ),
       Positioned(
@@ -217,13 +231,40 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
-          onPressed: _scrollToCurrentPosition,
+          onPressed: () {
+            _toggleLocationTracking();
+
+            var text = _trackLocation
+                ? "Location tracking enabled"
+                : "Location tracking disabled";
+            var color = _trackLocation
+            ? Colors.green
+            : Colors.red;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: color,
+                duration: const Duration(seconds: 1),
+                content: Text(text),
+              ),
+            );
+          },
           mini: true,
-          child: Icon(MapIcons.location_arrow, color: _foregroundColor),
+          child: _getLocationTrackingIcon(),
         ),
       ),
       Positioned(
         top: 200, // Adjust the position as needed
+        right: 15,
+        child: FloatingActionButton(
+          backgroundColor: _backgroundColor,
+          onPressed: _scrollToCurrentPosition,
+          mini: true,
+          child: Icon(Icons.my_location, color: _foregroundColor),
+        ),
+      ),
+      Positioned(
+        top: 250, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
