@@ -50,6 +50,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   double _currentHeading = 0;
   List<LatLng> _deviceLocations = [];
 
+  LatLng? markerALocation;
+  LatLng? markerBLocation;
+
   void _onLocationUpdate(LocationUpdate update) {
     setState(() {
       _deviceLocations = update.track;
@@ -115,6 +118,25 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     debugPrint("Refreshed map");
   }
 
+  void _onSelectFirstPoint() {
+    setState(() {
+      markerALocation = _mapController.center;
+    });
+  }
+
+  void _onSelectSecondPoint() {
+    setState(() {
+      markerBLocation = _mapController.center;
+    });
+  }
+
+  void _onClearMeasurement() {
+    setState(() {
+      markerALocation = null;
+      markerBLocation = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,6 +166,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             mapCenterGrid: _mapCenterGrid,
             hasTrackingEnabled: _hasTrackingEnabled,
             deviceLocation: _deviceLocation,
+            onSelectFirstPoint: _onSelectFirstPoint,
+            onSelectSecondPoint: _onSelectSecondPoint,
+            onFinishMeasurement: _onClearMeasurement,
           ),
         ),
         Visibility(
@@ -174,20 +199,47 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     markers.addAll(_markers);
 
-    var tileLayers = _mapProvider.getTileLayers();
-    var markerLayer = MarkerLayer(markers: markers);
-
-    var polylineLayer = PolylineLayer(
-      polylines: [
-        Polyline(points: _deviceLocations, color: Colors.black, strokeWidth: 6),
-        Polyline(
-            points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
-      ],
-    );
+    var polyLines = [
+      Polyline(points: _deviceLocations, color: Colors.black, strokeWidth: 6),
+      Polyline(
+          points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
+    ];
 
     var imageLayer = OverlayImageLayer(
       overlayImages: _images,
     );
+
+    if (markerALocation != null) {
+      var a = Marker(
+          point: markerALocation!,
+          builder: (ctx) => Icon(
+                Icons.circle,
+                color: Colors.green,
+              ));
+
+      markers.add(a);
+    }
+
+    if (markerBLocation != null) {
+      var b = Marker(
+          point: markerBLocation!,
+          builder: (ctx) => Icon(
+                Icons.circle,
+                color: Colors.red,
+              ));
+
+      markers.add(b);
+    }
+
+    if (markerALocation != null && markerBLocation != null) {
+      var line = Polyline(points: [markerALocation!, markerBLocation!]);
+      polyLines.add(line);
+    }
+
+    var tileLayers = _mapProvider.getTileLayers();
+    var markerLayer = MarkerLayer(markers: markers);
+
+    var polylineLayer = PolylineLayer(polylines: polyLines);
 
     result.addAll(tileLayers);
     result.add(polylineLayer);

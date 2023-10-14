@@ -19,6 +19,10 @@ class MapUiOverlay extends StatefulWidget {
 
   bool hasTrackingEnabled;
 
+  final VoidCallback onSelectFirstPoint;
+  final VoidCallback onSelectSecondPoint;
+  final VoidCallback onFinishMeasurement;
+
   MapUiOverlay({
     super.key,
     required this.onSelectMapType,
@@ -29,6 +33,9 @@ class MapUiOverlay extends StatefulWidget {
     required this.mapController,
     required this.hasTrackingEnabled,
     required this.onToggleLocationTracking,
+    required this.onSelectFirstPoint,
+    required this.onSelectSecondPoint,
+    required this.onFinishMeasurement,
   });
 
   @override
@@ -322,6 +329,12 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           ),
         ),
       ),
+      DistanceMeasureButton(
+        backgroundColor: _backgroundColor,
+        onSelectFirstPoint: widget.onSelectFirstPoint,
+        onSelectSecondPoint: widget.onSelectSecondPoint,
+        onFinishMeasurement: widget.onFinishMeasurement,
+      ),
       Positioned(
         bottom: 60, // Adjust the position as needed
         left: 20,
@@ -331,6 +344,100 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         ),
       )
     ]);
+  }
+}
+
+class DistanceMeasureButton extends StatefulWidget {
+  final Color _backgroundColor;
+  final VoidCallback onSelectFirstPoint;
+  final VoidCallback onSelectSecondPoint;
+  final VoidCallback onFinishMeasurement;
+
+  const DistanceMeasureButton({
+    super.key,
+    required Color backgroundColor,
+    required this.onSelectFirstPoint,
+    required this.onSelectSecondPoint,
+    required this.onFinishMeasurement,
+  }) : _backgroundColor = backgroundColor;
+
+  @override
+  State<DistanceMeasureButton> createState() => _DistanceMeasureButtonState();
+}
+
+class _DistanceMeasureButtonState extends State<DistanceMeasureButton> {
+  int _state = 0;
+
+  void _onFirstTap() {
+    // Start measuring
+    setState(() {
+      _state = 1;
+    });
+
+    widget.onSelectFirstPoint();
+  }
+
+  void _onSecondTap() {
+    // Finish measuring
+    setState(() {
+      _state = 2;
+    });
+
+    widget.onSelectSecondPoint();
+  }
+
+  void _onThirdTap() {
+    // Back to start
+    setState(() {
+      _state = 0;
+    });
+
+    widget.onFinishMeasurement();
+  }
+
+  Icon _getIcon() {
+    switch (_state) {
+      case 1:
+        return Icon(
+          Icons.start,
+          color: Colors.deepOrange,
+        );
+      case 2:
+        return Icon(
+          Icons.flag,
+          color: Colors.deepOrange,
+        );
+      default:
+        return Icon(
+          MapIcons.drafting_compass,
+          color: Colors.deepOrange,
+        );
+    }
+  }
+
+  void _handleTap() {
+    switch (_state) {
+      case 0:
+        return _onFirstTap();
+      case 1:
+        return _onSecondTap();
+      case 2:
+        return _onThirdTap();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 10,
+      right: 15,
+      child: FloatingActionButton(
+        backgroundColor: widget._backgroundColor,
+        onPressed: _handleTap,
+        mini: true,
+        child: _getIcon(),
+      ),
+    );
   }
 }
 
