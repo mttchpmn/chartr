@@ -52,6 +52,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
   LatLng? markerALocation;
   LatLng? markerBLocation;
+  double? distanceBetweenMarkers;
 
   void _onLocationUpdate(LocationUpdate update) {
     setState(() {
@@ -128,6 +129,17 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       markerBLocation = _mapController.center;
     });
+
+    var distanceBetween = Geolocator.distanceBetween(
+      markerALocation!.latitude,
+      markerALocation!.longitude,
+      markerBLocation!.latitude,
+      markerBLocation!.longitude,
+    );
+
+    setState(() {
+      distanceBetweenMarkers = distanceBetween;
+    });
   }
 
   void _onClearMeasurement() {
@@ -154,6 +166,11 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           nonRotatedChildren: [],
           options: _buildMapOptions(),
           children: _buildMapChildren(),
+        ),
+        Positioned(
+          bottom: 60,
+          right: 15,
+          child: Text(distanceBetweenMarkers?.toStringAsFixed(1) ?? ""),
         ),
         Visibility(
           visible: !_isDrawing,
