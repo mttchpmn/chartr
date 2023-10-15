@@ -23,20 +23,22 @@ class MapUiOverlay extends StatefulWidget {
   final VoidCallback onSelectSecondPoint;
   final VoidCallback onFinishMeasurement;
 
-  MapUiOverlay({
-    super.key,
-    required this.onSelectMapType,
-    required this.onDrawToggle,
-    required this.deviceLocation,
-    required this.mapCenterLatLng,
-    required this.mapCenterGrid,
-    required this.mapController,
-    required this.hasTrackingEnabled,
-    required this.onToggleLocationTracking,
-    required this.onSelectFirstPoint,
-    required this.onSelectSecondPoint,
-    required this.onFinishMeasurement,
-  });
+  final Function(String, String?) onAddWaypoint;
+
+  MapUiOverlay(
+      {super.key,
+      required this.onSelectMapType,
+      required this.onDrawToggle,
+      required this.deviceLocation,
+      required this.mapCenterLatLng,
+      required this.mapCenterGrid,
+      required this.mapController,
+      required this.hasTrackingEnabled,
+      required this.onToggleLocationTracking,
+      required this.onSelectFirstPoint,
+      required this.onSelectSecondPoint,
+      required this.onFinishMeasurement,
+      required this.onAddWaypoint});
 
   @override
   State<MapUiOverlay> createState() => _MapUiOverlayState();
@@ -71,6 +73,28 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   void _toggleLocationTracking() {
     widget.onToggleLocationTracking();
+  }
+
+  void _showAddWaypointSheet(BuildContext context) {
+    showModalBottomSheet(
+        backgroundColor: Colors.black87,
+        context: context,
+        builder: (context) => Container(
+              padding: const EdgeInsets.all(16),
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              child: Column(
+                children: [
+                  Text("Save Waypoint"),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        widget.onAddWaypoint("WPT", null);
+                      },
+                      child: Text("Add Waypoint"))
+                ],
+              ),
+            ));
   }
 
   void _showMapLayerDialog(BuildContext context) {
@@ -287,10 +311,10 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
           onPressed: () {
-            // Your action here for the bottom button
+            _handleAddWaypoint(context);
           },
           mini: true,
-          child: Icon(MapIcons.map_marker_alt, color: Colors.grey),
+          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -345,6 +369,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
       )
     ]);
   }
+
+  void _handleAddWaypoint(BuildContext context) =>
+      _showAddWaypointSheet(context);
 }
 
 class DistanceMeasureButton extends StatefulWidget {

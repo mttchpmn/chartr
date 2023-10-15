@@ -20,6 +20,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../gateways/waypoint_gateway.dart';
+
 class FullScreenMapWidget extends StatefulWidget {
   const FullScreenMapWidget({super.key});
 
@@ -31,6 +33,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController _mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
   final LocationService locationService = LocationService(1);
+  final WaypointGateway _waypointGateway = WaypointGateway();
 
   late MapProvider _mapProvider;
   MapType _mapType = MapType.street;
@@ -55,6 +58,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   double? distanceBetweenMarkers;
   double? bearingBetweenMarkers;
 
+  List<Waypoint> _waypoints = [];
+
   void _onLocationUpdate(LocationUpdate update) {
     setState(() {
       _deviceLocations = update.track;
@@ -69,12 +74,36 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     locationService.startTracking(_onLocationUpdate);
   }
 
+  void _loadWaypoints() {
+    var waypoints = _waypointGateway.loadWaypoints();
+
+    setState(() {
+      _waypoints = waypoints;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
     _initMapProvider();
     _initTracking();
+    _loadWaypoints();
+  }
+
+  void _onAddWaypoint(String name, String? desc) {
+    var wpt = Waypoint(
+        latitude: _mapController.center.latitude,
+        longitude: _mapController.center.longitude,
+        name: name,
+        description: desc);
+
+    var wasSaveSuccessful = _waypointGateway.saveWaypoint(wpt);
+
+    if (wasSaveSuccessful) {
+      debugPrint("SAVED WPT");
+      _loadWaypoints();
+    }
   }
 
   void _onToggleLocationTracking() {
@@ -202,6 +231,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             onSelectFirstPoint: _onSelectFirstPoint,
             onSelectSecondPoint: _onSelectSecondPoint,
             onFinishMeasurement: _onClearMeasurement,
+            onAddWaypoint: _onAddWaypoint
           ),
         ),
         Visibility(
@@ -213,6 +243,20 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         ),
       ]),
     );
+  }
+
+  List<Marker> _buildWaypoints() {
+    List<Marker> result = [];
+
+    _waypoints.forEach((wpt) {
+      var m = Marker(
+          point: LatLng(wpt.latitude, wpt.longitude),
+          builder: (ctx) => WaypointIcon());
+
+      result.add(m);
+    });
+
+    return result;
   }
 
   List<Widget> _buildMapChildren() {
@@ -274,6 +318,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       polyLines.add(line);
     }
 
+    var waypoints = _buildWaypoints();
+    markers.addAll(waypoints);
+
     var tileLayers = _mapProvider.getTileLayers();
     var markerLayer = MarkerLayer(markers: markers);
 
@@ -327,6 +374,30 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
+  }
+}
+
+class WaypointIcon extends StatelessWidget {
+  const WaypointIcon({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.black87, borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Icon(
+            Icons.pin_drop,
+            color: Colors.deepOrange,
+            shadows: [Shadow()],
+          ),
+        ),
+      ),
+    );
   }
 }
 
