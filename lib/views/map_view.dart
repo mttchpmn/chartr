@@ -53,6 +53,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   LatLng? markerALocation;
   LatLng? markerBLocation;
   double? distanceBetweenMarkers;
+  double? bearingBetweenMarkers;
 
   void _onLocationUpdate(LocationUpdate update) {
     setState(() {
@@ -137,8 +138,16 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       markerBLocation!.longitude,
     );
 
+    var bearingBetween = Geolocator.bearingBetween(
+      markerALocation!.latitude,
+      markerALocation!.longitude,
+      markerBLocation!.latitude,
+      markerBLocation!.longitude,
+    );
+
     setState(() {
       distanceBetweenMarkers = distanceBetween;
+      bearingBetweenMarkers = bearingBetween;
     });
   }
 
@@ -146,6 +155,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       markerALocation = null;
       markerBLocation = null;
+      distanceBetweenMarkers = null;
+      bearingBetweenMarkers = null;
     });
   }
 
@@ -167,10 +178,15 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           options: _buildMapOptions(),
           children: _buildMapChildren(),
         ),
-        Positioned(
-          bottom: 60,
-          right: 15,
-          child: Text(distanceBetweenMarkers?.toStringAsFixed(1) ?? ""),
+        Visibility(
+          visible: distanceBetweenMarkers != null,
+          child: Positioned(
+            bottom: 60,
+            right: 15,
+            child: DistanceDisplay(
+                distanceBetweenMarkers: distanceBetweenMarkers,
+                bearingBetweenMarkers: bearingBetweenMarkers),
+          ),
         ),
         Visibility(
           visible: !_isDrawing,
@@ -229,8 +245,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     if (markerALocation != null) {
       var a = Marker(
           point: markerALocation!,
-          builder: (ctx) => Icon(
+          builder: (ctx) => const Icon(
                 Icons.circle,
+                size: 20,
                 color: Colors.green,
               ));
 
@@ -240,16 +257,20 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     if (markerBLocation != null) {
       var b = Marker(
           point: markerBLocation!,
-          builder: (ctx) => Icon(
+          builder: (ctx) => const Icon(
                 Icons.circle,
                 color: Colors.red,
+                size: 20,
               ));
 
       markers.add(b);
     }
 
     if (markerALocation != null && markerBLocation != null) {
-      var line = Polyline(points: [markerALocation!, markerBLocation!]);
+      var line = Polyline(
+          points: [markerALocation!, markerBLocation!],
+          color: Colors.black,
+          strokeWidth: 3);
       polyLines.add(line);
     }
 
@@ -306,5 +327,43 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _isDrawing = false;
     });
+  }
+}
+
+class DistanceDisplay extends StatelessWidget {
+  const DistanceDisplay({
+    super.key,
+    required this.distanceBetweenMarkers,
+    required this.bearingBetweenMarkers,
+  });
+
+  final double? distanceBetweenMarkers;
+  final double? bearingBetweenMarkers;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black87,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 2),
+        child: Column(
+          children: [
+            Text(
+              "DIST: ${distanceBetweenMarkers?.toStringAsFixed(1)} m",
+              style: TextStyle(
+                  color: Colors.deepOrange, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "BRG: ${bearingBetweenMarkers?.toStringAsFixed(1)} °T",
+              style: TextStyle(
+                  color: Colors.deepOrange, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
