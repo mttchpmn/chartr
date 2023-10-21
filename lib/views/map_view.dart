@@ -60,6 +60,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
   List<Waypoint> _waypoints = [];
 
+  MapMode _mapMode = MapMode.viewing;
+
+  bool _getUiLayerVisibility(MapMode uiLayerMode) {
+    return uiLayerMode == _mapMode;
+  }
+
   void _onLocationUpdate(LocationUpdate update) {
     setState(() {
       _deviceLocations = update.track;
@@ -121,11 +127,10 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
-  void _onDrawToggle() {
+  void _onStartDrawing() {
     setState(() {
-      _isDrawing = !_isDrawing;
+      _mapMode = MapMode.drawing;
     });
-    print("Drawing: $_isDrawing");
   }
 
   void _setMapProvider(MapType mapType) {
@@ -218,24 +223,23 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           ),
         ),
         Visibility(
-          visible: !_isDrawing,
+          visible: _getUiLayerVisibility(MapMode.viewing),
           child: MapUiOverlay(
-            onToggleLocationTracking: _onToggleLocationTracking,
-            onSelectMapType: _setMapProvider,
-            onDrawToggle: _onDrawToggle,
-            mapController: _mapController,
-            mapCenterLatLng: _mapCenterLatLng,
-            mapCenterGrid: _mapCenterGrid,
-            hasTrackingEnabled: _hasTrackingEnabled,
-            deviceLocation: _deviceLocation,
-            onSelectFirstPoint: _onSelectFirstPoint,
-            onSelectSecondPoint: _onSelectSecondPoint,
-            onFinishMeasurement: _onClearMeasurement,
-            onAddWaypoint: _onAddWaypoint
-          ),
+              onToggleLocationTracking: _onToggleLocationTracking,
+              onSelectMapType: _setMapProvider,
+              onDrawToggle: _onStartDrawing,
+              mapController: _mapController,
+              mapCenterLatLng: _mapCenterLatLng,
+              mapCenterGrid: _mapCenterGrid,
+              hasTrackingEnabled: _hasTrackingEnabled,
+              deviceLocation: _deviceLocation,
+              onSelectFirstPoint: _onSelectFirstPoint,
+              onSelectSecondPoint: _onSelectSecondPoint,
+              onFinishMeasurement: _onClearMeasurement,
+              onAddWaypoint: _onAddWaypoint),
         ),
         Visibility(
-          visible: _isDrawing,
+          visible: _getUiLayerVisibility(MapMode.drawing),
           child: PaintUiOverlay(
             onExit: _onExitDrawMode,
             onSaveImage: _onDrawSave,
@@ -372,10 +376,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
   _onExitDrawMode() {
     setState(() {
-      _isDrawing = false;
+      _mapMode = MapMode.viewing;
     });
   }
 }
+
+enum MapMode { viewing, routing, drawing, navigating }
 
 class WaypointIcon extends StatelessWidget {
   const WaypointIcon({
