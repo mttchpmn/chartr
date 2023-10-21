@@ -25,6 +25,8 @@ class MapUiOverlay extends StatefulWidget {
 
   final Function(String, String?) onAddWaypoint;
 
+  final VoidCallback onStartRouting;
+
   MapUiOverlay(
       {super.key,
       required this.onSelectMapType,
@@ -38,7 +40,8 @@ class MapUiOverlay extends StatefulWidget {
       required this.onSelectFirstPoint,
       required this.onSelectSecondPoint,
       required this.onFinishMeasurement,
-      required this.onAddWaypoint});
+      required this.onAddWaypoint,
+      required this.onStartRouting});
 
   @override
   State<MapUiOverlay> createState() => _MapUiOverlayState();
@@ -323,10 +326,10 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
           onPressed: () {
-            // Your action here for the bottom button
+            widget.onStartRouting();
           },
           mini: true,
-          child: Icon(Icons.route, color: Colors.grey),
+          child: Icon(Icons.route, color: _foregroundColor),
         ),
       ),
       Positioned(

@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:chartr/components/coordinate_display.dart';
+import 'package:chartr/components/crosshair.dart';
+import 'package:chartr/components/distance_display.dart';
 import 'package:chartr/components/map_ui_overlay.dart';
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/components/position_icon.dart';
+import 'package:chartr/components/route_builder.dart';
 import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
@@ -61,6 +64,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   List<Waypoint> _waypoints = [];
 
   MapMode _mapMode = MapMode.viewing;
+
+  List<LatLng> _route = [];
 
   bool _getUiLayerVisibility(MapMode uiLayerMode) {
     return uiLayerMode == _mapMode;
@@ -194,6 +199,24 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
+  void _onStartRouting() {
+    setState(() {
+      _mapMode = MapMode.routing;
+    });
+  }
+
+  void _onExitRouting() {
+    setState(() {
+      _mapMode = MapMode.viewing;
+    });
+  }
+
+  void _onRouteChange(List<LatLng> route) {
+    setState(() {
+      _route = route;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,30 +236,46 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           children: _buildMapChildren(),
         ),
         Visibility(
+          visible: _getUiLayerVisibility(MapMode.viewing) ||
+              _getUiLayerVisibility(MapMode.routing),
+          child: const Positioned.fill(
+            child: Center(child: Crosshair()),
+          ),
+        ),
+        Visibility(
+            visible: _getUiLayerVisibility(MapMode.routing),
+            child: RouteBuilder(
+              mapCenter: _mapCenterLatLng,
+              onExitRouting: _onExitRouting,
+              onRouteChange: _onRouteChange,
+            )),
+        Visibility(
           visible: distanceBetweenMarkers != null,
           child: Positioned(
             bottom: 60,
             right: 15,
             child: DistanceDisplay(
-                distanceBetweenMarkers: distanceBetweenMarkers,
-                bearingBetweenMarkers: bearingBetweenMarkers),
+                distance: distanceBetweenMarkers,
+                bearing: bearingBetweenMarkers),
           ),
         ),
         Visibility(
           visible: _getUiLayerVisibility(MapMode.viewing),
           child: MapUiOverlay(
-              onToggleLocationTracking: _onToggleLocationTracking,
-              onSelectMapType: _setMapProvider,
-              onDrawToggle: _onStartDrawing,
-              mapController: _mapController,
-              mapCenterLatLng: _mapCenterLatLng,
-              mapCenterGrid: _mapCenterGrid,
-              hasTrackingEnabled: _hasTrackingEnabled,
-              deviceLocation: _deviceLocation,
-              onSelectFirstPoint: _onSelectFirstPoint,
-              onSelectSecondPoint: _onSelectSecondPoint,
-              onFinishMeasurement: _onClearMeasurement,
-              onAddWaypoint: _onAddWaypoint),
+            onToggleLocationTracking: _onToggleLocationTracking,
+            onSelectMapType: _setMapProvider,
+            onDrawToggle: _onStartDrawing,
+            mapController: _mapController,
+            mapCenterLatLng: _mapCenterLatLng,
+            mapCenterGrid: _mapCenterGrid,
+            hasTrackingEnabled: _hasTrackingEnabled,
+            deviceLocation: _deviceLocation,
+            onSelectFirstPoint: _onSelectFirstPoint,
+            onSelectSecondPoint: _onSelectSecondPoint,
+            onFinishMeasurement: _onClearMeasurement,
+            onAddWaypoint: _onAddWaypoint,
+            onStartRouting: _onStartRouting,
+          ),
         ),
         Visibility(
           visible: _getUiLayerVisibility(MapMode.drawing),
@@ -314,6 +353,19 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       markers.add(b);
     }
 
+    // Route
+    var routeLine = Polyline(points: _route, color: Colors.purpleAccent, strokeWidth: 3);
+    polyLines.add(routeLine);
+    var routeMarkers = _route.map((e) => Marker(
+        point: e,
+        builder: (ctx) => const Icon(
+              Icons.circle,
+              color: Colors.purpleAccent,
+              size: 15,
+            )));
+    markers.addAll(routeMarkers);
+
+    // Distance measurement
     if (markerALocation != null && markerBLocation != null) {
       var line = Polyline(
           points: [markerALocation!, markerBLocation!],
@@ -407,40 +459,3 @@ class WaypointIcon extends StatelessWidget {
   }
 }
 
-class DistanceDisplay extends StatelessWidget {
-  const DistanceDisplay({
-    super.key,
-    required this.distanceBetweenMarkers,
-    required this.bearingBetweenMarkers,
-  });
-
-  final double? distanceBetweenMarkers;
-  final double? bearingBetweenMarkers;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 2),
-        child: Column(
-          children: [
-            Text(
-              "DIST: ${distanceBetweenMarkers?.toStringAsFixed(1)} m",
-              style: TextStyle(
-                  color: Colors.deepOrange, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "BRG: ${bearingBetweenMarkers?.toStringAsFixed(1)} °T",
-              style: TextStyle(
-                  color: Colors.deepOrange, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
