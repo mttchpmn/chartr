@@ -61,12 +61,6 @@ class _RouteBuilderState extends State<RouteBuilder> {
                 setState(() {
                   _distance += dist;
                 });
-                debugPrint("DIST: $_distance");
-                debugPrint("DIST-CALC: $dist");
-                debugPrint("LAT 1: ${prevPoint.latitude}");
-                debugPrint("LNG 1: ${prevPoint.longitude}");
-                debugPrint("LAT 2: ${newPoint.latitude}");
-                debugPrint("LNG 2: ${newPoint.longitude}");
               }
               widget.onRouteChange(_route);
             }
