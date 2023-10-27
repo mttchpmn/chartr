@@ -35,7 +35,7 @@ class FullScreenMapWidget extends StatefulWidget {
 class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final MapController _mapController = MapController();
   final MapProviderService mapProviderService = MapProviderService();
-  final LocationService locationService = LocationService(1);
+  final LocationService _locationService = LocationService(1);
   final WaypointGateway _waypointGateway = WaypointGateway();
 
   late MapProvider _mapProvider;
@@ -80,9 +80,19 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
+  void _scrollToCurrentPosition() async {
+    var currentZoom = _mapController.zoom;
+    var currentBearing = _mapController.rotation;
+    var currentPosition = await _locationService.getPosition();
+    _mapController.moveAndRotate(
+        LatLng(currentPosition.latitude, currentPosition.longitude),
+        currentZoom,
+        currentBearing);
+  }
+
   void _initTracking() async {
-    await locationService.initializeAsync();
-    locationService.startTracking(_onLocationUpdate);
+    await _locationService.initializeAsync();
+    _locationService.startTracking(_onLocationUpdate);
   }
 
   void _loadWaypoints() {
@@ -124,8 +134,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     debugPrint("Location tracking: [$_hasTrackingEnabled]");
 
     _hasTrackingEnabled
-        ? locationService.startTracking(_onLocationUpdate)
-        : locationService.stopTracking();
+        ? _locationService.startTracking(_onLocationUpdate)
+        : _locationService.stopTracking();
   }
 
   void _initMapProvider() {
@@ -269,6 +279,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             mapCenterLatLng: _mapCenterLatLng,
             mapCenterGrid: _mapCenterGrid,
             hasTrackingEnabled: _hasTrackingEnabled,
+            onScrollToCurrentLocation: _scrollToCurrentPosition,
             deviceLocation: _deviceLocation,
             onSelectFirstPoint: _onSelectFirstPoint,
             onSelectSecondPoint: _onSelectSecondPoint,
@@ -354,7 +365,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     }
 
     // Route
-    var routeLine = Polyline(points: _route, color: Colors.purpleAccent, strokeWidth: 3);
+    var routeLine =
+        Polyline(points: _route, color: Colors.purpleAccent, strokeWidth: 3);
     polyLines.add(routeLine);
     var routeMarkers = _route.map((e) => Marker(
         point: e,
@@ -458,4 +470,3 @@ class WaypointIcon extends StatelessWidget {
     );
   }
 }
-

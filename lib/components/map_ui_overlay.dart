@@ -11,6 +11,7 @@ class MapUiOverlay extends StatefulWidget {
   final VoidCallback onDrawToggle;
   final Function(MapType) onSelectMapType;
   final VoidCallback onToggleLocationTracking;
+  final VoidCallback onScrollToCurrentLocation;
 
   LatLng deviceLocation;
   LatLng? mapCenterLatLng;
@@ -37,6 +38,7 @@ class MapUiOverlay extends StatefulWidget {
       required this.mapController,
       required this.hasTrackingEnabled,
       required this.onToggleLocationTracking,
+      required this.onScrollToCurrentLocation,
       required this.onSelectFirstPoint,
       required this.onSelectSecondPoint,
       required this.onFinishMeasurement,
@@ -63,15 +65,6 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
     return widget.hasTrackingEnabled
         ? Icon(Icons.location_on, color: _foregroundColor)
         : const Icon(Icons.location_off, color: Colors.grey);
-  }
-
-  void _scrollToCurrentPosition() {
-    var currentZoom = widget.mapController.zoom;
-    var currentBearing = widget.mapController.rotation;
-    widget.mapController.moveAndRotate(
-        LatLng(widget.deviceLocation.latitude, widget.deviceLocation.longitude),
-        currentZoom,
-        currentBearing);
   }
 
   void _toggleLocationTracking() {
@@ -291,7 +284,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
-          onPressed: _scrollToCurrentPosition,
+          onPressed: widget.onScrollToCurrentLocation,
           mini: true,
           child: Icon(Icons.my_location, color: _foregroundColor),
         ),
