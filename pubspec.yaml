@@ -45,6 +45,7 @@ dependencies:
   flutter_native_splash: ^2.3.3
   permission_handler: ^11.0.1
   proj4dart: ^2.1.0
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:

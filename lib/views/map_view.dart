@@ -95,8 +95,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _locationService.startTracking(_onLocationUpdate);
   }
 
-  void _loadWaypoints() {
-    var waypoints = _waypointGateway.loadWaypoints();
+  void _loadWaypoints() async {
+    await _waypointGateway.loadWaypointsFromDisk();
+    var waypoints = _waypointGateway.getWaypoints();
 
     setState(() {
       _waypoints = waypoints;
@@ -112,19 +113,15 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _loadWaypoints();
   }
 
-  void _onAddWaypoint(String name, String? desc) {
+  void _onAddWaypoint(String name, String? desc) async {
     var wpt = Waypoint(
         latitude: _mapController.center.latitude,
         longitude: _mapController.center.longitude,
         name: name,
         description: desc);
 
-    var wasSaveSuccessful = _waypointGateway.saveWaypoint(wpt);
-
-    if (wasSaveSuccessful) {
-      debugPrint("SAVED WPT");
-      _loadWaypoints();
-    }
+    await _waypointGateway.saveWaypoint(wpt);
+    _loadWaypoints();
   }
 
   void _onToggleLocationTracking() {
