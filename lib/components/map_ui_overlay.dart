@@ -26,7 +26,7 @@ class MapUiOverlay extends StatefulWidget {
   final VoidCallback onSelectSecondPoint;
   final VoidCallback onFinishMeasurement;
 
-  final Function(String, String?) onAddWaypoint;
+  final VoidCallback onAddWaypoint;
 
   final VoidCallback onStartRouting;
 
@@ -80,9 +80,10 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         builder: (context) => Container(
               padding: const EdgeInsets.all(16),
               width: MediaQuery.of(context).size.width,
-              height: 400,
+              height: MediaQuery.of(context).size.height * 0.8,
               child: WaypointForm(
-                onSaveWaypoint: widget.onAddWaypoint,
+                mapCenter: widget.mapCenterGrid!,
+                onWaypointSaved: widget.onAddWaypoint,
               ),
             ));
   }

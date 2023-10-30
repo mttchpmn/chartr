@@ -116,14 +116,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _loadWaypoints();
   }
 
-  void _onAddWaypoint(String name, String? desc) async {
-    var wpt = Waypoint(
-        latitude: _mapController.center.latitude,
-        longitude: _mapController.center.longitude,
-        name: name,
-        description: desc);
-
-    await _waypointGateway.saveWaypoint(wpt);
+  void _onWaypointSaved() async {
     _loadWaypoints();
   }
 
@@ -284,7 +277,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             onSelectFirstPoint: _onSelectFirstPoint,
             onSelectSecondPoint: _onSelectSecondPoint,
             onFinishMeasurement: _onClearMeasurement,
-            onAddWaypoint: _onAddWaypoint,
+            onAddWaypoint: _onWaypointSaved,
             onStartRouting: _onStartRouting,
           ),
         ),
