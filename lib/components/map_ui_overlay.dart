@@ -1,6 +1,7 @@
 import 'package:chartr/components/coordinate_display.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/map_icons.dart';
+import 'package:chartr/components/waypoint_form.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:flutter/material.dart';
@@ -78,17 +79,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         builder: (context) => Container(
               padding: const EdgeInsets.all(16),
               width: MediaQuery.of(context).size.width,
-              height: 200,
-              child: Column(
-                children: [
-                  Text("Save Waypoint"),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        widget.onAddWaypoint("WPT", null);
-                      },
-                      child: Text("Add Waypoint"))
-                ],
+              height: 400,
+              child: WaypointForm(
+                onSaveWaypoint: widget.onAddWaypoint,
               ),
             ));
   }
@@ -310,7 +303,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
             _handleAddWaypoint(context);
           },
           mini: true,
-          child: Icon(MapIcons.map_marker_alt, color: _foregroundColor),
+          child: Icon(Icons.add_location, color: _foregroundColor),
         ),
       ),
       Positioned(

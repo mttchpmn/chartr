@@ -9,9 +9,11 @@ import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/components/route_builder.dart';
+import 'package:chartr/components/waypoint_icon.dart';
 import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
+import 'package:chartr/models/waypoint.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
@@ -302,7 +304,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _waypoints.forEach((wpt) {
       var m = Marker(
           point: LatLng(wpt.latitude, wpt.longitude),
-          builder: (ctx) => WaypointIcon());
+          builder: (ctx) => WaypointIcon(waypoint: wpt));
 
       result.add(m);
     });
@@ -443,27 +445,3 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 }
 
 enum MapMode { viewing, routing, drawing, navigating }
-
-class WaypointIcon extends StatelessWidget {
-  const WaypointIcon({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black87, borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Icon(
-            Icons.pin_drop,
-            color: Colors.deepOrange,
-            shadows: [Shadow()],
-          ),
-        ),
-      ),
-    );
-  }
-}
