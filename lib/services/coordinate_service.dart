@@ -1,3 +1,4 @@
+import 'package:chartr/models/grid_ref.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart';
 
@@ -21,16 +22,3 @@ class CoordinateService {
   }
 }
 
-class GridRef {
-  final int eastings;
-  final int northings;
-
-  GridRef(this.eastings, this.northings);
-
-  String toSixFigure() {
-    var e = eastings.toString().substring(2, 5);
-    var n = northings.toString().substring(2, 5);
-
-    return e + n;
-  }
-}

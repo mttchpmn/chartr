@@ -2,6 +2,7 @@ import 'package:chartr/components/coordinate_display.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/waypoint_form.dart';
+import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:flutter/material.dart';

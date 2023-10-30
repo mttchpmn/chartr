@@ -11,6 +11,7 @@ import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/components/route_builder.dart';
 import 'package:chartr/components/waypoint_icon.dart';
 import 'package:chartr/models/ais_position_report.dart';
+import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/models/waypoint.dart';

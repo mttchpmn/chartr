@@ -1,3 +1,4 @@
+import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
