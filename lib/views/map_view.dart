@@ -1,16 +1,11 @@
-import 'dart:async';
-import 'dart:ui';
-
-import 'package:chartr/components/coordinate_display.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/distance_display.dart';
 import 'package:chartr/components/map_ui_overlay.dart';
-import 'package:chartr/components/map_icons.dart';
+import 'package:chartr/components/menu_drawer.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/components/route_builder.dart';
 import 'package:chartr/components/waypoint_icon.dart';
-import 'package:chartr/models/ais_position_report.dart';
 import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
@@ -18,11 +13,8 @@ import 'package:chartr/models/waypoint.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -223,14 +215,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // FIXME - Adding this throws off the paintlayer by the AppBar's height
-      // appBar: AppBar(
-      //   title: Text(
-      //       "Speed: ${_currentSpeed.toStringAsFixed(1)} | Heading: ${_currentHeading.toStringAsFixed(1)}"),
-      // ),
-      // drawer: const Drawer( // TODO - Implement nav drawer
-      //   child: Text("Chartr"),
-      // ),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.black45,
+        foregroundColor: Colors.white,
+      ),
+      drawer: const MenuDrawer(),
       body: Stack(children: [
         FlutterMap(
           mapController: _mapController,
