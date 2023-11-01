@@ -4,7 +4,6 @@ import 'package:chartr/components/map_icons.dart';
 import 'package:chartr/components/waypoint_form.dart';
 import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_type.dart';
-import 'package:chartr/services/coordinate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -228,7 +227,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         child: Center(child: Crosshair()),
       ),
       Positioned(
-        top: 50, // Adjust the position as needed
+        top: 100, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
@@ -240,7 +239,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         ),
       ),
       Positioned(
-        top: 100, // Adjust the position as needed
+        top: 150, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
@@ -250,7 +249,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         ),
       ),
       Positioned(
-        top: 150, // Adjust the position as needed
+        top: 200, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
@@ -275,7 +274,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         ),
       ),
       Positioned(
-        top: 200, // Adjust the position as needed
+        top: 250, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
@@ -285,7 +284,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         ),
       ),
       Positioned(
-        top: 250, // Adjust the position as needed
+        top: 300, // Adjust the position as needed
         right: 15,
         child: FloatingActionButton(
           backgroundColor: _backgroundColor,
