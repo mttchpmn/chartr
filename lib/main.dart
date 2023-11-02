@@ -28,7 +28,7 @@ class _NavRangerState extends State<NavRanger> {
         '/data': (context) => const Placeholder(),
         '/weather': (context) => WeatherScreen(),
       },
-      title: 'Chartr',
+      title: 'NAVRANGR',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,

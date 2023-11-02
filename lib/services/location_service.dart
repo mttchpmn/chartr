@@ -1,8 +1,7 @@
 import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_android/geolocator_android.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class LocationUpdate {
   final LatLng currentPosition;
@@ -33,7 +32,7 @@ class LocationService {
         distanceFilter: _distanceFilter,
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
-              "Chartr will continue to receive your location in the background for tracking purposes",
+              "NAVRANGR will continue to receive location updates in the background",
           notificationTitle: "Background Location Usage",
           enableWakeLock: true,
         ));
