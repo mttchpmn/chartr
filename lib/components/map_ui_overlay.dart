@@ -229,30 +229,22 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
       Positioned(
         top: 100, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
+        child: MapButton(
           onPressed: () {
             _showMapLayerDialog(context);
           },
-          mini: true,
-          child: Icon(MapIcons.layer_group, color: _foregroundColor),
+          icon: Icon(Icons.layers, color: _foregroundColor),
         ),
       ),
       Positioned(
-        top: 150, // Adjust the position as needed
-        right: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
-          onPressed: _toggleNorthUp,
-          mini: true,
-          child: _getNorthButtonIcon(),
-        ),
-      ),
+          top: 150, // Adjust the position as needed
+          right: 15,
+          child: MapButton(
+              onPressed: _toggleNorthUp, icon: _getNorthButtonIcon())),
       Positioned(
         top: 200, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
+        child: MapButton(
           onPressed: () {
             _toggleLocationTracking();
 
@@ -269,54 +261,42 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
               ),
             );
           },
-          mini: true,
-          child: _getLocationTrackingIcon(),
+          icon: _getLocationTrackingIcon(),
         ),
       ),
       Positioned(
         top: 250, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
+        child: MapButton(
           onPressed: widget.onScrollToCurrentLocation,
-          mini: true,
-          child: Icon(Icons.my_location, color: _foregroundColor),
+          icon: Icon(Icons.my_location, color: _foregroundColor),
         ),
       ),
       Positioned(
         top: 300, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
-          onPressed: () {
-            widget.onDrawToggle();
-          },
-          mini: true,
-          child: Icon(Icons.draw, color: _foregroundColor),
-        ),
+        child: MapButton(
+            onPressed: widget.onDrawToggle,
+            icon: Icon(Icons.draw, color: _foregroundColor)),
       ),
       Positioned(
         bottom: 10,
         left: 15,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
+        child: MapButton(
           onPressed: () {
             _handleAddWaypoint(context);
           },
-          mini: true,
-          child: Icon(Icons.add_location, color: _foregroundColor),
+          icon: Icon(Icons.add_location, color: _foregroundColor),
         ),
       ),
       Positioned(
         bottom: 10,
         left: 65,
-        child: FloatingActionButton(
-          backgroundColor: _backgroundColor,
+        child: MapButton(
           onPressed: () {
             widget.onStartRouting();
           },
-          mini: true,
-          child: Icon(Icons.route, color: _foregroundColor),
+          icon: Icon(Icons.route, color: _foregroundColor),
         ),
       ),
       Positioned(
@@ -362,6 +342,25 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   void _handleAddWaypoint(BuildContext context) =>
       _showAddWaypointSheet(context);
+}
+
+class MapButton extends StatelessWidget {
+  final Icon icon;
+  final VoidCallback onPressed;
+
+  const MapButton({super.key, required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15), color: Colors.black87),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: icon,
+      ),
+    );
+  }
 }
 
 class DistanceMeasureButton extends StatefulWidget {
@@ -448,11 +447,9 @@ class _DistanceMeasureButtonState extends State<DistanceMeasureButton> {
     return Positioned(
       bottom: 10,
       right: 15,
-      child: FloatingActionButton(
-        backgroundColor: widget._backgroundColor,
+      child: MapButton(
         onPressed: _handleTap,
-        mini: true,
-        child: _getIcon(),
+        icon: _getIcon(),
       ),
     );
   }
