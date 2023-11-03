@@ -46,6 +46,8 @@ dependencies:
   permission_handler: ^11.0.1
   proj4dart: ^2.1.0
   path_provider: ^2.1.1
+  http: ^1.1.0
+  fl_chart: ^0.64.0
 
 dev_dependencies:
   flutter_test:

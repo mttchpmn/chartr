@@ -37,7 +37,7 @@ class WeatherPointData {
 
 class PointData {
   final DateTime dateTime;
-  final double value;
+  final double? value;
   final String unit;
 
   PointData({required this.dateTime, required this.value, required this.unit});
@@ -47,7 +47,7 @@ enum TimeInterval { oneHourly, twoHourly, threeHourly, sixHourly }
 
 class WeatherPointDataInput {
   final LatLng point;
-  final DateTime fromDate;
+  final String fromDate;
   final TimeInterval interval;
   final int repeat;
 
