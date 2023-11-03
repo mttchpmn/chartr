@@ -70,13 +70,13 @@ class WeatherPointDataProvider
     var airHumidity = _getVariableData("air.humidity.at-2m", json);
     var airTemperature = _getVariableData("air.temperature.at-2m", json);
 
-    var cloudCover = _getVariableData("air.temperature.at-2m", json);
-    var cloudBase = _getVariableData("air.temperature.at-2m", json);
-    var precipitationRate = _getVariableData("air.temperature.at-2m", json);
+    var cloudCover = _getVariableData("cloud.cover", json);
+    var cloudBase = _getVariableData("cloud.base.height", json);
+    var precipitationRate = _getVariableData("precipitation.rate", json);
 
-    var windDirection = _getVariableData("air.temperature.at-2m", json);
-    var windSpeed = _getVariableData("air.temperature.at-2m", json);
-    var windGust = _getVariableData("air.temperature.at-2m", json);
+    var windDirection = _getVariableData("wind.direction.at-10m", json);
+    var windSpeed = _getVariableData("wind.speed.at-10m", json);
+    var windGust = _getVariableData("wind.speed.gust.at-10m", json);
 
     var airPressureHpa = _zipPointsAndData(timePoints, airPressure, "hPa")
         .map((e) => PointData(
@@ -125,16 +125,32 @@ class WeatherPointDataProvider
     return result;
   }
 
-  List<double> _getVariableData(
+  List<double?> _getVariableData(
       String variableName, Map<String, dynamic> json) {
     List<dynamic> tmp = json["variables"][variableName]["data"];
-    List<double> result = List<double>.from(tmp);
+    List<double?> result = tmp.map((value) {
+      if (value is double) {
+        return value;
+      } else if (value is int) {
+        return value.toDouble();
+      } else {
+        return null; // Handle other types if needed, or return null for unsupported types
+      }
+    }).toList();
 
     return result;
   }
 
+  // List<double?> _getVariableData(
+  //     String variableName, Map<String, dynamic> json) {
+  //   List<dynamic> tmp = json["variables"][variableName]["data"];
+  //   List<double?> result = List<double?>.from(tmp);
+  //
+  //   return result;
+  // }
+
   List<PointData> _zipPointsAndData(
-      List<DateTime> points, List<double> data, String unit) {
+      List<DateTime> points, List<double?> data, String unit) {
     List<PointData> result = [];
 
     for (var i = 0; i < points.length - 1; i++) {
