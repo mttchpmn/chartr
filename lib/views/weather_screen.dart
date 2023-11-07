@@ -22,9 +22,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _initWeatherPointData() async {
+    var now = DateTime.now(); // Get current UTC time.
+    var midnightLastNight = DateTime(now.year, now.month, now.day);
+    var isoDateStr =
+        midnightLastNight.toUtc().toIso8601String(); // Convert to ISO string.
+
+    print("Weather from: $isoDateStr");
+
     var input = WeatherPointDataInput(
         point: const LatLng(-36.861851, 174.852992),
-        fromDate: "2023-11-02T11:00:00.000Z",
+        fromDate: isoDateStr,
         interval: TimeInterval.oneHourly,
         repeat: 24);
     var data = await _weatherService.getWeatherPointData(input);
@@ -54,9 +61,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         drawer: const MenuDrawer(),
         body: Padding(
-          padding: EdgeInsets.only(top: 100, left: 16, right: 16),
+          padding: const EdgeInsets.only(top: 100, left: 16, right: 16),
           child: Column(children: [
-            Text("Weather"),
+            const Text("Weather"),
             WeatherPointChart(weatherData: _weatherPointData!)
           ]),
         ));

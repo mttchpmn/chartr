@@ -24,14 +24,14 @@ class WeatherPointData {
     required this.interval,
     required this.repeat,
     required this.airPressure,
-    required this.airHumidity,
     required this.airTemperature,
-    required this.cloudCover,
+    required this.airHumidity, // %
+    required this.cloudCover, // %
     required this.cloudBase,
     required this.precipitationRate,
     required this.windDirection,
-    required this.windSpeed,
-    required this.windGust,
+    required this.windSpeed, // kmh
+    required this.windGust, // kmh
   });
 }
 
