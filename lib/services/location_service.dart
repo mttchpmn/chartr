@@ -32,7 +32,7 @@ class LocationService {
         distanceFilter: _distanceFilter,
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
-              "NAVRANGR will continue to receive location updates in the background",
+              "RANGR will continue to receive location updates in the background",
           notificationTitle: "Background Location Usage",
           enableWakeLock: true,
         ));
