@@ -22,8 +22,10 @@ class MapboxService {
     var client = http.Client();
     var domain = "api.mapbox.com";
     var path =
-        "geocoding/v5/mapbox.places/${coordinates.longitude},${coordinates.latitude}.json?access_token=$_accessToken";
-    var url = Uri.https(domain, path);
+        "geocoding/v5/mapbox.places/${coordinates.longitude},${coordinates.latitude}.json";
+    var queryParams = {'access_token': _accessToken};
+
+    var url = Uri.https(domain, path, queryParams);
 
     try {
       var response = await client.get(url);
@@ -37,10 +39,11 @@ class MapboxService {
   String _parseApiResponse(String response) {
     Map<String, dynamic> json = jsonDecode(response);
 
-    List<Map<String, dynamic>> features = json["features"];
+    var features = List<Map<String, dynamic>>.from(
+        json["features"].map((e) => Map<String, dynamic>.from(e)));
 
     var localityFeature = features.firstWhere((element) {
-      List<String> placeType = element["place_type"];
+      List<String> placeType = List<String>.from(element["place_type"]);
 
       return placeType.contains("locality");
     });

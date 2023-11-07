@@ -2,6 +2,7 @@ import 'package:chartr/components/menu_drawer.dart';
 import 'package:chartr/components/weather_point_chart.dart';
 import 'package:chartr/models/weather_point_data.dart';
 import 'package:chartr/services/location_service.dart';
+import 'package:chartr/services/mapbox_service.dart';
 import 'package:chartr/services/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -14,9 +15,11 @@ class WeatherScreen extends StatefulWidget {
 class _WeatherScreenState extends State<WeatherScreen> {
   final WeatherService _weatherService = WeatherService();
   final LocationService _locationService = LocationService(0);
+  final MapboxService _mapboxService = MapboxService();
 
   WeatherPointData? _weatherPointData;
   LatLng? _deviceLocation;
+  String? _locality;
 
   @override
   void initState() {
@@ -28,9 +31,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void _setLocation() async {
     await _locationService.initializeAsync();
     var loc = await _locationService.getPosition();
+    var location = LatLng(loc.latitude, loc.longitude);
+    var locality = await _mapboxService.getLocalityForCoordinates(location);
 
     setState(() {
-      _deviceLocation = LatLng(loc.latitude, loc.longitude);
+      _deviceLocation = location;
+      _locality = locality;
     });
   }
 
@@ -76,7 +82,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
         body: Padding(
           padding: const EdgeInsets.only(top: 100, left: 16, right: 16),
           child: Column(children: [
-            const Text("Weather at your Location"),
+            Text(
+              "Showing Weather for ${_locality ?? "Your Location"}",
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(
+              height: 15,
+            ),
             WeatherPointChart(weatherData: _weatherPointData!)
           ]),
         ));
