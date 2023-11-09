@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 
 class WeatherPointChart extends StatefulWidget {
   WeatherPointData weatherData;
+  List<PointData> tideData;
 
-  WeatherPointChart({super.key, required this.weatherData});
+  WeatherPointChart(
+      {super.key, required this.weatherData, required this.tideData});
 
   @override
   State<StatefulWidget> createState() => _WeatherPointChartState();
@@ -36,6 +38,8 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
         return "Wind Speed (kmh)";
       case ChartState.windDirection:
         return "Wind Direction";
+      case ChartState.tide:
+        return "Tides";
     }
   }
 
@@ -43,7 +47,8 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
     data.removeWhere((element) => element.value == null);
 
     var result = data
-        .map((e) => FlSpot(e.dateTime.toLocal().hour.toDouble(),
+        .map((e) => FlSpot(
+            e.dateTime.toLocal().hour + (e.dateTime.toLocal().minute / 60),
             double.parse(e.value!.toStringAsFixed(1))))
         .toList();
     return result;
@@ -87,14 +92,20 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
             Colors.lightBlue, "Wind Direction (deg)", "deg");
       case ChartState.windSpeed:
         return _buildWindChart();
+      case ChartState.tide:
+        return _buildChart(
+            widget.tideData, false, Colors.blueAccent, "Tide Height", "m",
+            isCurved: false);
     }
   }
 
   LineChartData _buildChart(List<PointData> points, bool isPercentage,
-      Color lineColor, String yAxisTitle, String units) {
+      Color lineColor, String yAxisTitle, String units,
+      {bool isCurved = true}) {
     var now = DateTime.now();
     var hour = now.hour + (now.minute / 60);
     return LineChartData(
+      clipData: const FlClipData.all(),
       minY: isPercentage ? 0 : _getMinY(points) * 0.95,
       maxY: isPercentage ? 100 : _getMaxY(points) * 1.05,
       extraLinesData: ExtraLinesData(verticalLines: [
@@ -109,7 +120,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
             barWidth: 3,
             color: lineColor,
             spots: _buildSpotList(points),
-            isCurved: true,
+            isCurved: isCurved,
             dotData: const FlDotData(show: false)),
       ],
       titlesData: FlTitlesData(
@@ -182,72 +193,82 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
           aspectRatio: 1.5,
           child: LineChart(_getChartData()),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                color: _chartState == ChartState.airPressure
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              IconButton(
+                  color: _chartState == ChartState.airPressure
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.airPressure);
+                  },
+                  icon: const Icon(Icons.compress)),
+              IconButton(
+                onPressed: () {
+                  _onChartStateChange(ChartState.airTemperature);
+                },
+                icon: const Icon(Icons.thermostat),
+                color: _chartState == ChartState.airTemperature
                     ? Colors.deepOrange
                     : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.airPressure);
-                },
-                icon: const Icon(Icons.compress)),
-            IconButton(
-              onPressed: () {
-                _onChartStateChange(ChartState.airTemperature);
-              },
-              icon: const Icon(Icons.thermostat),
-              color: _chartState == ChartState.airTemperature
-                  ? Colors.deepOrange
-                  : Colors.black54,
-            ),
+              ),
 
-            IconButton(
-                color: _chartState == ChartState.cloudCover
-                    ? Colors.deepOrange
-                    : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.cloudCover);
-                },
-                icon: const Icon(Icons.cloud)),
-            IconButton(
-                color: _chartState == ChartState.cloudBase
-                    ? Colors.deepOrange
-                    : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.cloudBase);
-                },
-                icon: const Icon(Icons.terrain)),
-            // cloud - cover / base
-            IconButton(
-                color: _chartState == ChartState.precipitation
-                    ? Colors.deepOrange
-                    : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.precipitation);
-                },
-                icon: const Icon(Icons.water_drop)),
-            // rain
+              IconButton(
+                  color: _chartState == ChartState.cloudCover
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.cloudCover);
+                  },
+                  icon: const Icon(Icons.cloud)),
+              IconButton(
+                  color: _chartState == ChartState.cloudBase
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.cloudBase);
+                  },
+                  icon: const Icon(Icons.terrain)),
+              // cloud - cover / base
+              IconButton(
+                  color: _chartState == ChartState.precipitation
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.precipitation);
+                  },
+                  icon: const Icon(Icons.water_drop)),
+              // rain
 
-            IconButton(
-                color: _chartState == ChartState.windSpeed
-                    ? Colors.deepOrange
-                    : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.windSpeed);
-                },
-                icon: const Icon(Icons.wind_power)),
-            IconButton(
-                color: _chartState == ChartState.windDirection
-                    ? Colors.deepOrange
-                    : Colors.black54,
-                onPressed: () {
-                  _onChartStateChange(ChartState.windDirection);
-                },
-                icon: const Icon(Icons.flag)),
-            // wind - speed / gust / dir
-          ],
+              IconButton(
+                  color: _chartState == ChartState.windSpeed
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.windSpeed);
+                  },
+                  icon: const Icon(Icons.wind_power)),
+              IconButton(
+                  color: _chartState == ChartState.windDirection
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.windDirection);
+                  },
+                  icon: const Icon(Icons.flag)),
+              IconButton(
+                  color: _chartState == ChartState.tide
+                      ? Colors.deepOrange
+                      : Colors.black54,
+                  onPressed: () {
+                    _onChartStateChange(ChartState.tide);
+                  },
+                  icon: const Icon(Icons.waves)),
+              // wind - speed / gust / dir
+            ],
+          ),
         )
       ],
     );
@@ -261,5 +282,6 @@ enum ChartState {
   cloudCover,
   precipitation,
   windSpeed,
-  windDirection
+  windDirection,
+  tide
 }

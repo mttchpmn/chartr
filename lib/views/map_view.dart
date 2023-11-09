@@ -217,7 +217,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.black45,
+        backgroundColor: Colors.deepOrange,
         foregroundColor: Colors.white,
       ),
       drawer: const MenuDrawer(),

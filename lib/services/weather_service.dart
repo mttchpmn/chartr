@@ -1,4 +1,5 @@
 import 'package:chartr/data_providers/data_provider.dart';
+import 'package:chartr/data_providers/tide_point_data_provider.dart';
 import 'package:chartr/data_providers/weather_point_data_provider.dart';
 import 'package:chartr/models/weather_point_data.dart';
 
@@ -17,5 +18,12 @@ class WeatherService {
     var data = await _weatherPointDataProvider.getData(input);
 
     return data;
+  }
+
+  Future<List<PointData>> getTideData(WeatherPointDataInput input) async {
+    var tideService = TidePointDataProvider();
+    var tides = await tideService.getData(input);
+
+    return tides;
   }
 }

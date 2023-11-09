@@ -20,6 +20,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   late DateTime _date;
   WeatherPointData? _weatherPointData;
+  List<PointData>? _tideData;
   bool _weatherPointDataLoading = false;
   LatLng? _deviceLocation;
   String? _locality;
@@ -83,9 +84,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
         interval: TimeInterval.oneHourly,
         repeat: 24);
     var data = await _weatherService.getWeatherPointData(input);
+    var tide = await _weatherService.getTideData(input);
 
     setState(() {
       _weatherPointData = data;
+      _tideData = tide;
       _weatherPointDataLoading = false;
     });
   }
@@ -103,7 +106,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.black45,
+          backgroundColor: Colors.deepOrange,
           foregroundColor: Colors.white,
         ),
         drawer: const MenuDrawer(),
@@ -131,7 +134,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ),
             _weatherPointDataLoading
                 ? const Spinner()
-                : WeatherPointChart(weatherData: _weatherPointData!)
+                : WeatherPointChart(
+                    weatherData: _weatherPointData!,
+                    tideData: _tideData!,
+                  )
           ]),
         ));
   }
