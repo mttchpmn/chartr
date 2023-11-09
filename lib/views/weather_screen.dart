@@ -1,5 +1,8 @@
+import 'package:chartr/components/current_weather_display.dart';
 import 'package:chartr/components/menu_drawer.dart';
+import 'package:chartr/components/spinner.dart';
 import 'package:chartr/components/weather_point_chart.dart';
+import 'package:chartr/models/current_weather_data.dart';
 import 'package:chartr/models/weather_point_data.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/mapbox_service.dart';
@@ -20,8 +23,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   late DateTime _date;
   WeatherPointData? _weatherPointData;
+  CurrentWeatherData? _currentWeatherData;
   List<PointData>? _tideData;
-  bool _weatherPointDataLoading = false;
+  bool _weatherDataLoading = true;
   LatLng? _deviceLocation;
   String? _locality;
 
@@ -29,8 +33,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void initState() {
     super.initState();
     _setDate();
-    _setLocation();
-    _setWeatherPointData();
+    _setData();
   }
 
   void _setDate() {
@@ -42,6 +45,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
     });
   }
 
+  void _setData() async {
+    await _setLocation();
+    await _setWeatherData();
+  }
+
   void _setDateNextDay() {
     var newDate = _date.add(Duration(days: 1));
 
@@ -49,7 +57,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       _date = newDate;
     });
 
-    _setWeatherPointData();
+    _setWeatherData();
   }
 
   void _setDatePrevDay() {
@@ -59,10 +67,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
       _date = newDate;
     });
 
-    _setWeatherPointData();
+    _setWeatherData();
   }
 
-  void _setLocation() async {
+  Future<void> _setLocation() async {
     await _locationService.initializeAsync();
     var loc = await _locationService.getPosition();
     var location = LatLng(loc.latitude, loc.longitude);
@@ -74,22 +82,26 @@ class _WeatherScreenState extends State<WeatherScreen> {
     });
   }
 
-  void _setWeatherPointData() async {
+  Future<void> _setWeatherData() async {
     setState(() {
-      _weatherPointDataLoading = true;
+      _weatherDataLoading = true;
     });
     var input = WeatherPointDataInput(
-        point: const LatLng(-36.861851, 174.852992),
+        point: _deviceLocation!,
         fromDate: _date.toUtc().toIso8601String(),
         interval: TimeInterval.oneHourly,
         repeat: 24);
-    var data = await _weatherService.getWeatherPointData(input);
+
+    var pointData = await _weatherService.getWeatherPointData(input);
+    var currentData =
+        await _weatherService.getCurrentWeatherData(_deviceLocation!);
     var tide = await _weatherService.getTideData(input);
 
     setState(() {
-      _weatherPointData = data;
+      _weatherPointData = pointData;
+      _currentWeatherData = currentData;
       _tideData = tide;
-      _weatherPointDataLoading = false;
+      _weatherDataLoading = false;
     });
   }
 
@@ -99,7 +111,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_weatherPointData == null || _deviceLocation == null) {
+    if (_weatherDataLoading) {
       return const Scaffold(body: Spinner());
     }
 
@@ -132,29 +144,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
             SizedBox(
               height: 15,
             ),
-            _weatherPointDataLoading
+            _weatherDataLoading
                 ? const Spinner()
                 : WeatherPointChart(
                     weatherData: _weatherPointData!,
                     tideData: _tideData!,
-                  )
+                  ),
+            CurrentWeatherDisplay(
+              data: _currentWeatherData!,
+            )
           ]),
         ));
-  }
-}
-
-class Spinner extends StatelessWidget {
-  const Spinner({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(child: Text("Loading...")),
-      ],
-    );
   }
 }

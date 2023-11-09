@@ -217,6 +217,27 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            contentPadding: EdgeInsets.all(5),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor:
+                Colors.white.withAlpha(235), // Slightly transparent white
+            prefixIcon: Icon(Icons.search, color: Colors.black54),
+            suffixIcon: IconButton(
+              icon: Icon(Icons.clear, color: Colors.black54),
+              onPressed: () {
+                // Clear the search field or do something else
+              },
+            ),
+          ),
+          onChanged: (value) {},
+        ),
         backgroundColor: Colors.deepOrange,
         foregroundColor: Colors.white,
       ),
