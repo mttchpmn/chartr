@@ -111,7 +111,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_weatherDataLoading) {
+    if (_deviceLocation == null || _currentWeatherData == null) {
       return const Scaffold(body: Spinner());
     }
 
