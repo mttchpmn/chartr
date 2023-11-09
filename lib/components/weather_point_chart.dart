@@ -69,48 +69,78 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
     switch (_chartState) {
       case ChartState.airPressure:
         return _buildChart(widget.weatherData.airPressure, false, Colors.orange,
-            "Pressure (hPa)");
+            "Pressure (hPa)", "hPa");
       case ChartState.airTemperature:
         return _buildChart(widget.weatherData.airTemperature, false, Colors.red,
-            "Temperature (degC)");
+            "Temperature (degC)", "deg C");
       case ChartState.cloudCover:
         return _buildChart(widget.weatherData.cloudCover, true, Colors.green,
-            "Cloud Cover (%)");
+            "Cloud Cover (%)", "%");
       case ChartState.cloudBase:
-        return _buildChart(
-            widget.weatherData.cloudBase, false, Colors.pink, "Cloud Base (m)");
+        return _buildChart(widget.weatherData.cloudBase, false, Colors.pink,
+            "Cloud Base (m)", "%");
       case ChartState.precipitation:
         return _buildChart(widget.weatherData.precipitationRate, false,
-            Colors.blue, "Precipitation Rate (mm/hr)");
+            Colors.blue, "Precipitation Rate (mm/hr)", "mm/hr");
       case ChartState.windDirection:
         return _buildChart(widget.weatherData.windDirection, false,
-            Colors.lightBlue, "Wind Direction (deg)");
+            Colors.lightBlue, "Wind Direction (deg)", "deg");
       case ChartState.windSpeed:
         return _buildWindChart();
     }
   }
 
   LineChartData _buildChart(List<PointData> points, bool isPercentage,
-      Color lineColor, String yAxisTitle) {
+      Color lineColor, String yAxisTitle, String units) {
+    var now = DateTime.now();
+    var hour = now.hour + (now.minute / 60);
     return LineChartData(
-        minY: isPercentage ? 0 : _getMinY(points) * 0.95,
-        maxY: isPercentage ? 100 : _getMaxY(points) * 1.05,
-        lineBarsData: [
-          LineChartBarData(
-              color: lineColor,
-              spots: _buildSpotList(points),
-              isCurved: true,
-              dotData: const FlDotData(show: false)),
-        ],
-        titlesData: FlTitlesData(
-            bottomTitles: const AxisTitles(
-              axisNameSize: 20,
-              axisNameWidget: Text("Time of Day"),
-            ),
-            leftTitles: AxisTitles(
-              axisNameSize: 20,
-              axisNameWidget: Text(yAxisTitle),
-            )));
+      minY: isPercentage ? 0 : _getMinY(points) * 0.95,
+      maxY: isPercentage ? 100 : _getMaxY(points) * 1.05,
+      extraLinesData: ExtraLinesData(verticalLines: [
+        VerticalLine(
+            x: hour,
+            color: Colors.black45,
+            strokeWidth: 5,
+            label: VerticalLineLabel(labelResolver: (line) => 'Now'))
+      ]),
+      lineBarsData: [
+        LineChartBarData(
+            barWidth: 3,
+            color: lineColor,
+            spots: _buildSpotList(points),
+            isCurved: true,
+            dotData: const FlDotData(show: false)),
+      ],
+      titlesData: FlTitlesData(
+          bottomTitles: const AxisTitles(
+            axisNameSize: 20,
+            axisNameWidget: Text("Time of Day"),
+          ),
+          leftTitles: AxisTitles(
+            axisNameSize: 20,
+            axisNameWidget: Text(yAxisTitle),
+          )),
+      lineTouchData: LineTouchData(
+        touchTooltipData: LineTouchTooltipData(
+          // Customize the tooltip box here
+          tooltipBgColor: Colors.deepOrange,
+          getTooltipItems: (List<LineBarSpot> touchedSpots) {
+            return touchedSpots.map((touchedSpot) {
+              // Assuming you have a way to convert the x-axis value to a more readable format
+              String xValue = '${touchedSpot.x}';
+              String yValue = '${touchedSpot.y}';
+
+              return LineTooltipItem(
+                'Time: ${xValue}0\nValue: $yValue $units',
+                TextStyle(color: Colors.white),
+              );
+            }).toList();
+          },
+        ),
+        // Other touch data properties
+      ),
+    );
   }
 
   LineChartData _buildWindChart() {
@@ -155,7 +185,6 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // IconButton(onPressed: () {}, icon: Icon(Icons.compress)), // pressure
             IconButton(
                 color: _chartState == ChartState.airPressure
                     ? Colors.deepOrange
