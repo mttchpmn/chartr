@@ -308,6 +308,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     _waypoints.forEach((wpt) {
       var m = Marker(
+          width: 90,
+          height: 60,
           point: LatLng(wpt.latitude, wpt.longitude),
           builder: (ctx) => WaypointIcon(waypoint: wpt));
 

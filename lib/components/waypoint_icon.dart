@@ -15,20 +15,43 @@ class WaypointIcon extends StatelessWidget {
       onTap: () {
         _onWaypointTap(context);
       },
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.black87, borderRadius: BorderRadius.circular(20)),
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Icon(
-              Icons.pin_drop,
-              color: Colors.deepOrange,
-              size: 16,
-              shadows: [Shadow()],
+      child: Stack(
+        children: [
+          Center(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Icon(
+                  Icons.pin_drop,
+                  color: Colors.deepOrange,
+                  size: 16,
+                  shadows: [Shadow()],
+                ),
+              ),
             ),
           ),
-        ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  waypoint.name.length > 6
+                      ? waypoint.name.substring(0, 6)
+                      : waypoint.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -20,7 +20,7 @@ class PositionIcon extends StatelessWidget {
         ),
         const Icon(
           Icons.circle,
-          color: Colors.deepOrange,
+          color: Colors.purpleAccent,
           size: 20,
         ),
       ],
