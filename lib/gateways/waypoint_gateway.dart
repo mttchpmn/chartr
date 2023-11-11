@@ -40,7 +40,7 @@ class WaypointGateway {
     return File(filePath);
   }
 
-  Future<void> loadWaypointsFromDisk() async {
+  Future<List<Waypoint>> loadWaypointsFromDisk() async {
     var localFile = await _waypointsFile;
     var json = await localFile.readAsString();
     List<dynamic> waypointList = jsonDecode(json);
@@ -48,6 +48,8 @@ class WaypointGateway {
     var waypoints = waypointList.map((e) => Waypoint.fromJson(e)).toList();
 
     _waypoints = waypoints;
+
+    return waypoints;
   }
 
   Future<void> _writeWaypointsToDisk() async {
@@ -59,4 +61,3 @@ class WaypointGateway {
     debugPrint(data);
   }
 }
-

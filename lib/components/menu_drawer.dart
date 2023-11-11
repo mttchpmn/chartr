@@ -21,28 +21,66 @@ class MenuDrawer extends StatelessWidget {
               style: TextStyle(fontSize: 32),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.map),
-            title: const Text(
-              'NAVIGATION',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.of(context).pushNamed("/home");
-            },
+          MenuTile(
+            icon: Icons.map,
+            title: "NAVIGATION",
+            destination: "/home",
           ),
-          ListTile(
-            leading: const Icon(Icons.sunny),
-            title: const Text(
-              'WEATHER',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.of(context).pushNamed("/weather");
-            },
+          MenuTile(
+            icon: Icons.sunny,
+            title: "WEATHER",
+            destination: "/weather",
+          ),
+          MenuTile(
+            icon: Icons.location_pin,
+            title: "WAYPOINTS",
+            destination: "/waypoints",
+          ),
+          MenuTile(
+            icon: Icons.route,
+            title: "TRACKS",
+            destination: "/tracks",
+          ),
+          Divider(),
+          MenuTile(
+            icon: Icons.cloud_download,
+            title: "DOWNLOADS",
+            destination: "/downloads",
+          ),
+          MenuTile(
+            icon: Icons.settings,
+            title: "SETTINGS",
+            destination: "/settings",
           ),
         ],
       ),
+    );
+  }
+}
+
+class MenuTile extends StatelessWidget {
+  IconData icon;
+  String title;
+  String destination;
+
+  MenuTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.destination,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      onTap: () {
+        Navigator.of(context).pushNamed(destination);
+      },
     );
   }
 }

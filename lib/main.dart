@@ -1,4 +1,5 @@
 import 'package:chartr/views/map_view.dart';
+import 'package:chartr/views/waypoints_screen.dart';
 import 'package:chartr/views/weather_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,8 +26,11 @@ class _NavRangerState extends State<NavRanger> {
     return MaterialApp(
       routes: {
         '/home': (context) => const FullScreenMapWidget(),
-        '/data': (context) => const Placeholder(),
         '/weather': (context) => WeatherScreen(),
+        '/waypoints': (context) => const WaypointScreen(),
+        '/tracks': (context) => const Placeholder(),
+        '/downloads': (context) => const Placeholder(),
+        '/settings': (context) => const Placeholder(),
       },
       title: 'NAVRANGR',
       theme: ThemeData(
