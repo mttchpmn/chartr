@@ -111,7 +111,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
       extraLinesData: ExtraLinesData(verticalLines: [
         VerticalLine(
             x: hour,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).highlightColor,
             strokeWidth: 5,
             label: VerticalLineLabel(labelResolver: (line) => 'Now'))
       ]),
@@ -182,7 +182,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
   @override
   Widget build(BuildContext context) {
     Color fg = Theme.of(context).highlightColor;
-    var unselectedIcon = Theme.of(context).primaryColor;
+    var unselectedIcon = Theme.of(context).colorScheme.primary;
     return Column(
       children: [
         Text(

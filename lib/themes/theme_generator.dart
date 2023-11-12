@@ -8,7 +8,7 @@ class ThemeGenerator {
       case ThemeName.conservation:
         return _conservation;
       case ThemeName.coastguard:
-      // TODO: Handle this case.
+        return _coastguard;
       case ThemeName.purpleHaze:
         return _purpleHaze;
     }
@@ -32,7 +32,118 @@ class ThemeGenerator {
             primary: Colors.deepOrange,
             secondary: Colors.black));
 
-    return searchAndRescue;
+    var sarOrange = Colors.deepOrange;
+    var sarGrey = Color(0xFF8D918B);
+    var cgBlue = Color(0xFF00CCFF);
+    var dark = Color(0xFF151515);
+    var light = Color(0xFFF5F5F5);
+
+    var purpleHaze = ThemeData(
+      useMaterial3: true,
+      scaffoldBackgroundColor: dark,
+      primaryColorLight: light,
+      highlightColor: cgBlue,
+      colorScheme: ColorScheme.fromSeed(
+          seedColor: sarOrange,
+          primary: sarOrange,
+          primaryContainer: dark,
+          secondary: sarGrey,
+          tertiary: cgBlue),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: dark,
+      ),
+      listTileTheme: ListTileThemeData(
+        iconColor: sarOrange,
+        textColor: light,
+        selectedTileColor: cgBlue,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+          prefixIconColor: sarOrange,
+          filled: true,
+          fillColor: dark,
+          hintStyle: TextStyle(color: light),
+          suffixIconColor: sarOrange),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: dark, foregroundColor: sarOrange),
+      iconTheme: IconThemeData(color: sarOrange),
+      textTheme: TextTheme(
+          displayLarge: TextStyle(color: light),
+          displayMedium: TextStyle(color: light),
+          displaySmall: TextStyle(color: light),
+          headlineLarge: TextStyle(color: light),
+          headlineMedium: TextStyle(color: light),
+          headlineSmall: TextStyle(color: light),
+          titleLarge: TextStyle(color: light),
+          titleMedium: TextStyle(color: light),
+          titleSmall: TextStyle(color: light),
+          bodyLarge: TextStyle(color: light),
+          bodyMedium: TextStyle(color: light),
+          bodySmall: TextStyle(color: light),
+          labelLarge: TextStyle(color: sarOrange, fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(color: cgBlue),
+          labelSmall: TextStyle(color: light)),
+      appBarTheme:
+          AppBarTheme(color: sarOrange, iconTheme: IconThemeData(color: dark)),
+    );
+
+    return purpleHaze;
+  }
+
+  ThemeData get _coastguard {
+    var cgDarkBlue = Color(0xFF014991);
+    var cgRed = Color(0xFFEF4035);
+    var cgBlue = Color(0xFF1C70CE);
+    var dark = Color(0xFF252267);
+    var light = Color(0xFFFFFFFF);
+
+    var purpleHaze = ThemeData(
+      useMaterial3: true,
+      scaffoldBackgroundColor: light,
+      primaryColorLight: light,
+      highlightColor: cgRed,
+      colorScheme: ColorScheme.fromSeed(
+          seedColor: cgBlue,
+          primary: cgDarkBlue,
+          primaryContainer: cgRed,
+          secondary: cgRed,
+          tertiary: cgBlue),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: light,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+          prefixIconColor: cgBlue,
+          filled: true,
+          fillColor: light,
+          suffixIconColor: cgBlue),
+      listTileTheme: ListTileThemeData(
+        iconColor: cgRed,
+        textColor: dark,
+        selectedTileColor: cgBlue,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: cgRed, foregroundColor: light),
+      iconTheme: IconThemeData(color: light),
+      textTheme: TextTheme(
+          displayLarge: TextStyle(color: dark),
+          displayMedium: TextStyle(color: dark),
+          displaySmall: TextStyle(color: dark),
+          headlineLarge: TextStyle(color: dark),
+          headlineMedium: TextStyle(color: dark),
+          headlineSmall: TextStyle(color: dark),
+          titleLarge: TextStyle(color: dark),
+          titleMedium: TextStyle(color: dark),
+          titleSmall: TextStyle(color: dark),
+          bodyLarge: TextStyle(color: dark),
+          bodyMedium: TextStyle(color: dark),
+          bodySmall: TextStyle(color: dark),
+          labelLarge: TextStyle(color: light, fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(color: cgBlue),
+          labelSmall: TextStyle(color: light)),
+      appBarTheme: AppBarTheme(
+          color: cgDarkBlue, iconTheme: IconThemeData(color: light)),
+    );
+
+    return purpleHaze;
   }
 
   ThemeData get _conservation {
@@ -117,8 +228,8 @@ class ThemeGenerator {
             iconColor: purplePrimary,
             textColor: palePurple,
             selectedTileColor: accent),
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: Colors.black),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Colors.black, foregroundColor: purplePrimary),
         iconTheme: IconThemeData(color: purplePrimary),
         textTheme: TextTheme(
             displayLarge: TextStyle(color: palePurple),
@@ -133,8 +244,8 @@ class ThemeGenerator {
             bodyLarge: TextStyle(color: palePurple),
             bodyMedium: TextStyle(color: palePurple),
             bodySmall: TextStyle(color: palePurple),
-            labelLarge: TextStyle(color: palePurple),
-            labelMedium: TextStyle(color: palePurple),
+            labelLarge: TextStyle(color: purplePrimary),
+            labelMedium: TextStyle(color: accent),
             labelSmall: TextStyle(color: palePurple)),
         appBarTheme: AppBarTheme(
             color: purplePrimary, iconTheme: IconThemeData(color: black)),

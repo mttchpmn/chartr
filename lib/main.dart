@@ -35,8 +35,8 @@ class _NavRangerState extends State<NavRanger> {
         '/downloads': (context) => const Placeholder(),
         '/settings': (context) => const Placeholder(),
       },
-      title: 'NAVRANGR',
-      theme: _themeGenerator.getTheme(ThemeName.conservation),
+      title: 'RANGR',
+      theme: _themeGenerator.getTheme(ThemeName.searchAndRescue),
       home: const Scaffold(
         body: FullScreenMapWidget(),
       ),
