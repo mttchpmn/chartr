@@ -15,23 +15,6 @@ class ThemeGenerator {
   }
 
   ThemeData get _searchAndRescue {
-    var searchAndRescue = ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: Colors.black),
-        iconTheme: IconThemeData(color: Colors.deepOrange),
-        textTheme: const TextTheme(
-            displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            bodyLarge: TextStyle(fontSize: 18, color: Colors.black87)),
-        appBarTheme: const AppBarTheme(
-            color: Colors.deepOrange,
-            iconTheme: IconThemeData(color: Colors.black)),
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepOrange,
-            primary: Colors.deepOrange,
-            secondary: Colors.black));
-
     var sarOrange = Colors.deepOrange;
     var sarGrey = Color(0xFF8D918B);
     var cgBlue = Color(0xFF00CCFF);
@@ -140,7 +123,9 @@ class ThemeGenerator {
           labelMedium: TextStyle(color: cgBlue),
           labelSmall: TextStyle(color: light)),
       appBarTheme: AppBarTheme(
-          color: cgDarkBlue, iconTheme: IconThemeData(color: light)),
+          color: cgDarkBlue,
+          iconTheme: IconThemeData(color: light),
+          titleTextStyle: TextStyle(color: light, fontSize: 22)),
     );
 
     return purpleHaze;
@@ -198,7 +183,9 @@ class ThemeGenerator {
           labelMedium: TextStyle(color: docLightGreen),
           labelSmall: TextStyle(color: light)),
       appBarTheme: AppBarTheme(
-          color: docDarkGreen, iconTheme: IconThemeData(color: light)),
+          titleTextStyle: TextStyle(color: light, fontSize: 22),
+          color: docDarkGreen,
+          iconTheme: IconThemeData(color: light)),
     );
 
     return purpleHaze;
