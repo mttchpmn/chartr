@@ -111,7 +111,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
       extraLinesData: ExtraLinesData(verticalLines: [
         VerticalLine(
             x: hour,
-            color: Colors.black45,
+            color: Theme.of(context).colorScheme.primary,
             strokeWidth: 5,
             label: VerticalLineLabel(labelResolver: (line) => 'Now'))
       ]),
@@ -143,9 +143,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               String yValue = '${touchedSpot.y}';
 
               return LineTooltipItem(
-                'Time: ${xValue}0\nValue: $yValue $units',
-                TextStyle(color: Colors.white),
-              );
+                  'Time: ${xValue}0\nValue: $yValue $units', TextStyle());
             }).toList();
           },
         ),
@@ -183,7 +181,8 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
 
   @override
   Widget build(BuildContext context) {
-    var fg = Theme.of(context).colorScheme.primary;
+    Color fg = Theme.of(context).highlightColor;
+    var unselectedIcon = Theme.of(context).primaryColor;
     return Column(
       children: [
         Text(
@@ -201,7 +200,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               IconButton(
                   color: _chartState == ChartState.airPressure
                       ? fg
-                      : Colors.black54,
+                      : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.airPressure);
                   },
@@ -213,20 +212,20 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
                 icon: const Icon(Icons.thermostat),
                 color: _chartState == ChartState.airTemperature
                     ? fg
-                    : Colors.black54,
+                    : unselectedIcon,
               ),
 
               IconButton(
                   color: _chartState == ChartState.cloudCover
                       ? fg
-                      : Colors.black54,
+                      : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.cloudCover);
                   },
                   icon: const Icon(Icons.cloud)),
               IconButton(
                   color:
-                      _chartState == ChartState.cloudBase ? fg : Colors.black54,
+                      _chartState == ChartState.cloudBase ? fg : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.cloudBase);
                   },
@@ -235,7 +234,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               IconButton(
                   color: _chartState == ChartState.precipitation
                       ? fg
-                      : Colors.black54,
+                      : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.precipitation);
                   },
@@ -244,7 +243,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
 
               IconButton(
                   color:
-                      _chartState == ChartState.windSpeed ? fg : Colors.black54,
+                      _chartState == ChartState.windSpeed ? fg : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.windSpeed);
                   },
@@ -252,13 +251,13 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               IconButton(
                   color: _chartState == ChartState.windDirection
                       ? fg
-                      : Colors.black54,
+                      : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.windDirection);
                   },
                   icon: const Icon(Icons.flag)),
               IconButton(
-                  color: _chartState == ChartState.tide ? fg : Colors.black54,
+                  color: _chartState == ChartState.tide ? fg : unselectedIcon,
                   onPressed: () {
                     _onChartStateChange(ChartState.tide);
                   },

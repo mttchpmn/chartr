@@ -10,7 +10,8 @@ class MapButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: Colors.black),
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).colorScheme.primaryContainer),
       child: IconButton(
         onPressed: onPressed,
         icon: icon,

@@ -139,7 +139,8 @@ class DataDisplay extends StatelessWidget {
             children: [
               Text(
                 data,
-                style: TextStyle(fontSize: 24),
+                style: Theme.of(context).textTheme.titleLarge,
+                // style: TextStyle(fontSize: 24, inherit: true),
               ),
               SizedBox(
                 width: 2,
@@ -149,7 +150,7 @@ class DataDisplay extends StatelessWidget {
           ),
           Text(
             text,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            // style: TextStyle(fontWeight: FontWeight.bold),
           )
         ],
       ),

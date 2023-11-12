@@ -23,27 +23,56 @@ class NavRanger extends StatefulWidget {
 class _NavRangerState extends State<NavRanger> {
   @override
   Widget build(BuildContext context) {
-    var baseTheme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-      useMaterial3: true,
-    );
+    var purplePrimary = Colors.purpleAccent;
+    var darkPurple = Color(0xFF2C0E37);
+    var black = Colors.black;
+    var palePurple = Color(0xFFFAE6FA);
+    var accent = Color(0xFF76E5FC);
 
     var purpleHaze = ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: darkPurple,
+        primaryColorLight: palePurple,
+        highlightColor: accent,
+        drawerTheme: DrawerThemeData(
+          backgroundColor: darkPurple,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+            prefixIconColor: purplePrimary,
+            filled: true,
+            fillColor: darkPurple,
+            suffixIconColor: purplePrimary),
+        listTileTheme: ListTileThemeData(
+            iconColor: purplePrimary,
+            textColor: palePurple,
+            selectedTileColor: accent),
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Colors.black),
-        iconTheme: IconThemeData(color: Colors.purpleAccent),
-        textTheme: const TextTheme(
-            displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            bodyLarge: TextStyle(fontSize: 18, color: Colors.black87)),
-        appBarTheme: const AppBarTheme(
-            color: Colors.purpleAccent,
-            iconTheme: IconThemeData(color: Colors.black)),
+        iconTheme: IconThemeData(color: purplePrimary),
+        textTheme: TextTheme(
+            displayLarge: TextStyle(color: palePurple),
+            displayMedium: TextStyle(color: palePurple),
+            displaySmall: TextStyle(color: palePurple),
+            headlineLarge: TextStyle(color: palePurple),
+            headlineMedium: TextStyle(color: palePurple),
+            headlineSmall: TextStyle(color: palePurple),
+            titleLarge: TextStyle(color: palePurple),
+            titleMedium: TextStyle(color: palePurple),
+            titleSmall: TextStyle(color: palePurple),
+            bodyLarge: TextStyle(color: palePurple),
+            bodyMedium: TextStyle(color: palePurple),
+            bodySmall: TextStyle(color: palePurple),
+            labelLarge: TextStyle(color: palePurple),
+            labelMedium: TextStyle(color: palePurple),
+            labelSmall: TextStyle(color: palePurple)),
+        appBarTheme: AppBarTheme(
+            color: purplePrimary, iconTheme: IconThemeData(color: black)),
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepOrange,
-            primary: Colors.purpleAccent,
-            secondary: Colors.black));
+            seedColor: purplePrimary,
+            primary: purplePrimary,
+            primaryContainer: black,
+            secondary: darkPurple,
+            tertiary: accent));
 
     var searchAndRescue = ThemeData(
         useMaterial3: true,
@@ -72,7 +101,7 @@ class _NavRangerState extends State<NavRanger> {
         '/settings': (context) => const Placeholder(),
       },
       title: 'NAVRANGR',
-      theme: searchAndRescue,
+      theme: purpleHaze,
       home: const Scaffold(
         body: FullScreenMapWidget(),
       ),

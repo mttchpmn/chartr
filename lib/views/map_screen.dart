@@ -225,12 +225,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
               borderRadius: BorderRadius.circular(5.0),
               borderSide: BorderSide.none,
             ),
-            filled: true,
-            fillColor:
-                Colors.white.withAlpha(235), // Slightly transparent white
-            prefixIcon: Icon(Icons.search, color: Colors.black54),
+            prefixIcon: Icon(Icons.search),
             suffixIcon: IconButton(
-              icon: Icon(Icons.clear, color: Colors.black54),
+              icon: Icon(Icons.clear),
               onPressed: () {
                 // Clear the search field or do something else
               },

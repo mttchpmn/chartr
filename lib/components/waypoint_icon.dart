@@ -45,7 +45,8 @@ class WaypointIcon extends StatelessWidget {
                       ? waypoint.name.substring(0, 6)
                       : waypoint.name,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ],
             ),
