@@ -97,6 +97,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _loadWaypoints() async {
+    if (!mounted) return;
+
     await _waypointGateway.loadWaypointsFromDisk();
     var waypoints = _waypointGateway.getWaypoints();
 

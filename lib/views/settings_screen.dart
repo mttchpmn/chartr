@@ -1,5 +1,7 @@
+import 'package:chartr/components/enum_button.dart';
 import 'package:chartr/components/menu_drawer.dart';
 import 'package:chartr/gateways/user_settings_gateway.dart';
+import 'package:chartr/models/map_type.dart';
 import 'package:chartr/themes/theme_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +15,9 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late ThemeName _selectedName;
+  late MapType _selectedMapType;
 
-  void _changeTheme(ThemeName? name) {
+  void _setTheme(ThemeName? name) {
     if (name == null) return;
 
     setState(() {
@@ -24,25 +27,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Provider.of<UserSettings>(context, listen: false).setTheme(name);
   }
 
+  void _setDefaultMapType(MapType? mapType) {
+    if (mapType == null) return;
+
+    setState(() {
+      _selectedMapType = mapType;
+    });
+
+    Provider.of<UserSettings>(context, listen: false)
+        .setDefaultMapType(mapType);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: const Text("Settings"),
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: FutureBuilder<Settings>(
         future: Provider.of<UserSettings>(context, listen: false).getSettings(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
               _selectedName = snapshot.data!.themeName;
+              _selectedMapType = snapshot.data!.mapType;
               return buildSettingsContent();
             } else {
-              return Center(child: Text('Error loading settings'));
+              return const Center(child: Text('Error loading settings'));
             }
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
@@ -56,20 +71,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Application Theme"),
-              DropdownButton<ThemeName>(
-                  dropdownColor: Theme.of(context).scaffoldBackgroundColor,
+              const Text("Application Theme"),
+              EnumButton(
+                  enumValues: ThemeName.values,
                   value: _selectedName,
-                  items: ThemeName.values
-                      .map((e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(
-                            e.toString().split(".").last,
-                          )))
-                      .toList(),
-                  onChanged: (item) {
-                    _changeTheme(item);
-                  }),
+                  onChanged: _setTheme)
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Default Map Type"),
+              EnumButton(
+                enumValues: MapType.values,
+                value: _selectedMapType,
+                onChanged: _setDefaultMapType,
+              )
             ],
           ),
         ],
