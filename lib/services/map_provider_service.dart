@@ -11,17 +11,17 @@ class MapProviderService {
     LayerData(layerUrl: "https://tile.openstreetmap.org/{z}/{x}/{y}.png")
   ], mapType: MapType.street);
 
-  static LayeredMapProvider outdoorMapProvider = LayeredMapProvider(layerData: [
-    LayerData(
-        layerUrl:
-            "https://tile.thunderforest.com/outdoor/{z}/{x}/{y}.png?apikey=$thunderForestApiKey")
-  ], mapType: MapType.outdoor);
-
-  static LayeredMapProvider cycleMapProvider = LayeredMapProvider(layerData: [
-    LayerData(
-        layerUrl:
-            "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey")
-  ], mapType: MapType.cycle);
+  // static LayeredMapProvider outdoorMapProvider = LayeredMapProvider(layerData: [
+  //   LayerData(
+  //       layerUrl:
+  //           "https://tile.thunderforest.com/outdoor/{z}/{x}/{y}.png?apikey=$thunderForestApiKey")
+  // ], mapType: MapType.outdoor);
+  //
+  // static LayeredMapProvider cycleMapProvider = LayeredMapProvider(layerData: [
+  //   LayerData(
+  //       layerUrl:
+  //           "https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=$thunderForestApiKey")
+  // ], mapType: MapType.cycle);
 
   static LayeredMapProvider topoMapProvider = LayeredMapProvider(layerData: [
     LayerData(
@@ -101,8 +101,8 @@ class MapProviderService {
 
   final List<MapProvider> _mapProviders = [
     streetMapProvider,
-    outdoorMapProvider,
-    cycleMapProvider,
+    // outdoorMapProvider,
+    // cycleMapProvider,
     topoMapProvider,
     nauticalMapProvider,
     satelliteMapProvider

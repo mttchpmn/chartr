@@ -1,7 +1,7 @@
 enum MapType {
   street,
-  outdoor,
-  cycle,
+  // outdoor,
+  // cycle,
   topographic,
   nautical,
   satellite

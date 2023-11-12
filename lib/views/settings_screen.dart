@@ -14,26 +14,13 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late ThemeName _selectedName;
-  late MapType _selectedMapType;
-
   void _setTheme(ThemeName? name) {
     if (name == null) return;
-
-    setState(() {
-      _selectedName = name;
-    });
-
     Provider.of<UserSettings>(context, listen: false).setTheme(name);
   }
 
   void _setDefaultMapType(MapType? mapType) {
     if (mapType == null) return;
-
-    setState(() {
-      _selectedMapType = mapType;
-    });
-
     Provider.of<UserSettings>(context, listen: false)
         .setDefaultMapType(mapType);
   }
@@ -46,13 +33,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       drawer: const MenuDrawer(),
       body: FutureBuilder<Settings>(
-        future: Provider.of<UserSettings>(context, listen: false).getSettings(),
+        future: Provider.of<UserSettings>(context).getSettings(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              _selectedName = snapshot.data!.themeName;
-              _selectedMapType = snapshot.data!.mapType;
-              return buildSettingsContent();
+              return buildSettingsContent(snapshot.data!);
             } else {
               return const Center(child: Text('Error loading settings'));
             }
@@ -63,7 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget buildSettingsContent() {
+  Widget buildSettingsContent(Settings settings) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -74,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const Text("Application Theme"),
               EnumButton(
                   enumValues: ThemeName.values,
-                  value: _selectedName,
+                  value: settings.themeName,
                   onChanged: _setTheme)
             ],
           ),
@@ -84,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const Text("Default Map Type"),
               EnumButton(
                 enumValues: MapType.values,
-                value: _selectedMapType,
+                value: settings.mapType,
                 onChanged: _setDefaultMapType,
               )
             ],

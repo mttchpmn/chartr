@@ -69,7 +69,10 @@ class UserSettings extends ChangeNotifier {
   }
 
   String _serializeSettings(Settings settings) {
-    var tmp = {'themeName': settings.themeName.name};
+    var tmp = {
+      'themeName': settings.themeName.name,
+      'mapType': settings.mapType.name
+    };
 
     return jsonEncode(tmp);
   }
