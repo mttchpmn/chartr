@@ -49,6 +49,8 @@ class ThemeGenerator {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: dark, foregroundColor: sarOrange),
       iconTheme: IconThemeData(color: sarOrange),
+      dropdownMenuTheme:
+          DropdownMenuThemeData(textStyle: TextStyle(color: dark)),
       textTheme: TextTheme(
           displayLarge: TextStyle(color: light),
           displayMedium: TextStyle(color: light),
