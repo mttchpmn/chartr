@@ -47,4 +47,4 @@ app.*.map.json
 .env
 
 # built app
-chartr-app.apk
+/releases/
