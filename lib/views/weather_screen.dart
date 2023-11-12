@@ -117,10 +117,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
     return Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.deepOrange,
-          foregroundColor: Colors.white,
-        ),
+        appBar: AppBar(),
         drawer: const MenuDrawer(),
         body: Padding(
           padding: const EdgeInsets.only(top: 100, left: 16, right: 16),

@@ -1,4 +1,4 @@
-import 'package:chartr/views/map_view.dart';
+import 'package:chartr/views/map_screen.dart';
 import 'package:chartr/views/waypoints_screen.dart';
 import 'package:chartr/views/weather_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +23,45 @@ class NavRanger extends StatefulWidget {
 class _NavRangerState extends State<NavRanger> {
   @override
   Widget build(BuildContext context) {
+    var baseTheme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+      useMaterial3: true,
+    );
+
+    var purpleHaze = ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Colors.black),
+        iconTheme: IconThemeData(color: Colors.purpleAccent),
+        textTheme: const TextTheme(
+            displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            bodyLarge: TextStyle(fontSize: 18, color: Colors.black87)),
+        appBarTheme: const AppBarTheme(
+            color: Colors.purpleAccent,
+            iconTheme: IconThemeData(color: Colors.black)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange,
+            primary: Colors.purpleAccent,
+            secondary: Colors.black));
+
+    var searchAndRescue = ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Colors.black),
+        iconTheme: IconThemeData(color: Colors.deepOrange),
+        textTheme: const TextTheme(
+            displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            bodyLarge: TextStyle(fontSize: 18, color: Colors.black87)),
+        appBarTheme: const AppBarTheme(
+            color: Colors.deepOrange,
+            iconTheme: IconThemeData(color: Colors.black)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepOrange,
+            primary: Colors.deepOrange,
+            secondary: Colors.black));
+
     return MaterialApp(
       routes: {
         '/home': (context) => const FullScreenMapWidget(),
@@ -33,10 +72,7 @@ class _NavRangerState extends State<NavRanger> {
         '/settings': (context) => const Placeholder(),
       },
       title: 'NAVRANGR',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        useMaterial3: true,
-      ),
+      theme: searchAndRescue,
       home: const Scaffold(
         body: FullScreenMapWidget(),
       ),

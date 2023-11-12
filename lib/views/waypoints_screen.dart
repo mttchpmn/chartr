@@ -46,10 +46,7 @@ class _WaypointScreenState extends State<WaypointScreen> {
     if (_isLoading) return Scaffold(body: Spinner());
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(),
       drawer: const MenuDrawer(),
       body: Column(
         children: [

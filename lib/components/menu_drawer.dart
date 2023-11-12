@@ -7,15 +7,15 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var fg = Theme.of(context).colorScheme.primary;
+
     return Drawer(
       child: ListView(
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.deepOrange,
-            ),
+          DrawerHeader(
+            decoration: BoxDecoration(color: fg),
             child: Text(
               'RANGR',
               style: TextStyle(fontSize: 32),

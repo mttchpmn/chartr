@@ -238,8 +238,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           ),
           onChanged: (value) {},
         ),
-        backgroundColor: Colors.deepOrange,
-        foregroundColor: Colors.white,
       ),
       drawer: const MenuDrawer(),
       body: Stack(children: [

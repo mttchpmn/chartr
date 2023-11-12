@@ -26,7 +26,6 @@ class WaypointIcon extends StatelessWidget {
                 padding: const EdgeInsets.all(2.0),
                 child: Icon(
                   Icons.pin_drop,
-                  color: Colors.deepOrange,
                   size: 16,
                   shadows: [Shadow()],
                 ),

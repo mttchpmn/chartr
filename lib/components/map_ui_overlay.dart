@@ -1,6 +1,6 @@
 import 'package:chartr/components/coordinate_display.dart';
 import 'package:chartr/components/crosshair.dart';
-import 'package:chartr/components/map_icons.dart';
+import 'package:chartr/components/map_button.dart';
 import 'package:chartr/components/waypoint_form.dart';
 import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_type.dart';
@@ -51,20 +51,19 @@ class MapUiOverlay extends StatefulWidget {
 }
 
 class _MapUiOverlayState extends State<MapUiOverlay> {
-  final Color _foregroundColor = Colors.deepOrange;
   final Color _backgroundColor = Colors.black87;
 
   bool _showNorthUp = true;
 
   Icon _getNorthButtonIcon() {
     return _showNorthUp
-        ? Icon(Icons.navigation, color: _foregroundColor)
+        ? const Icon(Icons.navigation)
         : const Icon(Icons.navigation, color: Colors.grey);
   }
 
   Icon _getLocationTrackingIcon() {
     return widget.hasTrackingEnabled
-        ? Icon(Icons.location_on, color: _foregroundColor)
+        ? const Icon(Icons.location_on)
         : const Icon(Icons.location_off, color: Colors.grey);
   }
 
@@ -107,17 +106,16 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
                       widget.onSelectMapType(MapType.street);
                       Navigator.of(context).pop();
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.only(right: 16.0),
                           child: Icon(
                             Icons.drive_eta,
-                            color: _foregroundColor,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Street',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -130,17 +128,16 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
                       widget.onSelectMapType(MapType.topographic);
                       Navigator.of(context).pop();
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.only(right: 16.0),
                           child: Icon(
                             Icons.hiking,
-                            color: _foregroundColor,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Topographic',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -153,17 +150,16 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
                       widget.onSelectMapType(MapType.nautical);
                       Navigator.of(context).pop();
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.only(right: 16.0),
                           child: Icon(
                             Icons.directions_boat,
-                            color: _foregroundColor,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Nautical',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -176,17 +172,16 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
                       widget.onSelectMapType(MapType.satellite);
                       Navigator.of(context).pop();
                     },
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.only(right: 16.0),
                           child: Icon(
                             Icons.satellite,
-                            color: _foregroundColor,
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Satellite',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -233,7 +228,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           onPressed: () {
             _showMapLayerDialog(context);
           },
-          icon: Icon(Icons.layers, color: _foregroundColor),
+          icon: const Icon(
+            Icons.layers,
+          ),
         ),
       ),
       Positioned(
@@ -269,7 +266,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         right: 15,
         child: MapButton(
           onPressed: widget.onScrollToCurrentLocation,
-          icon: Icon(Icons.my_location, color: _foregroundColor),
+          icon: const Icon(
+            Icons.my_location,
+          ),
         ),
       ),
       Positioned(
@@ -277,7 +276,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
         right: 15,
         child: MapButton(
             onPressed: widget.onDrawToggle,
-            icon: Icon(Icons.draw, color: _foregroundColor)),
+            icon: const Icon(
+              Icons.draw,
+            )),
       ),
       Positioned(
         bottom: 10,
@@ -286,7 +287,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           onPressed: () {
             _handleAddWaypoint(context);
           },
-          icon: Icon(Icons.add_location, color: _foregroundColor),
+          icon: const Icon(
+            Icons.add_location,
+          ),
         ),
       ),
       Positioned(
@@ -296,7 +299,9 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           onPressed: () {
             widget.onStartRouting();
           },
-          icon: Icon(Icons.route, color: _foregroundColor),
+          icon: const Icon(
+            Icons.route,
+          ),
         ),
       ),
       Positioned(
@@ -307,7 +312,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           width: 40,
           height: 40,
           child: FloatingActionButton(
-            backgroundColor: _backgroundColor,
+            // backgroundColor: _backgroundColor,
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -317,9 +322,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
               );
             },
             mini: true,
-            child: RecordIcon(
-                foregroundColor: _foregroundColor,
-                backgroundColor: _backgroundColor),
+            child: const RecordIcon(),
           ),
         ),
       ),
@@ -342,25 +345,6 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   void _handleAddWaypoint(BuildContext context) =>
       _showAddWaypointSheet(context);
-}
-
-class MapButton extends StatelessWidget {
-  final Icon icon;
-  final VoidCallback onPressed;
-
-  const MapButton({super.key, required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: Colors.black87),
-      child: IconButton(
-        onPressed: onPressed,
-        icon: icon,
-      ),
-    );
-  }
 }
 
 class DistanceMeasureButton extends StatefulWidget {
@@ -414,20 +398,15 @@ class _DistanceMeasureButtonState extends State<DistanceMeasureButton> {
   Icon _getIcon() {
     switch (_state) {
       case 1:
-        return Icon(
+        return const Icon(
           Icons.start,
-          color: Colors.deepOrange,
         );
       case 2:
-        return Icon(
+        return const Icon(
           Icons.flag,
-          color: Colors.deepOrange,
         );
       default:
-        return Icon(
-          MapIcons.drafting_compass,
-          color: Colors.deepOrange,
-        );
+        return const Icon(Icons.straighten);
     }
   }
 
@@ -458,16 +437,13 @@ class _DistanceMeasureButtonState extends State<DistanceMeasureButton> {
 class RecordIcon extends StatelessWidget {
   const RecordIcon({
     super.key,
-    required Color foregroundColor,
-    required Color backgroundColor,
-  })  : _foregroundColor = foregroundColor,
-        _backgroundColor = backgroundColor;
-
-  final Color _foregroundColor;
-  final Color _backgroundColor;
+  });
 
   @override
   Widget build(BuildContext context) {
+    var fg = Theme.of(context).colorScheme.primary;
+    var bg = Theme.of(context).colorScheme.secondary;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -476,7 +452,7 @@ class RecordIcon extends StatelessWidget {
           height: 25,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _foregroundColor,
+            color: fg,
           ),
         ),
         Container(
@@ -484,22 +460,14 @@ class RecordIcon extends StatelessWidget {
           height: 20,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _backgroundColor,
+            color: bg,
           ),
         ),
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: _foregroundColor,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: fg),
         ),
-        // const Icon(
-        //   Icons.circle,
-        //   color: Colors.yellow,
-        //   size: 20,
-        // ),
       ],
     );
   }

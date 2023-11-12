@@ -135,7 +135,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
           // Customize the tooltip box here
-          tooltipBgColor: Colors.deepOrange,
+          tooltipBgColor: Theme.of(context).colorScheme.primary,
           getTooltipItems: (List<LineBarSpot> touchedSpots) {
             return touchedSpots.map((touchedSpot) {
               // Assuming you have a way to convert the x-axis value to a more readable format
@@ -183,6 +183,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
 
   @override
   Widget build(BuildContext context) {
+    var fg = Theme.of(context).colorScheme.primary;
     return Column(
       children: [
         Text(
@@ -199,7 +200,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
             children: [
               IconButton(
                   color: _chartState == ChartState.airPressure
-                      ? Colors.deepOrange
+                      ? fg
                       : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.airPressure);
@@ -211,22 +212,21 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
                 },
                 icon: const Icon(Icons.thermostat),
                 color: _chartState == ChartState.airTemperature
-                    ? Colors.deepOrange
+                    ? fg
                     : Colors.black54,
               ),
 
               IconButton(
                   color: _chartState == ChartState.cloudCover
-                      ? Colors.deepOrange
+                      ? fg
                       : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.cloudCover);
                   },
                   icon: const Icon(Icons.cloud)),
               IconButton(
-                  color: _chartState == ChartState.cloudBase
-                      ? Colors.deepOrange
-                      : Colors.black54,
+                  color:
+                      _chartState == ChartState.cloudBase ? fg : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.cloudBase);
                   },
@@ -234,7 +234,7 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               // cloud - cover / base
               IconButton(
                   color: _chartState == ChartState.precipitation
-                      ? Colors.deepOrange
+                      ? fg
                       : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.precipitation);
@@ -243,25 +243,22 @@ class _WeatherPointChartState extends State<WeatherPointChart> {
               // rain
 
               IconButton(
-                  color: _chartState == ChartState.windSpeed
-                      ? Colors.deepOrange
-                      : Colors.black54,
+                  color:
+                      _chartState == ChartState.windSpeed ? fg : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.windSpeed);
                   },
                   icon: const Icon(Icons.wind_power)),
               IconButton(
                   color: _chartState == ChartState.windDirection
-                      ? Colors.deepOrange
+                      ? fg
                       : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.windDirection);
                   },
                   icon: const Icon(Icons.flag)),
               IconButton(
-                  color: _chartState == ChartState.tide
-                      ? Colors.deepOrange
-                      : Colors.black54,
+                  color: _chartState == ChartState.tide ? fg : Colors.black54,
                   onPressed: () {
                     _onChartStateChange(ChartState.tide);
                   },

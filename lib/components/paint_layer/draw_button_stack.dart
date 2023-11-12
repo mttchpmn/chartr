@@ -1,3 +1,4 @@
+import 'package:chartr/components/map_button.dart';
 import 'package:flutter/material.dart';
 
 class DrawButtonStack extends StatelessWidget {
@@ -21,42 +22,31 @@ class DrawButtonStack extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-        top: 50, // Adjust the position as needed
-        right: 15,
-        child: FloatingActionButton(
-          backgroundColor: Colors.black,
-          onPressed: onDrawCancel,
-          mini: true,
-          child: Icon(Icons.clear, color: _iconColor),
-        ),
-      ),
-      // Positioned(
-      //   top: 100, // Adjust the position as needed
-      //   right: 15,
-      //   child: FloatingActionButton(
-      //     onPressed: onDrawClear,
-      //     mini: true,
-      //     child: Icon(Icons.clear, color: _iconColor),
-      //   ),
-      // ),
-      Positioned(
         top: 100, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: Colors.black,
-          onPressed: onDrawSave,
-          mini: true,
-          child: Icon(Icons.check, color: _iconColor),
+        child: MapButton(
+          onPressed: onDrawCancel,
+          icon: const Icon(
+            Icons.clear,
+          ),
         ),
       ),
       Positioned(
         top: 150, // Adjust the position as needed
         right: 15,
-        child: FloatingActionButton(
-          backgroundColor: paintColor,
+        child: MapButton(
+          onPressed: onDrawSave,
+          icon: const Icon(
+            Icons.check,
+          ),
+        ),
+      ),
+      Positioned(
+        top: 200, // Adjust the position as needed
+        right: 15,
+        child: MapButton(
           onPressed: onColorChange,
-          mini: true,
-          child: Icon(Icons.brush, color: Colors.black),
+          icon: Icon(Icons.palette, color: paintColor),
         ),
       ),
     ]);

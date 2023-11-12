@@ -13,14 +13,13 @@ class PositionIcon extends StatelessWidget {
         Container(
           width: 25,
           height: 25,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
         const Icon(
           Icons.circle,
-          color: Colors.purpleAccent,
           size: 20,
         ),
       ],
