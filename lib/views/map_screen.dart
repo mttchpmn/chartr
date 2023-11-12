@@ -37,10 +37,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   MapType _mapType = MapType.street;
 
   bool _showNorthUp = true;
-  bool _isDrawing = false;
 
   bool _hasTrackingEnabled = true;
-  LatLng _deviceLocation = const LatLng(-36.839325, 174.802966);
+  LatLng? _deviceLocation;
   LatLng? _mapCenterLatLng;
   GridRef? _mapCenterGrid;
 
@@ -66,28 +65,35 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return uiLayerMode == _mapMode;
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    _initMapProvider();
+    _initTracking();
+    _loadWaypoints();
+  }
+
+  void _initMapProvider() {
+    _mapProvider = mapProviderService.getMapProvider(_mapType);
+  }
+
+  void _initTracking() async {
+    await _locationService.initializeAsync();
+    _locationService.startTracking(_onLocationUpdate);
+  }
+
   void _onLocationUpdate(LocationUpdate update) {
+    if (!mounted) return;
+
+    debugPrint("Location updated");
+
     setState(() {
       _deviceLocations = update.track;
       _currentSpeed = update.speed;
       _currentHeading = update.heading;
       _deviceLocation = update.currentPosition;
     });
-  }
-
-  void _scrollToCurrentPosition() async {
-    var currentZoom = _mapController.zoom;
-    var currentBearing = _mapController.rotation;
-    var currentPosition = await _locationService.getPosition();
-    _mapController.moveAndRotate(
-        LatLng(currentPosition.latitude, currentPosition.longitude),
-        currentZoom,
-        currentBearing);
-  }
-
-  void _initTracking() async {
-    await _locationService.initializeAsync();
-    _locationService.startTracking(_onLocationUpdate);
   }
 
   void _loadWaypoints() async {
@@ -99,13 +105,14 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    _initMapProvider();
-    _initTracking();
-    _loadWaypoints();
+  void _scrollToCurrentPosition() async {
+    var currentZoom = _mapController.zoom;
+    var currentBearing = _mapController.rotation;
+    var currentPosition = await _locationService.getPosition();
+    _mapController.moveAndRotate(
+        LatLng(currentPosition.latitude, currentPosition.longitude),
+        currentZoom,
+        currentBearing);
   }
 
   void _onWaypointSaved() async {
@@ -121,10 +128,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _hasTrackingEnabled
         ? _locationService.startTracking(_onLocationUpdate)
         : _locationService.stopTracking();
-  }
-
-  void _initMapProvider() {
-    _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
   void _onStartDrawing() {
@@ -316,26 +319,28 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
   List<Widget> _buildMapChildren() {
     List<Widget> result = [];
-
-    var deviceLocation = Marker(
-        point: LatLng(_deviceLocation.latitude, _deviceLocation.longitude),
-        width: 80,
-        height: 80,
-        builder: (context) => const PositionIcon());
-
     List<Marker> markers = [];
+    List<Polyline> polylines = [];
+    List<OverlayImage> overlayImages = [];
 
-    if (_hasTrackingEnabled) {
-      markers.add(deviceLocation);
-    }
+    polylines.add(Polyline(
+        points: _deviceLocations, color: Colors.black, strokeWidth: 6));
+    polylines.add(Polyline(
+        points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3));
 
     markers.addAll(_markers);
 
-    var polyLines = [
-      Polyline(points: _deviceLocations, color: Colors.black, strokeWidth: 6),
-      Polyline(
-          points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3),
-    ];
+    if (_deviceLocation != null) {
+      var marker = Marker(
+          point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
+          width: 80,
+          height: 80,
+          builder: (context) => const PositionIcon());
+
+      if (_hasTrackingEnabled) {
+        markers.add(marker);
+      }
+    }
 
     var imageLayer = OverlayImageLayer(
       overlayImages: _images,
@@ -368,7 +373,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     // Route
     var routeLine =
         Polyline(points: _route, color: Colors.purpleAccent, strokeWidth: 3);
-    polyLines.add(routeLine);
+    polylines.add(routeLine);
     var routeMarkers = _route.map((e) => Marker(
         point: e,
         builder: (ctx) => const Icon(
@@ -384,7 +389,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           points: [markerALocation!, markerBLocation!],
           color: Colors.black,
           strokeWidth: 3);
-      polyLines.add(line);
+      polylines.add(line);
     }
 
     var waypoints = _buildWaypoints();
@@ -393,7 +398,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     var tileLayers = _mapProvider.getTileLayers();
     var markerLayer = MarkerLayer(markers: markers);
 
-    var polylineLayer = PolylineLayer(polylines: polyLines);
+    var polylineLayer = PolylineLayer(polylines: polylines);
 
     result.addAll(tileLayers);
     result.add(polylineLayer);
@@ -415,8 +420,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         setState(() {
           _mapCenterLatLng = position.center;
         });
-        // debugPrint("Map zoom: ${mapController.zoom}");
-        // _handleTopoZoom(position);
       },
       center: _deviceLocation,
       interactiveFlags: _showNorthUp

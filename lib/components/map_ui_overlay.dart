@@ -14,7 +14,7 @@ class MapUiOverlay extends StatefulWidget {
   final VoidCallback onToggleLocationTracking;
   final VoidCallback onScrollToCurrentLocation;
 
-  LatLng deviceLocation;
+  LatLng? deviceLocation;
   LatLng? mapCenterLatLng;
   GridRef? mapCenterGrid;
   MapController mapController;
