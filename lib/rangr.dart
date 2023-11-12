@@ -1,3 +1,4 @@
+import 'package:chartr/gateways/user_settings_gateway.dart';
 import 'package:chartr/themes/theme_generator.dart';
 import 'package:chartr/views/map_screen.dart';
 import 'package:chartr/views/settings_screen.dart';
@@ -20,20 +21,42 @@ class _RangrState extends State<Rangr> {
   Widget build(BuildContext context) {
     return Consumer<UserSettings>(
       builder: (context, userSettings, child) {
-        return MaterialApp(
-          routes: {
-            '/home': (context) => const FullScreenMapWidget(),
-            '/weather': (context) => WeatherScreen(),
-            '/waypoints': (context) => const WaypointScreen(),
-            '/tracks': (context) => const Placeholder(),
-            '/downloads': (context) => const Placeholder(),
-            '/settings': (context) => const SettingsScreen(),
+        return FutureBuilder<Settings>(
+          future: userSettings.getSettings(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                var settings = snapshot.data!;
+                return MaterialApp(
+                  routes: {
+                    '/home': (context) => const FullScreenMapWidget(),
+                    '/weather': (context) => WeatherScreen(),
+                    '/waypoints': (context) => const WaypointScreen(),
+                    '/tracks': (context) => const Placeholder(),
+                    '/downloads': (context) => const Placeholder(),
+                    '/settings': (context) => const SettingsScreen(),
+                  },
+                  title: 'RANGR',
+                  theme: _themeGenerator.getTheme(settings.themeName),
+                  home: const Scaffold(
+                    body: FullScreenMapWidget(),
+                  ),
+                );
+              } else {
+                return MaterialApp(
+                  home: Scaffold(
+                    body: Center(child: Text('Error loading settings 1')),
+                  ),
+                );
+              }
+            }
+            // Show a loading spinner while waiting for the settings
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              ),
+            );
           },
-          title: 'RANGR',
-          theme: _themeGenerator.getTheme(userSettings.settings.themeName),
-          home: const Scaffold(
-            body: FullScreenMapWidget(),
-          ),
         );
       },
     );
