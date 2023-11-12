@@ -27,6 +27,15 @@ class LocationService {
 
   LocationService(this._distanceFilter);
 
+  Future<Position> getPosition() async {
+    return Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  Future<Position?> getLastPosition() async {
+    return Geolocator.getLastKnownPosition();
+  }
+
   void startTracking(Function(LocationUpdate) onLocationUpdate) {
     var locationSettings = AndroidSettings(
         distanceFilter: _distanceFilter,
@@ -92,10 +101,5 @@ class LocationService {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-  }
-
-  Future<Position> getPosition() async {
-    return Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
   }
 }

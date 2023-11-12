@@ -77,6 +77,8 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
 
     _initMapProvider();
+
+    _initLastPosition();
     _initTracking();
     _loadWaypoints();
   }
@@ -85,7 +87,20 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _mapProvider = mapProviderService.getMapProvider(_mapType);
   }
 
-  void _initTracking() async {
+  Future<void> _initLastPosition() async {
+    var lastPos = await _locationService.getLastPosition();
+    if (lastPos == null) return;
+
+    var latLng = LatLng(lastPos.latitude, lastPos.longitude);
+
+    setState(() {
+      _deviceLocation = latLng;
+    });
+
+    _scrollToPosition(latLng);
+  }
+
+  Future<void> _initTracking() async {
     await _locationService.initializeAsync();
     _locationService.startTracking(_onLocationUpdate);
   }
@@ -112,6 +127,13 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     setState(() {
       _waypoints = waypoints;
     });
+  }
+
+  void _scrollToPosition(LatLng latLng) {
+    var currentZoom = _mapController.zoom;
+    var currentBearing = _mapController.rotation;
+    _mapController.moveAndRotate(
+        LatLng(latLng.latitude, latLng.longitude), currentZoom, currentBearing);
   }
 
   void _scrollToCurrentPosition() async {
