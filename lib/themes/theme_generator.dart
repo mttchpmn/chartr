@@ -87,7 +87,7 @@ class ThemeGenerator {
       colorScheme: ColorScheme.fromSeed(
           seedColor: cgBlue,
           primary: cgDarkBlue,
-          primaryContainer: cgRed,
+          primaryContainer: light,
           secondary: cgRed,
           tertiary: cgBlue),
       drawerTheme: DrawerThemeData(
@@ -105,7 +105,7 @@ class ThemeGenerator {
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: cgRed, foregroundColor: light),
-      iconTheme: IconThemeData(color: light),
+      iconTheme: IconThemeData(color: cgRed),
       textTheme: TextTheme(
           displayLarge: TextStyle(color: dark),
           displayMedium: TextStyle(color: dark),
@@ -119,7 +119,7 @@ class ThemeGenerator {
           bodyLarge: TextStyle(color: dark),
           bodyMedium: TextStyle(color: dark),
           bodySmall: TextStyle(color: dark),
-          labelLarge: TextStyle(color: light, fontWeight: FontWeight.bold),
+          labelLarge: TextStyle(color: cgRed, fontWeight: FontWeight.bold),
           labelMedium: TextStyle(color: cgBlue),
           labelSmall: TextStyle(color: light)),
       appBarTheme: AppBarTheme(
