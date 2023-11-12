@@ -150,6 +150,7 @@ class DataDisplay extends StatelessWidget {
           ),
           Text(
             text,
+            style: Theme.of(context).textTheme.labelMedium,
             // style: TextStyle(fontWeight: FontWeight.bold),
           )
         ],

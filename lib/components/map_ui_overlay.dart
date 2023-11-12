@@ -312,18 +312,17 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           width: 40,
           height: 40,
           child: FloatingActionButton(
-            // backgroundColor: _backgroundColor,
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text('Track recording started'),
-                ),
-              );
-            },
-            mini: true,
-            child: const RecordIcon(),
-          ),
+              // backgroundColor: _backgroundColor,
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('Track recording started'),
+                  ),
+                );
+              },
+              mini: true,
+              child: Icon(Icons.radio_button_checked)),
         ),
       ),
       DistanceMeasureButton(

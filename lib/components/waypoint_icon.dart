@@ -20,7 +20,7 @@ class WaypointIcon extends StatelessWidget {
           Center(
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.black87,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),

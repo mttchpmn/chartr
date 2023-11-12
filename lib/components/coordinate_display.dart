@@ -24,8 +24,9 @@ class CoordinateDisplayState extends State<CoordinateDisplay> {
     var fg = Theme.of(context).colorScheme.primary;
 
     return Container(
-        decoration:
-            BoxDecoration(borderRadius: BorderRadius.circular(8), color: bg),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Theme.of(context).colorScheme.primaryContainer),
         child: Padding(
           padding:
               const EdgeInsets.only(left: 16, right: 16, bottom: 2, top: 2),
@@ -51,18 +52,12 @@ class CoordinateDisplayState extends State<CoordinateDisplay> {
                     children: [
                       Text(
                         "LAT: ${widget.mapCenter?.latitude.toStringAsFixed(6) ?? ""}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: fg),
+                        style: Theme.of(context).textTheme.labelLarge,
                         textAlign: TextAlign.left,
                       ),
                       Text(
                         "LNG: ${widget.mapCenter?.longitude.toStringAsFixed(6) ?? ""}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: fg),
+                        style: Theme.of(context).textTheme.labelLarge,
                         textAlign: TextAlign.left,
                       ),
                     ],
@@ -87,18 +82,12 @@ class CoordinateDisplayState extends State<CoordinateDisplay> {
                     children: [
                       Text(
                         "E: ${widget.mapCenterGrid?.eastings ?? ""}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: fg),
+                        style: Theme.of(context).textTheme.labelLarge,
                         textAlign: TextAlign.left,
                       ),
                       Text(
                         "N: ${widget.mapCenterGrid?.northings ?? ""}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: fg),
+                        style: Theme.of(context).textTheme.labelLarge,
                         textAlign: TextAlign.left,
                       ),
                     ],

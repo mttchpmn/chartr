@@ -15,7 +15,7 @@ class PositionIcon extends StatelessWidget {
           height: 25,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.primaryContainer,
           ),
         ),
         const Icon(
