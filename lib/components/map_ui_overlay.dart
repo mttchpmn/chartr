@@ -88,7 +88,7 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
 
   void _showMapLayerDialog(BuildContext context) {
     showModalBottomSheet(
-        backgroundColor: Colors.black87,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         context: context,
         builder: (context) => Container(
               padding: const EdgeInsets.all(16),
