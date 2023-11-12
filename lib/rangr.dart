@@ -29,7 +29,7 @@ class _RangrState extends State<Rangr> {
                 var settings = snapshot.data!;
                 return MaterialApp(
                   routes: {
-                    '/home': (context) => const FullScreenMapWidget(),
+                    '/home': (context) => MapScreen(),
                     '/weather': (context) => WeatherScreen(),
                     '/waypoints': (context) => const WaypointScreen(),
                     '/tracks': (context) => const Placeholder(),
@@ -39,7 +39,7 @@ class _RangrState extends State<Rangr> {
                   title: 'RANGR',
                   theme: _themeGenerator.getTheme(settings.themeName),
                   home: const Scaffold(
-                    body: FullScreenMapWidget(),
+                    body: MapScreen(),
                   ),
                 );
               } else {
