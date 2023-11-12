@@ -21,7 +21,7 @@ class ThemeGenerator {
     var dark = Color(0xFF151515);
     var light = Color(0xFFF5F5F5);
 
-    var purpleHaze = ThemeData(
+    var theme = ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: dark,
       primaryColorLight: light,
@@ -49,6 +49,8 @@ class ThemeGenerator {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: dark, foregroundColor: sarOrange),
       iconTheme: IconThemeData(color: sarOrange),
+      dropdownMenuTheme:
+          DropdownMenuThemeData(textStyle: TextStyle(color: dark)),
       textTheme: TextTheme(
           displayLarge: TextStyle(color: light),
           displayMedium: TextStyle(color: light),
@@ -69,7 +71,7 @@ class ThemeGenerator {
           AppBarTheme(color: sarOrange, iconTheme: IconThemeData(color: dark)),
     );
 
-    return purpleHaze;
+    return theme;
   }
 
   ThemeData get _coastguard {
@@ -79,7 +81,7 @@ class ThemeGenerator {
     var dark = Color(0xFF252267);
     var light = Color(0xFFFFFFFF);
 
-    var purpleHaze = ThemeData(
+    var theme = ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: light,
       primaryColorLight: light,
@@ -128,7 +130,7 @@ class ThemeGenerator {
           titleTextStyle: TextStyle(color: light, fontSize: 22)),
     );
 
-    return purpleHaze;
+    return theme;
   }
 
   ThemeData get _conservation {
@@ -139,7 +141,7 @@ class ThemeGenerator {
     var dark = Color(0xFF384246);
     var light = Color(0xFFF5F4F2);
 
-    var purpleHaze = ThemeData(
+    var theme = ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: light,
       primaryColorLight: light,
@@ -188,7 +190,7 @@ class ThemeGenerator {
           iconTheme: IconThemeData(color: light)),
     );
 
-    return purpleHaze;
+    return theme;
   }
 
   ThemeData get _purpleHaze {
@@ -198,7 +200,7 @@ class ThemeGenerator {
     var palePurple = Color(0xFFFAE6FA);
     var accent = Color(0xFF76E5FC);
 
-    var purpleHaze = ThemeData(
+    var theme = ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: darkPurple,
         primaryColorLight: palePurple,
@@ -207,6 +209,7 @@ class ThemeGenerator {
           backgroundColor: darkPurple,
         ),
         inputDecorationTheme: InputDecorationTheme(
+            hintStyle: TextStyle(color: palePurple),
             prefixIconColor: purplePrimary,
             filled: true,
             fillColor: darkPurple,
@@ -243,7 +246,7 @@ class ThemeGenerator {
             secondary: darkPurple,
             tertiary: accent));
 
-    return purpleHaze;
+    return theme;
   }
 }
 

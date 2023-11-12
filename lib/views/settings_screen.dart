@@ -58,10 +58,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text("Application Theme"),
               DropdownButton<ThemeName>(
+                  dropdownColor: Theme.of(context).scaffoldBackgroundColor,
                   value: _selectedName,
                   items: ThemeName.values
                       .map((e) => DropdownMenuItem(
-                          value: e, child: Text(e.toString().split(".").last)))
+                          value: e,
+                          child: Text(
+                            e.toString().split(".").last,
+                          )))
                       .toList(),
                   onChanged: (item) {
                     _changeTheme(item);
