@@ -304,27 +304,6 @@ class _MapUiOverlayState extends State<MapUiOverlay> {
           ),
         ),
       ),
-      Positioned(
-        bottom: 10,
-        left:
-            MediaQuery.of(context).size.width / 2 - 20, // Centering the button
-        child: Container(
-          width: 40,
-          height: 40,
-          child: FloatingActionButton(
-              // backgroundColor: _backgroundColor,
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Track recording started'),
-                  ),
-                );
-              },
-              mini: true,
-              child: Icon(Icons.radio_button_checked)),
-        ),
-      ),
       DistanceMeasureButton(
         backgroundColor: _backgroundColor,
         onSelectFirstPoint: widget.onSelectFirstPoint,
