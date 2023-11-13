@@ -17,55 +17,97 @@ class TrackRecordingOverlay extends StatefulWidget {
 }
 
 class _TrackRecordingOverlayState extends State<TrackRecordingOverlay> {
+  TrackRecordingState _state = TrackRecordingState.notStarted;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
-          top: 100,
-          left: 15,
-          child: MapButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('Started track recording'),
-                  ),
-                );
-                widget.onStartTrackRecording();
-              },
-              icon: Icon(Icons.radio_button_checked)),
-        ),
-        Positioned(
-          top: 150,
-          left: 15,
-          child: MapButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.orange,
-                    content: Text('Paused track recording'),
-                  ),
-                );
-                widget.onPauseTrackRecording();
-              },
-              icon: Icon(Icons.pause)),
-        ),
-        Positioned(
-          top: 200,
-          left: 15,
-          child: MapButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    backgroundColor: Colors.blue,
-                    content: Text('Saved track recording'),
-                  ),
-                );
-                widget.onSaveTrackRecording();
-              },
-              icon: Icon(Icons.save)),
-        ),
+        // NOT STARTED
+        if (_state == TrackRecordingState.notStarted)
+          Positioned(
+            top: 100,
+            left: 15,
+            child: MapButton(
+                onPressed: () {
+                  setState(() {
+                    _state = TrackRecordingState.started;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      content: Text('Started track recording'),
+                    ),
+                  );
+                  widget.onStartTrackRecording();
+                },
+                icon: Icon(Icons.radio_button_checked)),
+          ),
+
+        // STARTED
+        if (_state == TrackRecordingState.started)
+          Positioned(
+            top: 100,
+            left: 15,
+            child: MapButton(
+                onPressed: () {
+                  setState(() {
+                    _state = TrackRecordingState.paused;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.orange,
+                      content: Text('Paused track recording'),
+                    ),
+                  );
+                  widget.onPauseTrackRecording();
+                },
+                icon: Icon(Icons.pause)),
+          ),
+
+        // PAUSED
+        if (_state == TrackRecordingState.paused)
+          Positioned(
+            top: 100,
+            left: 15,
+            child: MapButton(
+                onPressed: () {
+                  setState(() {
+                    _state = TrackRecordingState.started;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.green,
+                      content: Text('Resumed track recording'),
+                    ),
+                  );
+                  widget.onStartTrackRecording();
+                },
+                icon: Icon(Icons.play_arrow)),
+          ),
+        if (_state == TrackRecordingState.paused)
+          Positioned(
+            top: 150,
+            left: 15,
+            child: MapButton(
+                onPressed: () {
+                  setState(() {
+                    _state = TrackRecordingState.notStarted;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Duration(seconds: 1),
+                      backgroundColor: Colors.blue,
+                      content: Text('Saved track recording'),
+                    ),
+                  );
+                  widget.onSaveTrackRecording();
+                },
+                icon: Icon(Icons.save)),
+          ),
       ],
     );
   }

@@ -55,6 +55,8 @@ class LocationService {
   }
 
   void saveTrackRecording() {
+    if (_trackRecording.isEmpty) return;
+
     _saveTrackToDisk().then((value) => _trackRecording.clear());
   }
 
