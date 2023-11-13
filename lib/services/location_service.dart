@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:chartr/models/Track.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LocationUpdate {
   final LatLng currentPosition;
@@ -18,6 +21,9 @@ class LocationUpdate {
 
 class LocationService {
   StreamSubscription<Position>? _positionStream;
+
+  bool _isRecording = false;
+  final List<TrackPoint> _trackRecording = [];
 
   final List<LatLng> _track = [];
   double _currentSpeed = 0;
@@ -36,6 +42,22 @@ class LocationService {
     return Geolocator.getLastKnownPosition();
   }
 
+  void startTrackRecording() {
+    _isRecording = true;
+  }
+
+  void stopTrackRecording() {
+    _isRecording = false;
+  }
+
+  List<TrackPoint> getTrackRecording() {
+    return _trackRecording;
+  }
+
+  void saveTrackRecording() {
+    _saveTrackToDisk().then((value) => _trackRecording.clear());
+  }
+
   void startTracking(Function(LocationUpdate) onLocationUpdate) {
     var locationSettings = AndroidSettings(
         distanceFilter: _distanceFilter,
@@ -49,20 +71,34 @@ class LocationService {
     _positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position? position) {
-      if (position != null) {
-        _currentSpeed = position.speed / 1000 * 60 * 60; // ms to kmh
-        _currentHeading = position.heading;
-        var currentPosition = LatLng(position.latitude, position.longitude);
-        _track.add(currentPosition);
-
-        var update = LocationUpdate(
-            currentPosition: currentPosition,
-            speed: _currentSpeed,
-            heading: _currentHeading,
-            track: _track);
-
-        onLocationUpdate(update);
+      if (position == null) {
+        return;
       }
+
+      _currentSpeed = position.speed / 1000 * 60 * 60; // ms to kmh
+      _currentHeading = position.heading;
+      var currentPosition = LatLng(position.latitude, position.longitude);
+
+      if (_isRecording) {
+        var trackPoint = TrackPoint(
+            latitude: position.latitude,
+            longitude: position.longitude,
+            elevation: position.altitude,
+            datetime: position.timestamp!);
+
+        _trackRecording.add(trackPoint);
+      }
+
+      var trackRecordingLatLng =
+          _trackRecording.map((e) => LatLng(e.latitude, e.longitude)).toList();
+
+      var update = LocationUpdate(
+          currentPosition: currentPosition,
+          speed: _currentSpeed,
+          heading: _currentHeading,
+          track: trackRecordingLatLng);
+
+      onLocationUpdate(update);
     });
   }
 
@@ -101,5 +137,17 @@ class LocationService {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+  }
+
+  Future<void> _saveTrackToDisk() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var name = "Track-${_trackRecording.first.datetime.toIso8601String()}";
+    var path = "${dir.path}/$name.gpx";
+    var file = await File(path).create();
+
+    var track = Track(name: name, trackPoints: _trackRecording);
+    var content = track.toGpxString();
+
+    await file.writeAsString(content);
   }
 }

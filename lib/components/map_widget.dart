@@ -5,6 +5,7 @@ import 'package:chartr/components/menu_drawer.dart';
 import 'package:chartr/components/paint_layer/paint_layer.dart';
 import 'package:chartr/components/position_icon.dart';
 import 'package:chartr/components/route_builder.dart';
+import 'package:chartr/components/track_ui_overlay.dart';
 import 'package:chartr/components/waypoint_icon.dart';
 import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_provider.dart';
@@ -36,33 +37,34 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   final LocationService _locationService = LocationService(1);
   final WaypointGateway _waypointGateway = WaypointGateway();
 
+  // Map configuration
   late MapProvider _mapProvider;
   MapType _mapType = MapType.street;
-
-  bool _showNorthUp = true;
-
-  bool _hasTrackingEnabled = true;
-  LatLng? _deviceLocation;
+  MapMode _mapMode = MapMode.viewing;
   LatLng? _mapCenterLatLng;
   GridRef? _mapCenterGrid;
+  bool _showNorthUp = true;
 
-  List<Marker> _markers = [];
-  List<OverlayImage> _images = [];
+  // Location tracking
+  bool _hasTrackingEnabled = true;
+  LatLng? _deviceLocation;
 
-  double _currentSpeed = 0;
-  double _currentHeading = 0;
-  List<LatLng> _deviceLocations = [];
+  List<LatLng> _track = [];
 
+  // Distance measurement
   LatLng? markerALocation;
   LatLng? markerBLocation;
   double? distanceBetweenMarkers;
   double? bearingBetweenMarkers;
 
+  // Waypoints
   List<Waypoint> _waypoints = [];
 
-  MapMode _mapMode = MapMode.viewing;
-
+  // Route
   List<LatLng> _route = [];
+
+  // Drawings
+  List<OverlayImage> _drawings = [];
 
   bool _getUiLayerVisibility(MapMode uiLayerMode) {
     return uiLayerMode == _mapMode;
@@ -111,9 +113,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     debugPrint("Location updated");
 
     setState(() {
-      _deviceLocations = update.track;
-      _currentSpeed = update.speed;
-      _currentHeading = update.heading;
+      _track = update.track;
       _deviceLocation = update.currentPosition;
     });
   }
@@ -159,6 +159,19 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _hasTrackingEnabled
         ? _locationService.startTracking(_onLocationUpdate)
         : _locationService.stopTracking();
+  }
+
+  void _onStartTrackRecording() {
+    _locationService.startTrackRecording();
+  }
+
+  void _onPauseTrackRecording() {
+    _locationService.stopTrackRecording();
+  }
+
+  void _onSaveTrackRecording() {
+    // TODO - Do save here
+    _locationService.saveTrackRecording();
   }
 
   void _onStartDrawing() {
@@ -322,6 +335,13 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           ),
         ),
         Visibility(
+            visible: _getUiLayerVisibility(MapMode.viewing),
+            child: TrackRecordingOverlay(
+              onStartTrackRecording: _onStartTrackRecording,
+              onPauseTrackRecording: _onPauseTrackRecording,
+              onSaveTrackRecording: _onSaveTrackRecording,
+            )),
+        Visibility(
           visible: _getUiLayerVisibility(MapMode.drawing),
           child: PaintUiOverlay(
             onExit: _onExitDrawMode,
@@ -354,12 +374,12 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     List<Polyline> polylines = [];
     List<OverlayImage> overlayImages = [];
 
-    polylines.add(Polyline(
-        points: _deviceLocations, color: Colors.black, strokeWidth: 6));
-    polylines.add(Polyline(
-        points: _deviceLocations, color: Colors.deepOrange, strokeWidth: 3));
+    polylines
+        .add(Polyline(points: _track, color: Colors.black, strokeWidth: 6));
+    polylines.add(
+        Polyline(points: _track, color: Colors.deepOrange, strokeWidth: 3));
 
-    markers.addAll(_markers);
+    // markers.addAll(_markers);
 
     if (_deviceLocation != null) {
       var marker = Marker(
@@ -374,7 +394,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     }
 
     var imageLayer = OverlayImageLayer(
-      overlayImages: _images,
+      overlayImages: _drawings,
     );
 
     if (markerALocation != null) {
@@ -467,7 +487,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         imageProvider: image);
 
     setState(() {
-      _images.add(overlay);
+      _drawings.add(overlay);
     });
 
     _onExitDrawMode();
