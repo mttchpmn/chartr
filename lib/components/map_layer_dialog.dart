@@ -33,17 +33,6 @@ class MapLayerDialog extends StatelessWidget {
                       onPressed: () => onIconPressed(MapType.nautical)),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                      icon: Icon(MapIcons.bicycle),
-                      onPressed: () => onIconPressed(MapType.cycle)),
-                  IconButton(
-                      icon: Icon(MapIcons.hiking),
-                      onPressed: () => onIconPressed(MapType.outdoor)),
-                ],
-              ),
             ],
           ),
         )

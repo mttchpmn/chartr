@@ -11,15 +11,15 @@ class PositionIcon extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          width: 25,
-          height: 25,
+          width: 22,
+          height: 22,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Theme.of(context).colorScheme.primaryContainer,
           ),
         ),
         const Icon(
-          Icons.circle,
+          Icons.explore,
           size: 20,
         ),
       ],
