@@ -1,9 +1,99 @@
-<mxfile host="app.diagrams.net" modified="2023-11-14T02:54:08.173Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0" version="22.1.0" etag="d1-ZSMHpp48BkrR6kfAX" type="github">
-  <diagram name="Page-1" id="1iNNYhX0vrtECxXn2aiF">
-    <mxGraphModel>
+<mxfile host="app.diagrams.net" modified="2023-11-14T03:35:41.863Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0" etag="0uBKH4tD4GsZeMqaOzQB" version="22.1.0" type="github">
+  <diagram name="MAP SCREEN" id="1iNNYhX0vrtECxXn2aiF">
+    <mxGraphModel dx="2172" dy="1118" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="v5T0Uov51eVV2THA0uxk-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-1" target="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-1" value="MAP SCREEN" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" vertex="1" parent="1">
+          <mxGeometry x="400" y="350" width="120" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-19" target="v5T0Uov51eVV2THA0uxk-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-19" value="WAYPOINT SERVICE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="220" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-20" target="v5T0Uov51eVV2THA0uxk-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-20" value="WAYPOINT REPOSITORY" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="370" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-38" value="WIDGET TREE" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="36.25" y="580" width="847.5" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-11" value="MAP WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="347.5" y="135" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-14" value="WAYPOINT UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="277.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-13" value="TRACK UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="147.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-12" value="MAP UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="17.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-15" value="ROUTE UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="407.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-16" value="DISTANCE UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="537.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-17" value="COORDINATE UI WIDGET" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-38">
+          <mxGeometry x="667.5" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-39" target="v5T0Uov51eVV2THA0uxk-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-39" value="STATE PROVIDERS" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="195" y="90" width="530" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-22" value="MAP STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-39">
+          <mxGeometry y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-18" value="TRACK STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-39">
+          <mxGeometry x="140" y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-21" value="WAYPOINT STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-39">
+          <mxGeometry x="280" y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-23" value="USER PREFS &lt;br&gt;STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="v5T0Uov51eVV2THA0uxk-39">
+          <mxGeometry x="410" y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-42" value="WAYPOINT STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="70" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-45" value="State providers are responsible for keeping track of the current state of application data. For example, is track recording in progress, current map type, user prefs etc" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="760" y="90" width="150" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-46" value="Widgets are responsible for displaying state to the user, and exposing ability to interact with and manipulate state" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;" vertex="1" parent="1">
+          <mxGeometry x="920" y="580" width="160" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.4;exitY=0.1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-47" target="v5T0Uov51eVV2THA0uxk-49">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-47" value="WEATHER API &lt;br&gt;GATEWAY" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#a0522d;fontColor=#ffffff;strokeColor=#6D1F00;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="v5T0Uov51eVV2THA0uxk-49" target="v5T0Uov51eVV2THA0uxk-50">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-49" value="WEATHER &lt;br&gt;SERVICE" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-50" value="WEATHER STATE PROVIDER" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#fa6800;fontColor=#000000;strokeColor=#C73500;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="520" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-52" value="EXTERNAL&lt;br&gt;DATA" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="480" width="240" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="v5T0Uov51eVV2THA0uxk-53" value="INTERNAL DATA" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="20" width="240" height="440" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
