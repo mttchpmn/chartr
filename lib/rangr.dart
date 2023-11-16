@@ -1,4 +1,4 @@
-import 'package:chartr/gateways/user_settings_gateway.dart';
+import 'package:chartr/repositories/user_settings_gateway.dart';
 import 'package:chartr/themes/theme_generator.dart';
 import 'package:chartr/views/map_screen.dart';
 import 'package:chartr/views/settings_screen.dart';

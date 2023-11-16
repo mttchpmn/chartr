@@ -1,5 +1,5 @@
-import 'package:chartr/gateways/user_settings_gateway.dart';
 import 'package:chartr/rangr.dart';
+import 'package:chartr/repositories/user_settings_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';

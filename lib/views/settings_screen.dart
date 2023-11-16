@@ -1,6 +1,6 @@
 import 'package:chartr/components/enum_button.dart';
 import 'package:chartr/components/menu_drawer.dart';
-import 'package:chartr/gateways/user_settings_gateway.dart';
+import 'package:chartr/repositories/user_settings_gateway.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/themes/theme_generator.dart';
 import 'package:flutter/material.dart';

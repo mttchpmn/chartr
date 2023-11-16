@@ -11,6 +11,8 @@ import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/map_provider.dart';
 import 'package:chartr/models/map_type.dart';
 import 'package:chartr/models/waypoint.dart';
+import 'package:chartr/repositories/user_settings_gateway.dart';
+import 'package:chartr/repositories/waypoint_gateway.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
@@ -18,9 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-
-import '../gateways/user_settings_gateway.dart';
-import '../gateways/waypoint_gateway.dart';
 
 class FullScreenMapWidget extends StatefulWidget {
   final Settings userSettings;

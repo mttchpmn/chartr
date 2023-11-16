@@ -1,8 +1,8 @@
 import 'dart:ffi';
 
-import 'package:chartr/gateways/waypoint_gateway.dart';
 import 'package:chartr/models/grid_ref.dart';
 import 'package:chartr/models/waypoint.dart';
+import 'package:chartr/repositories/waypoint_gateway.dart';
 import 'package:chartr/services/coordinate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';

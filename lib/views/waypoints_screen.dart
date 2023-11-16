@@ -1,6 +1,6 @@
 import 'package:chartr/components/menu_drawer.dart';
 import 'package:chartr/components/spinner.dart';
-import 'package:chartr/gateways/waypoint_gateway.dart';
+import 'package:chartr/repositories/waypoint_gateway.dart';
 import 'package:chartr/models/waypoint.dart';
 import 'package:flutter/material.dart';
 

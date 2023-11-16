@@ -1,5 +1,5 @@
 import 'package:chartr/components/map_widget.dart';
-import 'package:chartr/gateways/user_settings_gateway.dart';
+import 'package:chartr/repositories/user_settings_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
