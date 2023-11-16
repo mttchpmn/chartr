@@ -1,8 +1,31 @@
+import 'dart:convert';
+
 class Track {
   String name;
   List<TrackPoint> trackPoints;
 
   Track({required this.name, required this.trackPoints});
+
+  factory Track.fromJson(Map<String, dynamic> json) {
+    var trackPoints = (json['trackPoints'] as List)
+        .map((item) => TrackPoint.fromJson(item))
+        .toList();
+    return Track(name: json['name'], trackPoints: trackPoints);
+  }
+
+  String toJson() {
+    var result = {
+      'name': name,
+      'trackPoints': trackPoints.map((e) => {
+            'latitude': e.latitude,
+            'longitude': e.longitude,
+            'elevation': e.elevation,
+            'datetime': e.datetime.toIso8601String()
+          })
+    };
+
+    return jsonEncode(result);
+  }
 
   String toGpxString() {
     var name = "Track-${trackPoints.first.datetime.toIso8601String()}";
@@ -54,4 +77,13 @@ class TrackPoint {
       required this.longitude,
       required this.elevation,
       required this.datetime});
+
+  factory TrackPoint.fromJson(Map<String, dynamic> json) {
+    return TrackPoint(
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      elevation: json['elevation'],
+      datetime: DateTime.parse(json['datetime']),
+    );
+  }
 }
