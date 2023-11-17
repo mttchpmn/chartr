@@ -1,4 +1,5 @@
 import 'package:chartr/blocs/active_track_bloc.dart';
+import 'package:chartr/blocs/location_bloc.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/distance_display.dart';
 import 'package:chartr/components/map_ui_overlay.dart';
@@ -75,13 +76,13 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   void initState() {
     super.initState();
 
+    BlocProvider.of<LocationBloc>(context).add(StartTrackingLocationEvent());
+
     setState(() {
       _mapType = widget.userSettings.mapType;
     });
 
     _initMapProvider();
-
-    _initLastPosition();
     _loadWaypoints();
   }
 
@@ -249,16 +250,19 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       ),
       drawer: const MenuDrawer(),
       body: Stack(children: [
-        BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
-          builder: (context, state) {
-            return FlutterMap(
-              mapController: _mapController,
-              nonRotatedChildren: [],
-              options: _buildMapOptions(),
-              children: _buildMapChildren(state),
-            );
-          },
-        ),
+        BlocBuilder<LocationBloc, LocationState>(
+            builder: (context, locationState) {
+          return BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
+            builder: (context, activeTrackState) {
+              return FlutterMap(
+                mapController: _mapController,
+                nonRotatedChildren: [],
+                options: _buildMapOptions(),
+                children: _buildMapChildren(locationState, activeTrackState),
+              );
+            },
+          );
+        }),
         Visibility(
           visible: _getUiLayerVisibility(MapMode.viewing) ||
               _getUiLayerVisibility(MapMode.routing),
@@ -332,13 +336,16 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return result;
   }
 
-  List<Widget> _buildMapChildren(ActiveTrackState trackState) {
+  List<Widget> _buildMapChildren(
+      LocationState locationState, ActiveTrackState trackState) {
     List<Widget> result = [];
     List<Marker> markers = [];
     List<Polyline> polylines = [];
     List<OverlayImage> overlayImages = [];
 
-    if (trackState is TrackInProgress || trackState is TrackPaused || trackState is TrackUpdated) {
+    if (trackState is TrackInProgress ||
+        trackState is TrackPaused ||
+        trackState is TrackUpdated) {
       var state = trackState as ActiveTrackStateWithTrack;
       var track =
           state.track.map((e) => LatLng(e.latitude, e.longitude)).toList();
@@ -351,9 +358,9 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
 
     // markers.addAll(_markers);
 
-    if (_deviceLocation != null) {
+    if (locationState is LocationUpdatedState) {
       var marker = Marker(
-          point: LatLng(_deviceLocation!.latitude, _deviceLocation!.longitude),
+          point: locationState.location,
           width: 80,
           height: 80,
           builder: (context) => const PositionIcon());

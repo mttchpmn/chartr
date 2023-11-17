@@ -1,4 +1,5 @@
 import 'package:chartr/blocs/active_track_bloc.dart';
+import 'package:chartr/blocs/location_bloc.dart';
 import 'package:chartr/blocs/tracks_bloc.dart';
 import 'package:chartr/repositories/user_settings_gateway.dart';
 import 'package:chartr/themes/theme_generator.dart';
@@ -26,7 +27,8 @@ class _RangrState extends State<Rangr> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TracksBloc>(create: (_) => TracksBloc()),
-        BlocProvider<ActiveTrackBloc>(create: (_) => ActiveTrackBloc())
+        BlocProvider<ActiveTrackBloc>(create: (_) => ActiveTrackBloc()),
+        BlocProvider<LocationBloc>(create: (_) => LocationBloc())
       ],
       child: Consumer<UserSettings>(
         builder: (context, userSettings, child) {

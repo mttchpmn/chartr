@@ -12,33 +12,33 @@ class ActiveTrackBloc extends Bloc<ActiveTrackEvent, ActiveTrackState> {
   ActiveTrackBloc() : super(TrackNotStarted()) {
     on<StartTrackingEvent>((event, emit) async {
       await _locationSubscription?.cancel();
-      var stream = _locationService.startTrackRecording();
+      var stream = _locationService.startActiveTracking();
 
-      emit(TrackInProgress(track: _locationService.getTrackRecording()));
+      emit(TrackInProgress(track: _locationService.getActiveTrack()));
 
       await emit.forEach(stream, onData: (trackPoint) {
-        return TrackUpdated(track: _locationService.getTrackRecording());
+        return TrackUpdated(track: _locationService.getActiveTrack());
       });
     });
 
     on<PauseTrackingEvent>((event, emit) {
-      _locationService.stopTrackRecording();
-      emit(TrackPaused(track: _locationService.getTrackRecording()));
+      _locationService.stopActiveTracking();
+      emit(TrackPaused(track: _locationService.getActiveTrack()));
     });
 
     on<ResumeTrackingEvent>((event, emit) {
-      _locationService.startTrackRecording();
-      emit(TrackInProgress(track: _locationService.getTrackRecording()));
+      _locationService.startActiveTracking();
+      emit(TrackInProgress(track: _locationService.getActiveTrack()));
     });
 
     on<SaveTrackingEvent>((event, emit) async {
-      _locationService.saveTrackRecording();
+      _locationService.saveActiveTrack();
       await _locationSubscription?.cancel();
       emit(TrackNotStarted());
     });
 
     on<DiscardTrackingEvent>((event, emit) async {
-      _locationService.discardTrackRecording();
+      _locationService.discardActiveTrack();
       await _locationSubscription?.cancel();
       emit(TrackNotStarted());
     });

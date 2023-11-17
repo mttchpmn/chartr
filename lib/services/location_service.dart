@@ -20,16 +20,17 @@ class LocationUpdate {
 }
 
 class LocationService {
-  StreamSubscription<Position>? _positionStream;
-  StreamController<TrackPoint> _streamController =
+  StreamSubscription<Position>? _activeTrackingStream;
+  StreamSubscription<Position>? _passiveTrackingStream;
+
+  StreamController<TrackPoint> _activeUpdateStreamController =
       StreamController<TrackPoint>();
+
+  StreamController<LatLng> _passiveUpdateStreamController =
+      StreamController<LatLng>();
 
   bool _isRecording = false;
   final List<TrackPoint> _trackRecording = [];
-
-  final List<LatLng> _track = [];
-  double _currentSpeed = 0;
-  double _currentHeading = 0;
 
   final int _distanceFilter;
 
@@ -44,44 +45,68 @@ class LocationService {
     return Geolocator.getLastKnownPosition();
   }
 
-  Stream<TrackPoint> startTrackRecording() {
+  Stream<TrackPoint> startActiveTracking() {
     _isRecording = true;
 
-    return _startTracking();
+    return _startActiveTracking();
   }
 
-  void stopTrackRecording() {
+  void stopActiveTracking() {
     _isRecording = false;
-    _positionStream?.cancel();
+    _activeTrackingStream?.cancel();
   }
 
-  List<TrackPoint> getTrackRecording() {
+  Stream<LatLng> startPassiveTracking() => _startPassiveTracking();
+
+  void stopPassiveTracking() {
+    _passiveTrackingStream?.cancel();
+  }
+
+  List<TrackPoint> getActiveTrack() {
     return _trackRecording;
   }
 
-  void saveTrackRecording() {
+  void saveActiveTrack() {
     if (_trackRecording.isEmpty) return;
 
-    stopTrackRecording();
+    stopActiveTracking();
     _saveTrackToDisk().then((value) => _trackRecording.clear());
   }
 
-  void discardTrackRecording() {
-    stopTrackRecording();
+  void discardActiveTrack() {
+    stopActiveTracking();
     _trackRecording.clear();
   }
 
-  Stream<TrackPoint> _startTracking() {
+  Stream<LatLng> _startPassiveTracking() {
+    var stream = Geolocator.getPositionStream();
+
+    _passiveTrackingStream = stream.listen(_onPassiveTrackingStreamUpdate);
+
+    return _passiveUpdateStreamController.stream;
+  }
+
+  void _onPassiveTrackingStreamUpdate(Position? position) {
+    if (position == null) {
+      return;
+    }
+
+    var latLng = LatLng(position.latitude, position.longitude);
+    _passiveUpdateStreamController.add(latLng);
+  }
+
+  Stream<TrackPoint> _startActiveTracking() {
     var locationSettings = _getAndroidSettings();
     var positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings);
 
-    _positionStream = positionStream.listen(_onPositionStreamUpdate);
+    _activeTrackingStream =
+        positionStream.listen(_onActiveTrackingStreamUpdate);
 
-    return _streamController.stream;
+    return _activeUpdateStreamController.stream;
   }
 
-  void _onPositionStreamUpdate(Position? position) {
+  void _onActiveTrackingStreamUpdate(Position? position) {
     if (position == null) {
       return;
     }
@@ -94,12 +119,8 @@ class LocationService {
           datetime: position.timestamp!);
 
       _trackRecording.add(trackPoint);
-      _streamController.add(trackPoint);
+      _activeUpdateStreamController.add(trackPoint);
     }
-  }
-
-  void stopTracking() {
-    _positionStream?.cancel();
   }
 
   AndroidSettings _getAndroidSettings() {
