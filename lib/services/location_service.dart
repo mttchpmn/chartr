@@ -21,6 +21,8 @@ class LocationUpdate {
 
 class LocationService {
   StreamSubscription<Position>? _positionStream;
+  StreamController<TrackPoint> _streamController =
+      StreamController<TrackPoint>();
 
   bool _isRecording = false;
   final List<TrackPoint> _trackRecording = [];
@@ -42,12 +44,15 @@ class LocationService {
     return Geolocator.getLastKnownPosition();
   }
 
-  void startTrackRecording() {
+  Stream<TrackPoint> startTrackRecording() {
     _isRecording = true;
+
+    return _startTracking();
   }
 
   void stopTrackRecording() {
     _isRecording = false;
+    _positionStream?.cancel();
   }
 
   List<TrackPoint> getTrackRecording() {
@@ -57,11 +62,48 @@ class LocationService {
   void saveTrackRecording() {
     if (_trackRecording.isEmpty) return;
 
+    stopTrackRecording();
     _saveTrackToDisk().then((value) => _trackRecording.clear());
   }
 
-  void startTracking(Function(LocationUpdate) onLocationUpdate) {
-    var locationSettings = AndroidSettings(
+  void discardTrackRecording() {
+    stopTrackRecording();
+    _trackRecording.clear();
+  }
+
+  Stream<TrackPoint> _startTracking() {
+    var locationSettings = _getAndroidSettings();
+    var positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings);
+
+    _positionStream = positionStream.listen(_onPositionStreamUpdate);
+
+    return _streamController.stream;
+  }
+
+  void _onPositionStreamUpdate(Position? position) {
+    if (position == null) {
+      return;
+    }
+
+    if (_isRecording) {
+      var trackPoint = TrackPoint(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          elevation: position.altitude,
+          datetime: position.timestamp!);
+
+      _trackRecording.add(trackPoint);
+      _streamController.add(trackPoint);
+    }
+  }
+
+  void stopTracking() {
+    _positionStream?.cancel();
+  }
+
+  AndroidSettings _getAndroidSettings() {
+    return AndroidSettings(
         distanceFilter: _distanceFilter,
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText:
@@ -69,43 +111,6 @@ class LocationService {
           notificationTitle: "Background Location Usage",
           enableWakeLock: true,
         ));
-
-    _positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position? position) {
-      if (position == null) {
-        return;
-      }
-
-      _currentSpeed = position.speed / 1000 * 60 * 60; // ms to kmh
-      _currentHeading = position.heading;
-      var currentPosition = LatLng(position.latitude, position.longitude);
-
-      if (_isRecording) {
-        var trackPoint = TrackPoint(
-            latitude: position.latitude,
-            longitude: position.longitude,
-            elevation: position.altitude,
-            datetime: position.timestamp!);
-
-        _trackRecording.add(trackPoint);
-      }
-
-      var trackRecordingLatLng =
-          _trackRecording.map((e) => LatLng(e.latitude, e.longitude)).toList();
-
-      var update = LocationUpdate(
-          currentPosition: currentPosition,
-          speed: _currentSpeed,
-          heading: _currentHeading,
-          track: trackRecordingLatLng);
-
-      onLocationUpdate(update);
-    });
-  }
-
-  void stopTracking() {
-    _positionStream?.cancel();
   }
 
   Future<void> initializeAsync() async {

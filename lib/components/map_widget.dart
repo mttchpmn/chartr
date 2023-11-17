@@ -1,3 +1,4 @@
+import 'package:chartr/blocs/active_track_bloc.dart';
 import 'package:chartr/components/crosshair.dart';
 import 'package:chartr/components/distance_display.dart';
 import 'package:chartr/components/map_ui_overlay.dart';
@@ -17,6 +18,7 @@ import 'package:chartr/services/coordinate_service.dart';
 import 'package:chartr/services/location_service.dart';
 import 'package:chartr/services/map_provider_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -80,7 +82,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     _initMapProvider();
 
     _initLastPosition();
-    _initTracking();
     _loadWaypoints();
   }
 
@@ -99,22 +100,6 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
 
     _scrollToPosition(latLng);
-  }
-
-  Future<void> _initTracking() async {
-    await _locationService.initializeAsync();
-    _locationService.startTracking(_onLocationUpdate);
-  }
-
-  void _onLocationUpdate(LocationUpdate update) {
-    if (!mounted) return;
-
-    debugPrint("Location updated");
-
-    setState(() {
-      _track = update.track;
-      _deviceLocation = update.currentPosition;
-    });
   }
 
   void _loadWaypoints() async {
@@ -150,27 +135,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
   }
 
   void _onToggleLocationTracking() {
-    setState(() {
-      _hasTrackingEnabled = !_hasTrackingEnabled;
-    });
-    debugPrint("Location tracking: [$_hasTrackingEnabled]");
-
-    _hasTrackingEnabled
-        ? _locationService.startTracking(_onLocationUpdate)
-        : _locationService.stopTracking();
-  }
-
-  void _onStartTrackRecording() {
-    _locationService.startTrackRecording();
-  }
-
-  void _onPauseTrackRecording() {
-    _locationService.stopTrackRecording();
-  }
-
-  void _onSaveTrackRecording() {
-    // TODO - Do save here
-    _locationService.saveTrackRecording();
+    throw new UnimplementedError("Need to fix this");
   }
 
   void _onStartDrawing() {
@@ -284,11 +249,15 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
       ),
       drawer: const MenuDrawer(),
       body: Stack(children: [
-        FlutterMap(
-          mapController: _mapController,
-          nonRotatedChildren: [],
-          options: _buildMapOptions(),
-          children: _buildMapChildren(),
+        BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
+          builder: (context, state) {
+            return FlutterMap(
+              mapController: _mapController,
+              nonRotatedChildren: [],
+              options: _buildMapOptions(),
+              children: _buildMapChildren(state),
+            );
+          },
         ),
         Visibility(
           visible: _getUiLayerVisibility(MapMode.viewing) ||
@@ -335,11 +304,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         ),
         Visibility(
             visible: _getUiLayerVisibility(MapMode.viewing),
-            child: TrackRecordingOverlay(
-              onStartTrackRecording: _onStartTrackRecording,
-              onPauseTrackRecording: _onPauseTrackRecording,
-              onSaveTrackRecording: _onSaveTrackRecording,
-            )),
+            child: const TrackRecordingOverlay()),
         Visibility(
           visible: _getUiLayerVisibility(MapMode.drawing),
           child: PaintUiOverlay(
@@ -367,16 +332,22 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return result;
   }
 
-  List<Widget> _buildMapChildren() {
+  List<Widget> _buildMapChildren(ActiveTrackState trackState) {
     List<Widget> result = [];
     List<Marker> markers = [];
     List<Polyline> polylines = [];
     List<OverlayImage> overlayImages = [];
 
-    polylines
-        .add(Polyline(points: _track, color: Colors.black, strokeWidth: 6));
-    polylines.add(
-        Polyline(points: _track, color: Colors.deepOrange, strokeWidth: 3));
+    if (trackState is TrackInProgress || trackState is TrackPaused || trackState is TrackUpdated) {
+      var state = trackState as ActiveTrackStateWithTrack;
+      var track =
+          state.track.map((e) => LatLng(e.latitude, e.longitude)).toList();
+
+      polylines
+          .add(Polyline(points: track, color: Colors.black, strokeWidth: 6));
+      polylines.add(
+          Polyline(points: track, color: Colors.deepOrange, strokeWidth: 3));
+    }
 
     // markers.addAll(_markers);
 
