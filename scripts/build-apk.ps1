@@ -1,10 +1,11 @@
 param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [ValidateSet('major', 'minor', 'patch', 'build')]
     [string]$VersionType
 )
 
-function Increment-Version {
+function Increment-Version
+{
     param (
         [string]$versionString,
         [string]$versionType
@@ -13,11 +14,26 @@ function Increment-Version {
     $versionParts = $versionString.Split('+')[0].Split('.')
     $buildNumber = $versionString.Split('+')[1]
 
-    switch ($versionType) {
-        'major' { $versionParts[0] = [int]$versionParts[0] + 1; $versionParts[1] = 0; $versionParts[2] = 0 }
-        'minor' { $versionParts[1] = [int]$versionParts[1] + 1; $versionParts[2] = 0 }
-        'patch' { $versionParts[2] = [int]$versionParts[2] + 1 }
-        'build' { $buildNumber = [int]$buildNumber + 1 }
+    switch ($versionType)
+    {
+        'major' {
+            $versionParts[0] = [int]$versionParts[0] + 1;
+            $versionParts[1] = 0;
+            $versionParts[2] = 0;
+            $buildNumber = 0;
+        }
+        'minor' {
+            $versionParts[1] = [int]$versionParts[1] + 1;
+            $versionParts[2] = 0;
+            $buildNumber = 0;
+        }
+        'patch' {
+            $versionParts[2] = [int]$versionParts[2] + 1;
+            $buildNumber = 0;
+        }
+        'build' {
+            $buildNumber = [int]$buildNumber + 1;
+        }
     }
 
     return ($versionParts -join '.') + '+' + $buildNumber
