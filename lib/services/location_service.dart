@@ -170,12 +170,17 @@ class LocationService {
   Future<void> _saveTrackToDisk() async {
     var dir = await getApplicationDocumentsDirectory();
     var name = "Track-${_trackRecording.first.datetime.toIso8601String()}";
-    var path = "${dir.path}/$name.gpx";
-    var file = await File(path).create();
+    var pathGpx = "${dir.path}/$name.gpx";
+    var pathJson = "${dir.path}/$name.json";
+
+    var gpxFile = await File(pathGpx).create();
+    var jsonFile = await File(pathJson).create();
 
     var track = Track(name: name, trackPoints: _trackRecording);
-    var content = track.toGpxString();
+    var gpxContent = track.toGpxString();
+    var jsonContent = track.toJson();
 
-    await file.writeAsString(content);
+    await jsonFile.writeAsString(jsonContent);
+    await gpxFile.writeAsString(gpxContent);
   }
 }

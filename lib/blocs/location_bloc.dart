@@ -18,6 +18,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     await emit.forEach(stream, onData: (location) {
       return LocationUpdatedState(location: location);
     });
+
   }
 }
 

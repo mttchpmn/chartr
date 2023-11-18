@@ -14,15 +14,16 @@ class Track {
   }
 
   String toJson() {
-    var result = {
-      'name': name,
-      'trackPoints': trackPoints.map((e) => {
-            'latitude': e.latitude,
-            'longitude': e.longitude,
-            'elevation': e.elevation,
-            'datetime': e.datetime.toIso8601String()
-          })
-    };
+    var tp = trackPoints.map((e) {
+      return {
+        'latitude': e.latitude,
+        'longitude': e.longitude,
+        'elevation': e.elevation,
+        'datetime': e.datetime.toIso8601String()
+      };
+    }).toList();
+
+    var result = {'name': name, 'trackPoints': tp};
 
     return jsonEncode(result);
   }
