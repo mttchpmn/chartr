@@ -83,7 +83,8 @@ class LocationService {
   }
 
   Stream<LatLng> _startPassiveTracking() {
-    var stream = Geolocator.getPositionStream();
+    var locationSettings = _getAndroidSettings();
+    var stream = Geolocator.getPositionStream(locationSettings: locationSettings);
 
     _passiveTrackingStream = stream.listen(_onPassiveTrackingStreamUpdate);
 
@@ -152,7 +153,8 @@ class LocationService {
     }
 
     permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.whileInUse) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try

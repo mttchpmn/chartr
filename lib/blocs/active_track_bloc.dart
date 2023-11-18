@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chartr/models/Track.dart';
 import 'package:chartr/services/location_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ActiveTrackBloc extends Bloc<ActiveTrackEvent, ActiveTrackState> {
@@ -11,6 +10,8 @@ class ActiveTrackBloc extends Bloc<ActiveTrackEvent, ActiveTrackState> {
 
   ActiveTrackBloc() : super(TrackNotStarted()) {
     on<StartTrackingEvent>((event, emit) async {
+      await _locationService.initializeAsync();
+
       await _locationSubscription?.cancel();
       var stream = _locationService.startActiveTracking();
 

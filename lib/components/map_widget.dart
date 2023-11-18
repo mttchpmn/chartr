@@ -252,7 +252,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           return BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
             builder: (context, activeTrackState) {
               var location = locationState is LocationStateWithLocation
-                  ? locationState.location
+                  ? locationState.location // TODO - This doesn't seem to be updating
                   : const LatLng(-36.890418, 174.795743); // Auckland
               return FlutterMap(
                 mapController: _mapController,
