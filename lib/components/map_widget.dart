@@ -114,21 +114,18 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     });
   }
 
+  void _scrollToCurrentPosition() async {
+    var currentPosition = await _locationService.getPosition();
+    var latLng = LatLng(currentPosition.latitude, currentPosition.longitude);
+
+    _scrollToPosition(latLng);
+  }
+
   void _scrollToPosition(LatLng latLng) {
     var currentZoom = _mapController.zoom;
     var currentBearing = _mapController.rotation;
     _mapController.moveAndRotate(
         LatLng(latLng.latitude, latLng.longitude), currentZoom, currentBearing);
-  }
-
-  void _scrollToCurrentPosition() async {
-    var currentZoom = _mapController.zoom;
-    var currentBearing = _mapController.rotation;
-    var currentPosition = await _locationService.getPosition();
-    _mapController.moveAndRotate(
-        LatLng(currentPosition.latitude, currentPosition.longitude),
-        currentZoom,
-        currentBearing);
   }
 
   void _onWaypointSaved() async {
@@ -254,12 +251,15 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             builder: (context, locationState) {
           return BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
             builder: (context, activeTrackState) {
-              return FlutterMap(
-                mapController: _mapController,
-                nonRotatedChildren: [],
-                options: _buildMapOptions(),
-                children: _buildMapChildren(locationState, activeTrackState),
-              );
+              if (locationState is LocationStateWithLocation) {
+                return FlutterMap(
+                  mapController: _mapController,
+                  nonRotatedChildren: [],
+                  options: _buildMapOptions(locationState.location),
+                  children: _buildMapChildren(locationState, activeTrackState),
+                );
+              }
+              return CircularProgressIndicator();
             },
           );
         }),
@@ -436,7 +436,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
     return result;
   }
 
-  MapOptions _buildMapOptions() {
+  MapOptions _buildMapOptions(LatLng deviceLocation) {
     return MapOptions(
       onPositionChanged: (position, hasGesture) {
         if (position.center != null) {
@@ -449,7 +449,7 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
           _mapCenterLatLng = position.center;
         });
       },
-      center: _deviceLocation,
+      center: deviceLocation,
       interactiveFlags: _showNorthUp
           ? InteractiveFlag.pinchZoom | InteractiveFlag.drag
           : InteractiveFlag.all,

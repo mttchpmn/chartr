@@ -56,7 +56,11 @@ class LocationService {
     _activeTrackingStream?.cancel();
   }
 
-  Stream<LatLng> startPassiveTracking() => _startPassiveTracking();
+  Stream<LatLng> startPassiveTracking() {
+    stopPassiveTracking();
+
+    return _startPassiveTracking();
+  }
 
   void stopPassiveTracking() {
     _passiveTrackingStream?.cancel();

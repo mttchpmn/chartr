@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationService _locationService = LocationService(5);
+  bool _locationSet = false;
 
   LocationBloc() : super(LocationUnsetState()) {
     on<StartTrackingLocationEvent>(_onStartTrackingLocation);
@@ -16,9 +17,13 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     var stream = _locationService.startPassiveTracking();
 
     await emit.forEach(stream, onData: (location) {
+      if (!_locationSet) {
+        _locationSet = true;
+        return LocationSetState(location: location);
+      }
+
       return LocationUpdatedState(location: location);
     });
-
   }
 }
 
@@ -30,8 +35,16 @@ abstract class LocationState {}
 
 class LocationUnsetState extends LocationState {}
 
-class LocationUpdatedState extends LocationState {
+class LocationStateWithLocation extends LocationState {
   final LatLng location;
 
-  LocationUpdatedState({required this.location});
+  LocationStateWithLocation({required this.location});
+}
+
+class LocationSetState extends LocationStateWithLocation {
+  LocationSetState({required super.location});
+}
+
+class LocationUpdatedState extends LocationStateWithLocation {
+  LocationUpdatedState({required super.location});
 }
