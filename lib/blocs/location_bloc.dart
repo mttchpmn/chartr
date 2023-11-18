@@ -14,6 +14,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
   FutureOr<void> _onStartTrackingLocation(
       StartTrackingLocationEvent event, Emitter<LocationState> emit) async {
+    await _locationService.initializeAsync();
     var stream = _locationService.startPassiveTracking();
 
     await emit.forEach(stream, onData: (location) {

@@ -229,14 +229,14 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
         title: TextField(
           decoration: InputDecoration(
             hintText: 'Search...',
-            contentPadding: EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.all(5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.0),
               borderSide: BorderSide.none,
             ),
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(
-              icon: Icon(Icons.clear),
+              icon: const Icon(Icons.clear),
               onPressed: () {
                 // Clear the search field or do something else
               },
@@ -251,15 +251,15 @@ class FullScreenMapWidgetState extends State<FullScreenMapWidget> {
             builder: (context, locationState) {
           return BlocBuilder<ActiveTrackBloc, ActiveTrackState>(
             builder: (context, activeTrackState) {
-              if (locationState is LocationStateWithLocation) {
-                return FlutterMap(
-                  mapController: _mapController,
-                  nonRotatedChildren: [],
-                  options: _buildMapOptions(locationState.location),
-                  children: _buildMapChildren(locationState, activeTrackState),
-                );
-              }
-              return CircularProgressIndicator();
+              var location = locationState is LocationStateWithLocation
+                  ? locationState.location
+                  : const LatLng(-36.890418, 174.795743); // Auckland
+              return FlutterMap(
+                mapController: _mapController,
+                nonRotatedChildren: [],
+                options: _buildMapOptions(location),
+                children: _buildMapChildren(locationState, activeTrackState),
+              );
             },
           );
         }),
