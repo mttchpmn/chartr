@@ -5,6 +5,7 @@ import 'package:chartr/repositories/waypoint_gateway.dart';
 import 'package:chartr/models/waypoint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class TracksScreen extends StatefulWidget {
   const TracksScreen({super.key});
@@ -38,7 +39,18 @@ class _TracksScreenState extends State<TracksScreen> {
 
                     return ListTile(
                       leading: Icon(Icons.route),
+                      trailing: Icon(Icons.delete),
                       title: Text(track.name),
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("${DateFormat('EEE dd MMM yyyy').format(track.dateTime.toLocal())}"),
+                          Text(
+                              "${(track.totalDistance / 1000).toStringAsFixed(1)}km"),
+                          Text(
+                              "${track.elapsedTime.inHours} hr ${track.elapsedTime.inMinutes} min"),
+                        ],
+                      ),
                     );
                   });
             }

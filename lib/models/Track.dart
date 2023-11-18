@@ -1,16 +1,69 @@
 import 'dart:convert';
 
+import 'package:geolocator/geolocator.dart';
+
 class Track {
   String name;
   List<TrackPoint> trackPoints;
+  late DateTime dateTime;
+  late double totalDistance;
+  late double totalAscent;
+  late double totalDescent;
+  late Duration elapsedTime;
 
-  Track({required this.name, required this.trackPoints});
+  Track({required this.name, required this.trackPoints}) {
+    dateTime = trackPoints.first.datetime;
+    totalDistance = _calculateDistance(trackPoints);
+    totalAscent = _getTotalAscent(trackPoints);
+    totalDescent = _getTotalDescent(trackPoints);
+    elapsedTime = _getTrackElapsedTime(trackPoints);
+  }
+
+  double _calculateDistance(trackPoints) {
+    var totalDistance = 0.0;
+    for (var i = 0; i < trackPoints.length - 1; i++) {
+      totalDistance += Geolocator.distanceBetween(
+        trackPoints[i].latitude,
+        trackPoints[i].longitude,
+        trackPoints[i + 1].latitude,
+        trackPoints[i + 1].longitude,
+      );
+    }
+    return totalDistance;
+  }
+
+  double _getTotalAscent(List<TrackPoint> trackPoints) {
+    var totalAscent = 0.0;
+    for (var i = 0; i < trackPoints.length - 1; i++) {
+      var elevationChange =
+          trackPoints[i + 1].elevation - trackPoints[i].elevation;
+      if (elevationChange > 0) totalAscent += elevationChange;
+    }
+    return totalAscent;
+  }
+
+  double _getTotalDescent(List<TrackPoint> trackPoints) {
+    var totalDescent = 0.0;
+    for (var i = 0; i < trackPoints.length - 1; i++) {
+      var elevationChange =
+          trackPoints[i + 1].elevation - trackPoints[i].elevation;
+      if (elevationChange < 0) totalDescent += elevationChange;
+    }
+    return totalDescent;
+  }
+
+  Duration _getTrackElapsedTime(List<TrackPoint> trackPoints) {
+    if (trackPoints.isEmpty) return Duration.zero;
+    return trackPoints.last.datetime.difference(trackPoints.first.datetime);
+  }
 
   factory Track.fromJson(Map<String, dynamic> json) {
+    var name = json['name'];
     var trackPoints = (json['trackPoints'] as List)
         .map((item) => TrackPoint.fromJson(item))
         .toList();
-    return Track(name: json['name'], trackPoints: trackPoints);
+
+    return Track(name: name, trackPoints: trackPoints);
   }
 
   String toJson() {
